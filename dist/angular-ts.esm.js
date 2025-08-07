@@ -1,4 +1,4 @@
-/* Version: 0.8.0 - August 2, 2025 17:22:31 */
+/* Version: 0.8.1 - August 7, 2025 18:30:09 */
 const VALID_CLASS = "ng-valid";
 const INVALID_CLASS = "ng-invalid";
 const PRISTINE_CLASS = "ng-pristine";
@@ -1810,11 +1810,11 @@ const $injectTokens = Object.freeze({
   $interpolate: "$interpolate",
   $location: "$location",
   $log: "$log",
-  $ngViewScroll: "$ngViewScroll",
+  $viewScroll: "$viewScroll",
   $parse: "$parse",
   $rootScope: "$rootScope",
   $rootElement: "$rootElement",
-  $routerGlobals: "$routerGlobals",
+  $router: "$router",
   $sce: "$sce",
   $sceDelegate: "$sceDelegate",
   $state: "$state",
@@ -1868,7 +1868,7 @@ class NgModule {
   /**
    * @param {string} name - Name of the module
    * @param {Array<string>} requires - List of modules which the injector will load before the current module
-   * @param {Function} [configFn]
+   * @param {import("../../interface.js").Injectable} [configFn]
    */
   constructor(name, requires, configFn) {
     assert(isString(name), "name required");
@@ -1894,7 +1894,7 @@ class NgModule {
     /** @type {!Array<Array<*>>} */
     this.configBlocks = [];
 
-    /** @type {!Array.<Function>} */
+    /** @type {!Array.<import("../../interface.js").Injectable>} */
     this.runBlocks = [];
 
     if (configFn) {
@@ -1924,7 +1924,7 @@ class NgModule {
 
   /**
    *
-   * @param {Function} configFn
+   * @param {import("../../interface.js").Injectable} configFn
    * @returns {NgModule}
    */
   config(configFn) {
@@ -1933,7 +1933,7 @@ class NgModule {
   }
 
   /**
-   * @param {Function} block
+   * @param {import("../../interface.js").Injectable} block
    * @returns {NgModule}
    */
   run(block) {
@@ -1943,12 +1943,12 @@ class NgModule {
 
   /**
    * @param {string} name
-   * @param {*} options
+   * @param {import("../../interface.js").Injectable} options
    * @returns {NgModule}
    */
   component(name, options) {
     if (options && isFunction(options)) {
-      options.$$moduleName = name;
+      options["$$moduleName"] = name;
     }
     this.invokeQueue.push([COMPILE_LITERAL, "component", [name, options]]);
     return this;
@@ -1956,12 +1956,12 @@ class NgModule {
 
   /**
    * @param {string} name
-   * @param {*} providerFunction
+   * @param {import("../../interface.js").Injectable} providerFunction
    * @returns {NgModule}
    */
   factory(name, providerFunction) {
     if (providerFunction && isFunction(providerFunction)) {
-      providerFunction.$$moduleName = name;
+      providerFunction["$$moduleName"] = name;
     }
     this.invokeQueue.push([$injectTokens.$provide, "factory", [name, providerFunction]]);
     return this;
@@ -1969,12 +1969,12 @@ class NgModule {
 
   /**
    * @param {string} name
-   * @param {*} serviceFunction
+   * @param {import("../../interface.js").Injectable} serviceFunction
    * @returns {NgModule}
    */
   service(name, serviceFunction) {
     if (serviceFunction && isFunction(serviceFunction)) {
-      serviceFunction.$$moduleName = name;
+      serviceFunction["$$moduleName"] = name;
     }
     this.invokeQueue.push([$injectTokens.$provide, "service", [name, serviceFunction]]);
     return this;
@@ -1982,12 +1982,12 @@ class NgModule {
 
   /**
    * @param {string} name
-   * @param {*} providerType
+   * @param {import("../../interface.js").Injectable} providerType
    * @returns {NgModule}
    */
   provider(name, providerType) {
     if (providerType && isFunction(providerType)) {
-      providerType.$$moduleName = name;
+      providerType["$$moduleName"] = name;
     }
     this.invokeQueue.push([$injectTokens.$provide, "provider", [name, providerType]]);
     return this;
@@ -1995,12 +1995,12 @@ class NgModule {
 
   /**
    * @param {string} name
-   * @param {*} decorFn
+   * @param {import("../../interface.js").Injectable} decorFn
    * @returns {NgModule}
    */
   decorator(name, decorFn) {
     if (decorFn && isFunction(decorFn)) {
-      decorFn.$$moduleName = name;
+      decorFn["$$moduleName"] = name;
     }
     this.configBlocks.push([$injectTokens.$provide, "decorator", [name, decorFn]]);
     return this;
@@ -2008,12 +2008,12 @@ class NgModule {
 
   /**
    * @param {string} name
-   * @param {*} directiveFactory
+   * @param {import("../../interface.js").Injectable} directiveFactory
    * @returns {NgModule}
    */
   directive(name, directiveFactory) {
     if (directiveFactory && isFunction(directiveFactory)) {
-      directiveFactory.$$moduleName = name;
+      directiveFactory["$$moduleName"] = name;
     }
     this.invokeQueue.push([
       COMPILE_LITERAL,
@@ -2025,12 +2025,12 @@ class NgModule {
 
   /**
    * @param {string} name
-   * @param {*} animationFactory
+   * @param {import("../../interface.js").Injectable} animationFactory
    * @returns {NgModule}
    */
   animation(name, animationFactory) {
     if (animationFactory && isFunction(animationFactory)) {
-      animationFactory.$$moduleName = name;
+      animationFactory["$$moduleName"] = name;
     }
     this.invokeQueue.push([
       ANIMATION_LITERAL,
@@ -2040,9 +2040,14 @@ class NgModule {
     return this;
   }
 
+  /**
+   * @param {string} name
+   * @param {import("../../interface.js").Injectable} filterFn
+   * @return {NgModule}
+   */
   filter(name, filterFn) {
     if (filterFn && isFunction(filterFn)) {
-      filterFn.$$moduleName = name;
+      filterFn["$$moduleName"] = name;
     }
     this.invokeQueue.push([FILTER_LITERAL, "register", [name, filterFn]]);
     return this;
@@ -2050,12 +2055,12 @@ class NgModule {
 
   /**
    * @param {string} name
-   * @param {*} ctlFn
+   * @param {import("../../interface.js").Injectable} ctlFn
    * @returns {NgModule}
    */
   controller(name, ctlFn) {
     if (ctlFn && isFunction(ctlFn)) {
-      ctlFn.$$moduleName = name;
+      ctlFn["$$moduleName"] = name;
     }
     this.invokeQueue.push([CONTROLLER_LITERAL, "register", [name, ctlFn]]);
     return this;
@@ -11966,7 +11971,7 @@ function ngRepeatDirective($animate) {
     transclude: "element",
     priority: 1000,
     terminal: true,
-    compile: ($element, $attr) => {
+    compile: (_$element, $attr) => {
       const expression = $attr["ngRepeat"];
       const hasAnimate = !!$attr["animate"];
 
@@ -19082,8 +19087,15 @@ class Location {
    */
   setUrl(url) {
     const match = PATH_MATCH.exec(url);
-    if (match[1] || url === "") this.setPath(decodeURIComponent(match[1]));
-    if (match[2] || match[1] || url === "") this.setSearch(match[3] || "");
+
+    if (match[1] !== undefined || url === "") {
+      this.setPath(match[1] || "");
+    }
+
+    if (match[2] !== undefined || match[1] !== undefined || url === "") {
+      this.setSearch(match[3] || "");
+    }
+
     this.setHash(match[5] || "");
 
     return this;
@@ -25495,20 +25507,6 @@ const parse = (name) =>
     name.split(".").map((name) => (obj) => obj && obj[name]),
   );
 
-/**
- * Given two functions that return truthy or falsey values, returns a function that returns truthy
- * if at least one of the functions returns truthy for the given arguments
- */
-function or(fn1, fn2) {
-  return (...args) => fn1.apply(null, args) || fn2.apply(null, args);
-}
-/**
- * Check if all the elements of an array match a predicate function
- *
- * @param fn1 a predicate function `fn1`
- * @returns a function which takes an array and returns true if `fn1` is true for all elements of the array
- */
-const all = (fn1) => (arr) => arr.reduce((b, x) => b && !!fn1(x), true);
 /** Given a class, returns a Predicate function that returns true if the object is of that class */
 const is = (ctor) => (obj) =>
   (obj != null && obj.constructor === ctor) || obj instanceof ctor;
@@ -25571,10 +25569,10 @@ function equals(o1, o2) {
     t2 = typeof o2;
   if (t1 !== t2 || t1 !== "object") return false;
   const tup = [o1, o2];
-  if (all(Array.isArray)(tup)) return _arraysEq(o1, o2);
-  if (all(isDate)(tup)) return o1.getTime() === o2.getTime();
-  if (all(isRegExp)(tup)) return o1.toString() === o2.toString();
-  if (all(isFunction)(tup)) return true; // meh
+  if (tup.every(Array.isArray)) return _arraysEq(o1, o2);
+  if (tup.every(isDate)) return o1.getTime() === o2.getTime();
+  if (tup.every(isRegExp)) return o1.toString() === o2.toString();
+  if (tup.every(isFunction)) return true; // meh
   if ([isFunction, Array.isArray, isDate, isRegExp].some((fn) => !!fn(tup))) {
     return false;
   }
@@ -26016,7 +26014,6 @@ class ParamType {
   /**
    * @param def  A configuration object which contains the custom type definition.  The object's
    *        properties will override the default methods and/or pattern in `ParamType`'s public interface.
-   * @returns a new ParamType object
    */
   constructor(def) {
     this.pattern = /.*/;
@@ -26575,7 +26572,7 @@ class Queue {
  * This is where we hold the global mutable state such as current state, current
  * params, current transition, etc.
  */
-class RouterGlobals {
+class Router {
   constructor() {
     /**
      * Current parameter values
@@ -27469,7 +27466,7 @@ class Param {
     const normalized = this.type.$normalize(value);
     if (!this.type.is(normalized)) return false;
     // The value was of the correct type, but when encoded, did not match the ParamType's regexp
-    const encoded = this.type.encode(normalized);
+    const encoded = normalized; // this.type.encode(normalized);
     return !(isString(encoded) && !this.type.pattern.exec(encoded));
   }
   toString() {
@@ -29556,11 +29553,11 @@ class Transition {
    *        encapsulates the "from state".
    * @param {import('../state/target-state.js').TargetState} targetState The target state and parameters being transitioned to (also, the transition options)
    * @param {import('../transition/transition-service.js').TransitionProvider} transitionService The [[TransitionService]] instance
-   * @param {import('../globals.js').RouterGlobals} globals
+   * @param {import('../router.js').Router} globals
    */
   constructor(fromPath, targetState, transitionService, globals) {
     /**
-     * @type {import('../globals.js').RouterGlobals}
+     * @type {import('../router.js').Router}
      */
     this.globals = globals;
     this.transitionService = transitionService;
@@ -30740,10 +30737,10 @@ let defaultTransOpts = {
  * This API is located at `router.transitionService` ([[UIRouter.transitionService]])
  */
 class TransitionProvider {
-  /* @ignore */ static $inject = provider([$injectTokens.$routerGlobals, $injectTokens.$view]);
+  /* @ignore */ static $inject = provider([$injectTokens.$router, $injectTokens.$view]);
 
   /**
-   * @param {import('../globals.js').RouterGlobals} globals
+   * @param {import('../router.js').Router} globals
    * @param viewService
    */
   constructor(globals, viewService) {
@@ -30990,7 +30987,7 @@ class StateProvider {
   /**
    * The latest successful state parameters
    *
-   * @deprecated This is a passthrough through to [[RouterGlobals.params]]
+   * @deprecated This is a passthrough through to [[Router.params]]
    */
   get params() {
     return this.globals.params;
@@ -30998,7 +30995,7 @@ class StateProvider {
   /**
    * The current [[StateDeclaration]]
    *
-   * @deprecated This is a passthrough through to [[RouterGlobals.current]]
+   * @deprecated This is a passthrough through to [[Router.current]]
    */
   get current() {
     return this.globals.current;
@@ -31006,21 +31003,18 @@ class StateProvider {
   /**
    * The current [[StateObject]] (an internal API)
    *
-   * @deprecated This is a passthrough through to [[RouterGlobals.$current]]
+   * @deprecated This is a passthrough through to [[Router.$current]]
    */
   get $current() {
     return this.globals.$current;
   }
 
-  /* @ignore */ static $inject = [
-    "$routerGlobalsProvider",
-    "$transitionsProvider",
-  ];
+  /* @ignore */ static $inject = ["$routerProvider", "$transitionsProvider"];
 
   // Needs access to urlService, stateRegistry
   /**
    *
-   * @param {import('../globals.js').RouterGlobals} globals
+   * @param {import('../router.js').Router} globals
    * @param {*} transitionService
    */
   constructor(globals, transitionService) {
@@ -31671,7 +31665,7 @@ class ViewScrollProvider {
   }
 
   $get = [
-    "$anchorScroll",
+    $injectTokens.$anchorScroll,
     /**
      * @param {import('../services/anchor-scroll.js').AnchorScrollObject} $anchorScroll
      * @returns {import('../services/anchor-scroll.js').AnchorScrollObject|Function}
@@ -32014,13 +32008,6 @@ const defaultConfig = {
  *
  */
 class UrlMatcher {
-  static encodeDashes(str) {
-    // Replace dashes with encoded "\-"
-    return encodeURIComponent(str).replace(
-      /-/g,
-      (c) => `%5C%${c.charCodeAt(0).toString(16).toUpperCase()}`,
-    );
-  }
   /** @internal Given a matcher, return an array with the matcher's path segments and path params, in order */
   static pathSegmentsAndParams(matcher) {
     const staticSegments = matcher._segments;
@@ -32231,9 +32218,6 @@ class UrlMatcher {
     return this.pattern;
   }
   _getDecodedParamValue(value, param) {
-    if (isDefined(value)) {
-      value = param.type.decode(value);
-    }
     return param.value(value);
   }
   /**
@@ -32424,7 +32408,7 @@ class UrlMatcher {
       if (encoded == null) return acc;
       // If this parameter value is an array, encode the value using encodeDashes
       if (Array.isArray(encoded))
-        return acc + map(encoded, UrlMatcher.encodeDashes).join("-");
+        return acc + map(encoded, encodeDashes).join("-");
       // If the parameter type is "raw", then do not encodeURIComponent
       if (param.raw) return acc + encoded;
       // Encode the value
@@ -32453,6 +32437,14 @@ class UrlMatcher {
 }
 
 UrlMatcher.nameValidator = /^\w+([-.]+\w+)*(?:\[\])?$/;
+
+function encodeDashes(str) {
+  // Replace dashes with encoded "\-"
+  return encodeURIComponent(str).replace(
+    /-/g,
+    (c) => `%5C%${c.charCodeAt(0).toString(16).toUpperCase()}`,
+  );
+}
 
 /** @typedef {import('./interface.js').StateDeclaration} StateDeclaration */
 
@@ -32579,6 +32571,11 @@ StateObject.isState = (obj) => isObject(obj["__stateObjectCache"]);
  * - [[StateObject]]
  */
 class UrlRuleFactory {
+  /**
+   * @param {import('../url/url-service.js').UrlService} urlService
+   * @param {import('../state/state-service.js').StateProvider} stateService
+   * @param {import('../router.js').Router} routerGlobals
+   */
   constructor(urlService, stateService, routerGlobals) {
     this.urlService = urlService;
     this.stateService = stateService;
@@ -32597,7 +32594,7 @@ class UrlRuleFactory {
       [isString, (_what) => makeRule(this.urlService.compile(_what))],
       [is(UrlMatcher), (_what) => this.fromUrlMatcher(_what, handler)],
       [
-        or(isState, isStateDeclaration),
+        (...args) => isState(...args) || isStateDeclaration(...args),
         (_what) => this.fromState(_what, this.stateService, this.routerGlobals),
       ],
       [is(RegExp), (_what) => this.fromRegExp(_what, handler)],
@@ -33158,7 +33155,7 @@ class UrlService {
   static $inject = provider([
     $injectTokens.$location,
     $injectTokens.$state,
-    $injectTokens.$routerGlobals,
+    $injectTokens.$router,
     $injectTokens.$urlConfig,
   ]);
 
@@ -33168,7 +33165,7 @@ class UrlService {
   /**
    * @param {import("../../services/location/location").LocationProvider} $locationProvider
    * @param {import("../../router/state/state-service.js").StateProvider} stateService
-   * @param {import("../../router/globals.js").RouterGlobals} globals
+   * @param {import("../router.js").Router} globals
    * @param {import("../../router/url/url-config.js").UrlConfigProvider} urlConfigProvider
    */
   constructor($locationProvider, stateService, globals, urlConfigProvider) {
@@ -33311,7 +33308,10 @@ class UrlService {
    * @return the url (after potentially being processed)
    */
   url(newUrl, state) {
-    if (isDefined(newUrl)) this.$location.setUrl(newUrl);
+    if (isDefined(newUrl)) {
+      const decodeUri = decodeURIComponent(newUrl);
+      this.$location.setUrl(decodeUri);
+    }
     if (state) this.$location.setState(state);
     return this.$location.getUrl();
   }
@@ -34109,14 +34109,14 @@ class StateRegistryProvider {
   /* @ignore */ static $inject = provider([
     $injectTokens.$url,
     $injectTokens.$state,
-    $injectTokens.$routerGlobals,
+    $injectTokens.$router,
     $injectTokens.$view,
   ]);
 
   /**
    * @param urlService
    * @param stateService
-   * @param {import('../globals.js').RouterGlobals} globals
+   * @param {import('../router.js').Router} globals
    * @param viewService
    */
   constructor(urlService, stateService, globals, viewService) {
@@ -34595,7 +34595,7 @@ function $StateRefDynamicDirective(
 
 $StateRefActiveDirective.$inject = [
   "$state",
-  "$routerGlobals",
+  "$router",
   "$interpolate",
   "$stateRegistry",
   "$transitions",
@@ -34603,7 +34603,7 @@ $StateRefActiveDirective.$inject = [
 
 /**
  * @param {*} $state
- * @param {import('../globals.js').RouterGlobals} $routerGlobals
+ * @param {import('../router.js').Router} $router
  * @param {*} $interpolate
  * @param {*} $stateRegistry
  * @param {*} $transitions
@@ -34611,7 +34611,7 @@ $StateRefActiveDirective.$inject = [
  */
 function $StateRefActiveDirective(
   $state,
-  $routerGlobals,
+  $router,
   $interpolate,
   $stateRegistry,
   $transitions,
@@ -34650,8 +34650,8 @@ function $StateRefActiveDirective(
         trans.promise.then(update, () => {});
       }
       $scope.$on("$destroy", setupEventListeners());
-      if ($routerGlobals.transition) {
-        updateAfterTransition($routerGlobals.transition);
+      if ($router.transition) {
+        updateAfterTransition($router.transition);
       }
       function setupEventListeners() {
         const deregisterStatesChangedListener =
@@ -34753,7 +34753,7 @@ function $StateRefActiveDirective(
  *   The ng-view can be targeted in a View using the name ([[StateDeclaration.views]]).
  *
  * - `autoscroll`: an expression. When it evaluates to true, the `ng-view` will be scrolled into view when it is activated.
- *   Uses [[$ngViewScroll]] to do the scrolling.
+ *   Uses [[$viewScroll]] to do the scrolling.
  *
  * - `onload`: Expression to evaluate whenever the view updates.
  *
@@ -34872,16 +34872,16 @@ function $StateRefActiveDirective(
 let ngView = [
   "$view",
   "$animate",
-  "$ngViewScroll",
+  "$viewScroll",
   "$interpolate",
   /**
    * @param {*} $view
    * @param {*} $animate
-   * @param {*} $ngViewScroll
+   * @param {*} $viewScroll
    * @param {*} $interpolate
    * @returns {import("../../interface.js").Directive}
    */
-  function $ViewDirective($view, $animate, $ngViewScroll, $interpolate) {
+  function $ViewDirective($view, $animate, $viewScroll, $interpolate) {
     function getRenderer() {
       return {
         enter: function (element, target, cb) {
@@ -35018,7 +35018,7 @@ let ngView = [
                   (isDefined(autoScrollExp) && !autoScrollExp) ||
                   scope.$eval(autoScrollExp)
                 ) {
-                  $ngViewScroll(clone);
+                  $viewScroll(clone);
                 }
               });
               cleanupLastView();
@@ -35763,7 +35763,7 @@ function registerNgModule(angular) {
             $parse: ParseProvider,
             $$rAFScheduler: RafSchedulerProvider,
             $rootScope: RootScopeProvider,
-            $routerGlobals: RouterGlobals,
+            $router: Router,
             $sce: SceProvider,
             $sceDelegate: SceDelegateProvider,
             $templateCache: TemplateCacheProvider,
@@ -35772,7 +35772,7 @@ function registerNgModule(angular) {
             $view: ViewService,
             $transitions: TransitionProvider,
             $state: StateProvider,
-            $ngViewScroll: ViewScrollProvider,
+            $viewScroll: ViewScrollProvider,
             $templateFactory: TemplateFactoryProvider,
             $url: UrlService,
             $stateRegistry: StateRegistryProvider,
@@ -35782,9 +35782,9 @@ function registerNgModule(angular) {
       ],
     )
     .factory("$stateParams", [
-      $injectTokens.$routerGlobals,
+      $injectTokens.$router,
       /**
-       * @param {import('./router/globals.js').RouterGlobals} globals
+       * @param {import('./router/router.js').Router} globals
        * @returns {import('./router/params/state-params.js').StateParams }
        */
       (globals) => globals.params,
@@ -35815,7 +35815,7 @@ class Angular {
     /**
      * @type {string} `version` from `package.json`
      */
-    this.version = "0.8.0"; //inserted via rollup plugin
+    this.version = "0.8.1"; //inserted via rollup plugin
 
     /** @type {!Array<string|any>} */
     this.bootsrappedModules = [];
@@ -35824,9 +35824,9 @@ class Angular {
     this.getInjector = getInjector;
     this.getScope = getScope;
     this.errorHandlingConfig = errorHandlingConfig;
+    this.$t = $injectTokens;
 
     window["angular"] = this;
-    this.$injectTokens = $injectTokens;
     registerNgModule(this);
   }
 
@@ -35903,14 +35903,14 @@ class Angular {
 
     const injector = createInjector(this.bootsrappedModules, config.strictDi);
     injector.invoke([
-      "$rootScope",
-      "$rootElement",
-      "$compile",
-      "$injector",
+      $injectTokens.$rootScope,
+      $injectTokens.$rootElement,
+      $injectTokens.$compile,
+      $injectTokens.$injector,
       /**
        * @param {import('./core/scope/scope.js').Scope} scope
        * @param {Element} el
-       * @param {*} compile
+       * @param {import("./core/compile/compile.js").CompileFn} compile
        * @param {import("./core/di/internal-injector.js").InjectorService} $injector
        */
       (scope, el, compile, $injector) => {
@@ -35933,7 +35933,7 @@ class Angular {
         }
 
         $injector
-          .get("$stateRegistry")
+          .get($injectTokens.$stateRegistry)
           .get()
           .map((x) => x.$$state().resolvables)
           .reduce(unnestR, [])
@@ -36038,7 +36038,7 @@ class Angular {
    * @param {string} name The name of the module to create or retrieve.
    * @param {Array.<string>} [requires] If specified then new module is being created. If
    *        unspecified then the module is being retrieved for further configuration.
-   * @param {Array<any>|Function} [configFn] Optional configuration function for the module that gets
+   * @param {import("./interface.js").Injectable} [configFn] Optional configuration function for the module that gets
    *        passed to {@link NgModule.config NgModule.config()}.
    * @returns {NgModule} A newly registered module.
    */
@@ -36055,7 +36055,7 @@ class Angular {
           name,
         );
       }
-      return new NgModule(name, requires, /** @type {Function} */ (configFn));
+      return new NgModule(name, requires, configFn);
     });
   }
 }

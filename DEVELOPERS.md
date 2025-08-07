@@ -356,7 +356,6 @@ is interested in the following block tags:
 - `@description` - used to provide a description of a component in markdown
 - `@link` - specifies a link to a URL or a type in the API reference.
   Links to the API have the following structure:
-
   - the module namespace, followed by `.` (optional, default `ng`)
   - the `@ngdoc` type (see below), followed by `:` (optional, automatically inferred)
   - the name
