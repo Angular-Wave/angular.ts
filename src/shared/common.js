@@ -1,5 +1,5 @@
 import { isDate, isFunction, isRegExp, isString } from "./utils.js";
-import { all, curry } from "./hof.js";
+import { curry } from "./hof.js";
 
 export function equals(o1, o2) {
   if (o1 === o2) return true;
@@ -9,10 +9,10 @@ export function equals(o1, o2) {
     t2 = typeof o2;
   if (t1 !== t2 || t1 !== "object") return false;
   const tup = [o1, o2];
-  if (all(Array.isArray)(tup)) return _arraysEq(o1, o2);
-  if (all(isDate)(tup)) return o1.getTime() === o2.getTime();
-  if (all(isRegExp)(tup)) return o1.toString() === o2.toString();
-  if (all(isFunction)(tup)) return true; // meh
+  if (tup.every(Array.isArray)) return _arraysEq(o1, o2);
+  if (tup.every(isDate)) return o1.getTime() === o2.getTime();
+  if (tup.every(isRegExp)) return o1.toString() === o2.toString();
+  if (tup.every(isFunction)) return true; // meh
   if ([isFunction, Array.isArray, isDate, isRegExp].some((fn) => !!fn(tup))) {
     return false;
   }

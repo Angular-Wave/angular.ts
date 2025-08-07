@@ -96,13 +96,6 @@ export const parse = (name) =>
     name.split(".").map((name) => (obj) => obj && obj[name]),
   );
 
-/**
- * Check if all the elements of an array match a predicate function
- *
- * @param fn1 a predicate function `fn1`
- * @returns a function which takes an array and returns true if `fn1` is true for all elements of the array
- */
-export const all = (fn1) => (arr) => arr.reduce((b, x) => b && !!fn1(x), true);
 /** Given a class, returns a Predicate function that returns true if the object is of that class */
 export const is = (ctor) => (obj) =>
   (obj != null && obj.constructor === ctor) || obj instanceof ctor;

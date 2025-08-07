@@ -60,13 +60,13 @@ describe("event directives", () => {
     });
 
     it("should expose event on form submit", () => {
-      (app.innerHTML =
+      app.innerHTML =
         '<form ng-submit="formSubmission($event)">' +
         '<input type="submit" />' +
-        "</form>"),
-        window.angular.bootstrap(app, ["myModule"]).invoke((_$rootScope_) => {
-          $rootScope = _$rootScope_;
-        });
+        "</form>";
+      window.angular.bootstrap(app, ["myModule"]).invoke((_$rootScope_) => {
+        $rootScope = _$rootScope_;
+      });
       element = app.querySelector("form");
       $rootScope.formSubmission = function (e) {
         if (e) {

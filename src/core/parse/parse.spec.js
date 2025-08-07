@@ -1787,37 +1787,36 @@ describe("parser", () => {
       });
 
       [0, false, "", NaN].forEach((falsyValue) => {
-        "should not overwrite $prop scope properties when assigning",
-          () => {
-            let scope;
+        it("should not overwrite $prop scope properties when assigning", () => {
+          let scope;
 
-            scope = { a: falsyValue, c: falsyValue };
-            tryParseAndIgnoreException("a.b = 1");
-            tryParseAndIgnoreException('c["d"] = 2');
-            expect(scope).toEqual({ a: falsyValue, c: falsyValue });
+          scope = { a: falsyValue, c: falsyValue };
+          tryParseAndIgnoreException("a.b = 1");
+          tryParseAndIgnoreException('c["d"] = 2');
+          expect(scope).toEqual({ a: falsyValue, c: falsyValue });
 
-            scope = { a: { b: falsyValue, c: falsyValue } };
-            tryParseAndIgnoreException("a.b.c = 1");
-            tryParseAndIgnoreException('a.c["d"] = 2');
-            expect(scope).toEqual({ a: { b: falsyValue, c: falsyValue } });
+          scope = { a: { b: falsyValue, c: falsyValue } };
+          tryParseAndIgnoreException("a.b.c = 1");
+          tryParseAndIgnoreException('a.c["d"] = 2');
+          expect(scope).toEqual({ a: { b: falsyValue, c: falsyValue } });
 
-            // Helpers
-            //
-            // Normally assigning property on a primitive should throw exception in strict mode
-            // and silently fail in non-strict mode, IE seems to always have the non-strict-mode behavior,
-            // so if we try to use 'expect(() => {$parse('a.b=1')({a:false});).toThrow()' for testing
-            // the test will fail in case of IE because it will not throw exception, and if we just use
-            // '$parse('a.b=1')({a:false})' the test will fail because it will throw exception in case of Chrome
-            // so we use tryParseAndIgnoreException helper to catch the exception silently for all cases.
-            //
-            function tryParseAndIgnoreException(expression) {
-              try {
-                $parse(expression)(scope);
-              } catch (error) {
-                /* ignore exception */
-              }
+          // Helpers
+          //
+          // Normally assigning property on a primitive should throw exception in strict mode
+          // and silently fail in non-strict mode, IE seems to always have the non-strict-mode behavior,
+          // so if we try to use 'expect(() => {$parse('a.b=1')({a:false});).toThrow()' for testing
+          // the test will fail in case of IE because it will not throw exception, and if we just use
+          // '$parse('a.b=1')({a:false})' the test will fail because it will throw exception in case of Chrome
+          // so we use tryParseAndIgnoreException helper to catch the exception silently for all cases.
+          //
+          function tryParseAndIgnoreException(expression) {
+            try {
+              $parse(expression)(scope);
+            } catch (error) {
+              /* ignore exception */
             }
-          };
+          }
+        });
       });
     });
 

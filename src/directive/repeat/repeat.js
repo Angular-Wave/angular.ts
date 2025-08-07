@@ -85,7 +85,7 @@ export function ngRepeatDirective($animate) {
     transclude: "element",
     priority: 1000,
     terminal: true,
-    compile: ($element, $attr) => {
+    compile: (_$element, $attr) => {
       const expression = $attr["ngRepeat"];
       const hasAnimate = !!$attr["animate"];
 
