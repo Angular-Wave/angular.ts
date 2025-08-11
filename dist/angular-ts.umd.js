@@ -1,4 +1,4 @@
-/* Version: 0.8.1 - August 7, 2025 18:30:07 */
+/* Version: 0.8.2 - August 11, 2025 15:14:33 */
 (function (global, factory) {
   typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
   typeof define === 'function' && define.amd ? define(['exports'], factory) :
@@ -1949,7 +1949,7 @@
 
     /**
      * @param {string} name
-     * @param {import("../../interface.js").Injectable} options
+     * @param {import("../../interface.js").ComponentOptions} options
      * @returns {NgModule}
      */
     component(name, options) {
@@ -4719,7 +4719,7 @@
       /**
        * @param {string|Object} name Name of the component in camelCase (i.e. `myComp` which will match `<my-comp>`),
        *    or an object map of components where the keys are the names and the values are the component definition objects.
-       * @param {Object} options Component definition object (a simplified
+       * @param {import("../../interface.js").ComponentOptions} options Component definition object (a simplified
        *    {directive definition object}),
        *    with the following properties (all optional):
        *
@@ -35821,7 +35821,7 @@
       /**
        * @type {string} `version` from `package.json`
        */
-      this.version = "0.8.1"; //inserted via rollup plugin
+      this.version = "0.8.2"; //inserted via rollup plugin
 
       /** @type {!Array<string|any>} */
       this.bootsrappedModules = [];
