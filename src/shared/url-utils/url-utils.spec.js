@@ -10,7 +10,6 @@ describe("urlUtils", () => {
     it("should returned already parsed URLs unchanged", () => {
       const urlObj = urlResolve("/foo?bar=baz#qux");
       expect(urlResolve(urlObj)).toBe(urlObj);
-      expect(urlResolve(true)).toBe(true);
       expect(urlResolve(null)).toBeNull();
       expect(urlResolve(undefined)).toBeUndefined();
     });

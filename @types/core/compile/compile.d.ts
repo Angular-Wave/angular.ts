@@ -26,7 +26,7 @@ export class CompileProvider {
   /**
    * @param {string|Object} name Name of the component in camelCase (i.e. `myComp` which will match `<my-comp>`),
    *    or an object map of components where the keys are the names and the values are the component definition objects.
-   * @param {Object} options Component definition object (a simplified
+   * @param {import("../../interface.js").ComponentOptions} options Component definition object (a simplified
    *    {directive definition object}),
    *    with the following properties (all optional):
    *
@@ -67,7 +67,10 @@ export class CompileProvider {
    *
    * @returns {CompileProvider} the compile provider itself, for chaining of function calls.
    */
-  component: (name: string | any, options: any) => CompileProvider;
+  component: (
+    name: string | any,
+    options: import("../../interface.js").ComponentOptions,
+  ) => CompileProvider;
   /**
    * Retrieves or overrides the default regular expression that is used for determining trusted safe
    * urls during a[href] sanitization.

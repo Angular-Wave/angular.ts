@@ -123,22 +123,22 @@ describe("api", () => {
     });
 
     it("uses preassigned $$hashKey", () => {
-      expect(hashKey({ $$hashKey: 42 })).toEqual(42);
+      expect(hashKey({ $$hashKey: "42" })).toEqual("42");
     });
 
     it("supports a function $$hashKey", function () {
-      expect(hashKey({ $$hashKey: () => 42 })).toEqual(42);
+      expect(hashKey({ $$hashKey: () => "42" })).toEqual("42");
     });
 
     it("calls the function $$hashKey as a method with the correct this", () => {
       expect(
         hashKey({
-          myKey: 42,
+          myKey: "42",
           $$hashKey: function () {
             return this.myKey;
           },
         }),
-      ).toEqual(42);
+      ).toEqual("42");
     });
   });
 

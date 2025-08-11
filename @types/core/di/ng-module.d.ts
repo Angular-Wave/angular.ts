@@ -73,12 +73,12 @@ export class NgModule {
   run(block: import("../../interface.js").Injectable): NgModule;
   /**
    * @param {string} name
-   * @param {import("../../interface.js").Injectable} options
+   * @param {import("../../interface.js").ComponentOptions} options
    * @returns {NgModule}
    */
   component(
     name: string,
-    options: import("../../interface.js").Injectable,
+    options: import("../../interface.js").ComponentOptions,
   ): NgModule;
   /**
    * @param {string} name

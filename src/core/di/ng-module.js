@@ -101,7 +101,7 @@ export class NgModule {
 
   /**
    * @param {string} name
-   * @param {import("../../interface.js").Injectable} options
+   * @param {import("../../interface.js").ComponentOptions} options
    * @returns {NgModule}
    */
   component(name, options) {

@@ -13,7 +13,7 @@ describe("errors", () => {
       const e = new Error();
       return isDefined(e.stack);
     };
-    const emptyTestError = minErr();
+    const emptyTestError = minErr("");
     const testError = minErr("test");
 
     it("should return an Error factory", () => {

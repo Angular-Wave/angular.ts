@@ -28,11 +28,11 @@ import { createInjector } from "./core/di/injector.js";
 import { wait } from "./shared/test-utils.js";
 
 describe("angular", () => {
-  let element, document, module, injector, $rootScope, $compile;
+  let element, document, module, injector, $rootScope, $compile, angular;
 
   beforeEach(() => {
-    window.angular = new Angular();
-    module = window.angular.module("defaultModule", ["ng"]);
+    angular = new Angular();
+    module = angular.module("defaultModule", ["ng"]);
     injector = createInjector(["ng", "defaultModule"]);
     $rootScope = injector.get("$rootScope");
     $compile = injector.get("$compile");
@@ -1026,7 +1026,7 @@ describe("angular", () => {
 describe("module loader", () => {
   let angular;
   beforeEach(() => {
-    angular = window.angular = new Angular();
+    angular = new Angular();
   });
 
   it("allows registering a module", () => {
