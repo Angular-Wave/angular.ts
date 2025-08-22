@@ -38,14 +38,15 @@ export type ExpandoStore = {
  */
 export type AnnotatedFactory = [...string[], (...args: any[]) => any];
 export type InjectableFactory = (...args: any[]) => any;
+export type InjectableClass = new (...args: any[]) => any;
 
 /**
- * A factory that can be either a standalone function or a dependency-annotated array.
+ * A factory that can be either a standalone function or a dependency-annotated array or a class (constructor function).
  *
  * The array form is used to support minification-safe dependency injection.
  * See {@link AnnotatedFactory}.
  */
-export type Injectable = AnnotatedFactory | InjectableFactory;
+export type Injectable = AnnotatedFactory | InjectableFactory | InjectableClass;
 
 /**
  * An object that defines how a service is constructed.
