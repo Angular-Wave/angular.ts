@@ -1,4 +1,4 @@
-/* Version: 0.8.2 - August 11, 2025 15:14:33 */
+/* Version: 0.8.3 - August 22, 2025 14:53:15 */
 (function (global, factory) {
   typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
   typeof define === 'function' && define.amd ? define(['exports'], factory) :
@@ -35821,7 +35821,7 @@
       /**
        * @type {string} `version` from `package.json`
        */
-      this.version = "0.8.2"; //inserted via rollup plugin
+      this.version = "0.8.3"; //inserted via rollup plugin
 
       /** @type {!Array<string|any>} */
       this.bootsrappedModules = [];
