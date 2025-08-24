@@ -14,6 +14,8 @@ describe("ngRepeat", () => {
   let logs = [];
 
   beforeEach(() => {
+    const el = document.getElementById("app");
+    dealoc(el);
     delete window.angular;
     logs = [];
     window.angular = new Angular();
@@ -26,7 +28,7 @@ describe("ngRepeat", () => {
         };
       });
 
-    injector = window.angular.bootstrap(document.getElementById("app"), [
+    injector = window.angular.bootstrap(el, [
       "defaultModule",
       (_$compileProvider_) => {
         $compileProvider = _$compileProvider_;
@@ -223,80 +225,78 @@ describe("ngRepeat", () => {
       expect(element.textContent.trim()).toEqual("");
     });
 
-    it("should support alias identifiers containing reserved words", () => {
-      scope.x = "bl";
-      scope.items = [
-        { name: "red" },
-        { name: "blue" },
-        { name: "green" },
-        { name: "black" },
-        { name: "orange" },
-        { name: "blonde" },
-      ];
-      ["null2", "qthis", "qthisq", "fundefined", "$$parent"].forEach(
-        async (name) => {
-          const expr = `item in items | filter:x as ${name}`;
-          element = $compile(`<div><div ng-repeat="${expr}"></div></div>`)(
-            scope,
-          );
-          await wait();
-          expect(scope[name][0].name).toEqual("blue");
-          expect(scope[name][1].name).toEqual("black");
-          expect(scope[name][2].name).toEqual("blonde");
-          dealoc(element);
-        },
-      );
+    for (const name of ["null2", "qthis", "qthisq", "fundefined", "$$parent"]) {
+      it(`should support alias identifier containing reserved word: ${name}`, async () => {
+        scope.x = "bl";
+        scope.items = [
+          { name: "red" },
+          { name: "blue" },
+          { name: "green" },
+          { name: "black" },
+          { name: "orange" },
+          { name: "blonde" },
+        ];
 
-      expect().toBe();
-    });
+        const expr = `item in items | filter:x as ${name}`;
+        element = $compile(`<div><div ng-repeat="${expr}"></div></div>`)(scope);
 
-    it("should throw if alias identifier is not a simple identifier", async () => {
-      scope.x = "bl";
-      scope.items = [
-        { name: "red" },
-        { name: "blue" },
-        { name: "green" },
-        { name: "black" },
-        { name: "orange" },
-        { name: "blonde" },
-      ];
+        await wait();
 
-      [
-        "null",
-        "this",
-        "undefined",
-        "$parent",
-        "$root",
-        "$id",
-        "$index",
-        "$first",
-        "$middle",
-        "$last",
-        "$even",
-        "$odd",
-        "obj[key]",
-        'obj["key"]',
-        "obj['key']",
-        "obj.property",
-        "foo=6",
-      ].forEach(async (expr) => {
+        expect(scope[name][0].name).toEqual("blue");
+        expect(scope[name][1].name).toEqual("black");
+        expect(scope[name][2].name).toEqual("blonde");
+
+        dealoc(element);
+      });
+    }
+
+    for (const expr of [
+      "null",
+      "this",
+      "undefined",
+      "$parent",
+      "$root",
+      "$id",
+      "$index",
+      "$first",
+      "$middle",
+      "$last",
+      "$even",
+      "$odd",
+      "obj[key]",
+      'obj["key"]',
+      "obj['key']",
+      "obj.property",
+      "foo=6",
+    ]) {
+      it(`should throw if alias identifier is not simple: ${expr}`, async () => {
+        scope.x = "bl";
+        scope.items = [
+          { name: "red" },
+          { name: "blue" },
+          { name: "green" },
+          { name: "black" },
+          { name: "orange" },
+          { name: "blonde" },
+        ];
+
         const expression = `item in items | filter:x as ${expr}`.replace(
           /"/g,
           "&quot;",
         );
         element = $compile(
-          `<div>` +
-            `  <div ng-repeat="${expression}">{{item}}</div>` +
-            `</div>`,
+          `<div>
+             <div ng-repeat="${expression}">{{item}}</div>
+           </div>`,
         )(scope);
+
         await wait();
+
         expect(logs.shift().message).toMatch(/must be a valid JS identifier/);
 
         dealoc(element);
       });
-
-      expect().toBe();
-    });
+    }
 
     it("should allow expressions over multiple lines", async () => {
       element = $compile(

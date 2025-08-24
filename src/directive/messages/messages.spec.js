@@ -1,14 +1,16 @@
 import { Angular } from "../../angular.js";
 import { wait } from "../../shared/test-utils.js";
 import { isString } from "../../shared/utils.js";
-import { getController } from "../../shared/dom.js";
+import { dealoc, getController } from "../../shared/dom.js";
 
 describe("ngMessages", () => {
-  let $rootScope, $compile, $templateCache;
+  let $rootScope, $compile, $templateCache, el;
 
   beforeEach(() => {
+    el = document.getElementById("app");
+    dealoc(element);
     window.angular = new Angular();
-    window.angular.module("app", ["ng"]).directive("messageWrap", () => ({
+    window.angular.module("app", []).directive("messageWrap", () => ({
       transclude: true,
       scope: {
         col: "=col",
@@ -17,7 +19,7 @@ describe("ngMessages", () => {
     }));
 
     window.angular
-      .bootstrap(document.getElementById("app"), ["app"])
+      .bootstrap(el, ["app"])
       .invoke((_$rootScope_, _$compile_, _$templateCache_) => {
         $rootScope = _$rootScope_;
         $compile = _$compile_;

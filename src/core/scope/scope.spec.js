@@ -795,7 +795,7 @@ describe("Scope", () => {
         { expression: "false && 2", expected: false },
       ];
 
-      cases.forEach(async ({ expression, expected }) => {
+      for (const { expression, expected } of cases) {
         it("passes constants to listener cb " + expression, async () => {
           let res;
           scope.$watch(expression, (val) => {
@@ -805,7 +805,7 @@ describe("Scope", () => {
           await wait();
           expect(res).toEqual(expected);
         });
-      });
+      }
     });
 
     describe("expressions", () => {

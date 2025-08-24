@@ -14397,14 +14397,14 @@ describe("$compile", () => {
       "http://example.com/image1.jpg?x=a2x,b 1x,http://example.com/ima,ge2.jpg 2x":
         "http://example.com/image1.jpg?x=a2x,b 1x,http://example.com/ima,ge2.jpg 2x",
     };
-    Object.entries(testSet).forEach(async ([url, ref]) => {
+    for (const [url, ref] of Object.entries(testSet)) {
       it("should sanitize all uris in srcset " + url, async () => {
         element = $compile('<img srcset="{{testUrl}}"></img>')($rootScope);
         $rootScope.testUrl = url;
         await wait();
         expect(element.getAttribute("srcset")).toEqual(ref);
       });
-    });
+    }
   });
 
   describe("a[href] sanitization", () => {

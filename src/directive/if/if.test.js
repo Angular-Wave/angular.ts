@@ -7,7 +7,7 @@ test("unit tests contain no errors", async ({ page }) => {
   await page.content();
 
   await expect(page.locator(".jasmine-overall-result")).toHaveText(
-    /0 failures/,
+    / 0 failures/,
   );
 });
 
