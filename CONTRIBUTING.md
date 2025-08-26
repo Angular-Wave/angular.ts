@@ -163,6 +163,7 @@ Before you submit your pull request consider the following guidelines:
   restarted.
 
 - If we suggest changes, then:
+
   - Make the required updates.
   - Re-run the AngularTS test suite to ensure tests are still passing.
   - Commit your changes to your branch (e.g. `my-fix-branch`).

@@ -8,7 +8,7 @@ describe("ngMessages", () => {
 
   beforeEach(() => {
     el = document.getElementById("app");
-    dealoc(element);
+    dealoc(el);
     window.angular = new Angular();
     window.angular.module("app", []).directive("messageWrap", () => ({
       transclude: true,
@@ -17,7 +17,6 @@ describe("ngMessages", () => {
       },
       template: '<div ng-messages="col"><ng-transclude></ng-transclude></div>',
     }));
-
     window.angular
       .bootstrap(el, ["app"])
       .invoke((_$rootScope_, _$compile_, _$templateCache_) => {

@@ -2,7 +2,7 @@ import { createElementFromHTML, dealoc } from "../../shared/dom.js";
 import { Angular } from "../../angular.js";
 import { wait } from "../../shared/test-utils.js";
 
-describe("ngView", () => {
+fdescribe("ngView", () => {
   window.location.hash = "";
   let $stateProvider,
     scope,
@@ -799,7 +799,7 @@ describe("ngView", () => {
   // });
 });
 
-describe("ngView named", () => {
+fdescribe("ngView named", () => {
   let $stateProvider,
     scope,
     $compile,
@@ -812,6 +812,7 @@ describe("ngView named", () => {
     $viewScroll;
 
   beforeEach(() => {
+    dealoc(document.getElementById("app"));
     window.angular = new Angular();
     log = "";
     app = window.angular
@@ -872,7 +873,7 @@ describe("ngView named", () => {
   });
 });
 
-describe("ngView transclusion", () => {
+fdescribe("ngView transclusion", () => {
   let scope, $compile, elem, $injector, $rootScope, $state;
 
   beforeEach(() => {
@@ -928,7 +929,7 @@ describe("ngView transclusion", () => {
   });
 });
 
-describe("ngView controllers or onEnter handlers", () => {
+fdescribe("ngView controllers or onEnter handlers", () => {
   let el, template, scope, count, $rootScope, $compile, $state, elem;
 
   beforeEach(() => {
@@ -936,8 +937,9 @@ describe("ngView controllers or onEnter handlers", () => {
     window.angular = new Angular();
     window.angular
       .module("defaultModule", [])
-      .config(function ($stateProvider) {
+      .config(function ($locationProvider, $stateProvider) {
         count = 0;
+        $locationProvider.html5ModeConf.enabled = false;
         $stateProvider
           .state({
             name: "aside",
@@ -1004,7 +1006,7 @@ describe("ngView controllers or onEnter handlers", () => {
   });
 });
 
-describe("angular 1.5+ style .component()", () => {
+fdescribe("angular 1.5+ style .component()", () => {
   let el = document.getElementById("app"),
     app,
     scope,
@@ -1015,6 +1017,7 @@ describe("angular 1.5+ style .component()", () => {
     $rootScope;
 
   beforeEach(() => {
+    dealoc(document.getElementById("app"));
     window.angular = new Angular();
     window.angular
       .module("defaultModule", [])

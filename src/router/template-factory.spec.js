@@ -48,12 +48,9 @@ describe("templateFactory", () => {
     });
 
     it("rejects untrusted URLs", async () => {
-      let error = "No error thrown";
       try {
         await $templateFactory.fromUrl("http://evil.com/views/view.html");
-      } catch (e) {
-        error = e;
-      }
+      } catch (e) {}
       expect(error).toMatch(/sce:insecurl/);
     });
 

@@ -245,8 +245,6 @@ export function adjustMatcher(matcher) {
  */
 export class SceDelegateProvider {
   constructor() {
-    this.SCE_CONTEXTS = SCE_CONTEXTS;
-
     // Resource URLs can also be trusted by policy.
     let trustedResourceUrlList = ["self"];
     let bannedResourceUrlList = [];
@@ -545,11 +543,14 @@ export class SceDelegateProvider {
             if (isResourceUrlAllowedByPolicy(maybeTrusted)) {
               return maybeTrusted;
             }
-            throw $sceMinErr(
-              "insecurl",
-              "Blocked loading resource from url not allowed by $sceDelegate policy.  URL: {0}",
-              maybeTrusted.toString(),
+            $exceptionHandler(
+              $sceMinErr(
+                "insecurl",
+                "Blocked loading resource from url not allowed by $sceDelegate policy.  URL: {0}",
+                maybeTrusted.toString(),
+              ),
             );
+            return;
           } else if (type === SCE_CONTEXTS.HTML) {
             // htmlSanitizer throws its own error when no sanitizer is available.
             return htmlSanitizer();

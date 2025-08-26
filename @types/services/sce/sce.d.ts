@@ -177,14 +177,6 @@ export namespace SCE_CONTEXTS {
  * of issues, like for instance attacker-controlled `ng-includes`.
  */
 export class SceDelegateProvider {
-  SCE_CONTEXTS: {
-    HTML: string;
-    CSS: string;
-    MEDIA_URL: string;
-    URL: string;
-    RESOURCE_URL: string;
-    JS: string;
-  };
   /**
    *
    * @param {Array=} trustedResourceUrlList When provided, replaces the trustedResourceUrlList with
