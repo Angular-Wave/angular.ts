@@ -1,0 +1,23 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>AngularTS</title>
+    <link rel="shortcut icon" type="image/png" href="images/favicon.ico" />
+    <script type="module" src="/src/index.js"></script>
+  </head>
+  <body ng-app ng-init="test = {deleted: false}">
+    <style>
+      .red {
+        background-color: red;
+      }
+    </style>
+
+    {{ test.deleted }}
+    <p ng-class="{red: test.deleted}">Map Syntax Example</p>
+    <label>
+      <input type="checkbox" ng-model="test.deleted" />deleted (apply "strike"
+      class)
+    </label>
+  </body>
+</html>

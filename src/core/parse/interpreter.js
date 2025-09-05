@@ -1,4 +1,9 @@
-import { isDefined, isFunction, isObject } from "../../shared/utils.js";
+import {
+  isDefined,
+  isFunction,
+  isObject,
+  isProxy,
+} from "../../shared/utils.js";
 import { ASTType } from "./ast-type.js";
 
 export const PURITY_ABSOLUTE = 1;
@@ -140,7 +145,7 @@ export class ASTInterpreter {
           ? (scope, locals, assign) => {
               const values = [];
               for (let i = 0; i < args.length; ++i) {
-                const res = args[i](scope, locals, assign);
+                const res = args[i](scope.$target, locals, assign);
                 values.push(res);
               }
               const value = () => {
@@ -151,7 +156,11 @@ export class ASTInterpreter {
                 : value;
             }
           : (scope, locals, assign) => {
-              const rhs = right(scope, locals, assign);
+              const rhs = right(
+                scope.$target ? scope.$target : scope,
+                locals,
+                assign,
+              );
               let value;
               if (rhs.value != null && isFunction(rhs.value)) {
                 const values = [];
@@ -169,7 +178,11 @@ export class ASTInterpreter {
         return (scope, locals, assign) => {
           const lhs = left(scope, locals, assign);
           const rhs = right(scope, locals, assign);
-          lhs.context[lhs.name] = rhs;
+          // lhs.context[lhs.name] = rhs;
+          const ctx = isProxy(lhs.context)
+            ? lhs.context
+            : (lhs.context.$proxy ?? lhs.context);
+          ctx[lhs.name] = rhs;
           return context ? { value: rhs } : rhs;
         };
       case ASTType.ArrayExpression:
@@ -222,8 +235,10 @@ export class ASTInterpreter {
       case ASTType.ThisExpression:
         return (scope) => (context ? { value: scope } : scope);
       case ASTType.LocalsExpression:
+        // @ts-ignore
         return (scope, locals) => (context ? { value: locals } : locals);
       case ASTType.NGValueParameter:
+        // @ts-ignore
         return (scope, locals, assign) =>
           context ? { value: assign } : assign;
     }
@@ -494,9 +509,9 @@ export class ASTInterpreter {
    */
   "ternary?:"(test, alternate, consequent, context) {
     return (scope, locals, assign) => {
-      const arg = test(scope, locals, assign)
-        ? alternate(scope, locals, assign)
-        : consequent(scope, locals, assign);
+      const arg = test(scope.$target, locals, assign)
+        ? alternate(scope.$target, locals, assign)
+        : consequent(scope.$target, locals, assign);
       return context ? { value: arg } : arg;
     };
   }
@@ -527,7 +542,7 @@ export class ASTInterpreter {
       }
       let value = undefined;
       if (base) {
-        value = base[name];
+        value = base["$target"] ? base["$target"][name] : base[name];
       }
       if (context) {
         return { context: base, name, value };

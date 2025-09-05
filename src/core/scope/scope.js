@@ -791,12 +791,6 @@ export class Scope {
 
       // 14
       case ASTType.ObjectExpression: {
-        // get.decoratedNode.body[0].expression.expression.forEach(x => {
-        //   x.toWatch[0].name
-        // });
-
-        // key = get.decoratedNode.body[0].expression.properties[0].key.name;
-        // listener.property.push(key);
         get.decoratedNode.body[0].expression.properties.forEach((prop) => {
           if (prop.key.isPure === false) {
             keySet.push(prop.key.name);
@@ -806,7 +800,8 @@ export class Scope {
               keySet.push(prop.value.name);
               listener.property.push(key);
             } else {
-              key = get.decoratedNode.body[0].expression.properties[0].key.name;
+              key =
+                get.decoratedNode.body[0].expression.toWatch[0].property.name;
               listener.property.push(key);
             }
           }
@@ -957,8 +952,7 @@ export class Scope {
 
   $eval(expr, locals) {
     const fn = $parse(expr);
-    const res = fn(this.$target, locals);
-
+    const res = fn(this, locals);
     if (isUndefined(res) || res === null) {
       return res;
     }
