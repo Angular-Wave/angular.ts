@@ -1,4 +1,4 @@
-/* Version: 0.8.3 - August 22, 2025 14:53:15 */
+/* Version: 0.8.4 - September 5, 2025 23:28:29 */
 (function (global, factory) {
   typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
   typeof define === 'function' && define.amd ? define(['exports'], factory) :
@@ -3402,8 +3402,6 @@
    */
   class SceDelegateProvider {
     constructor() {
-      this.SCE_CONTEXTS = SCE_CONTEXTS;
-
       // Resource URLs can also be trusted by policy.
       let trustedResourceUrlList = ["self"];
       let bannedResourceUrlList = [];
@@ -3702,11 +3700,14 @@
               if (isResourceUrlAllowedByPolicy(maybeTrusted)) {
                 return maybeTrusted;
               }
-              throw $sceMinErr(
-                "insecurl",
-                "Blocked loading resource from url not allowed by $sceDelegate policy.  URL: {0}",
-                maybeTrusted.toString(),
+              $exceptionHandler(
+                $sceMinErr(
+                  "insecurl",
+                  "Blocked loading resource from url not allowed by $sceDelegate policy.  URL: {0}",
+                  maybeTrusted.toString(),
+                ),
               );
+              return;
             } else if (type === SCE_CONTEXTS.HTML) {
               // htmlSanitizer throws its own error when no sanitizer is available.
               return htmlSanitizer();
@@ -15458,7 +15459,7 @@
             ? (scope, locals, assign) => {
                 const values = [];
                 for (let i = 0; i < args.length; ++i) {
-                  const res = args[i](scope, locals, assign);
+                  const res = args[i](scope.$target, locals, assign);
                   values.push(res);
                 }
                 const value = () => {
@@ -15469,7 +15470,11 @@
                   : value;
               }
             : (scope, locals, assign) => {
-                const rhs = right(scope, locals, assign);
+                const rhs = right(
+                  scope.$target ? scope.$target : scope,
+                  locals,
+                  assign,
+                );
                 let value;
                 if (rhs.value != null && isFunction(rhs.value)) {
                   const values = [];
@@ -15487,7 +15492,11 @@
           return (scope, locals, assign) => {
             const lhs = left(scope, locals, assign);
             const rhs = right(scope, locals, assign);
-            lhs.context[lhs.name] = rhs;
+            // lhs.context[lhs.name] = rhs;
+            const ctx = isProxy(lhs.context)
+              ? lhs.context
+              : (lhs.context.$proxy ?? lhs.context);
+            ctx[lhs.name] = rhs;
             return context ? { value: rhs } : rhs;
           };
         case ASTType.ArrayExpression:
@@ -15540,8 +15549,10 @@
         case ASTType.ThisExpression:
           return (scope) => (context ? { value: scope } : scope);
         case ASTType.LocalsExpression:
+          // @ts-ignore
           return (scope, locals) => (context ? { value: locals } : locals);
         case ASTType.NGValueParameter:
+          // @ts-ignore
           return (scope, locals, assign) =>
             context ? { value: assign } : assign;
       }
@@ -15812,9 +15823,9 @@
      */
     "ternary?:"(test, alternate, consequent, context) {
       return (scope, locals, assign) => {
-        const arg = test(scope, locals, assign)
-          ? alternate(scope, locals, assign)
-          : consequent(scope, locals, assign);
+        const arg = test(scope.$target, locals, assign)
+          ? alternate(scope.$target, locals, assign)
+          : consequent(scope.$target, locals, assign);
         return context ? { value: arg } : arg;
       };
     }
@@ -15845,7 +15856,7 @@
         }
         let value = undefined;
         if (base) {
-          value = base[name];
+          value = base["$target"] ? base["$target"][name] : base[name];
         }
         if (context) {
           return { context: base, name, value };
@@ -20846,12 +20857,6 @@
 
         // 14
         case ASTType.ObjectExpression: {
-          // get.decoratedNode.body[0].expression.expression.forEach(x => {
-          //   x.toWatch[0].name
-          // });
-
-          // key = get.decoratedNode.body[0].expression.properties[0].key.name;
-          // listener.property.push(key);
           get.decoratedNode.body[0].expression.properties.forEach((prop) => {
             if (prop.key.isPure === false) {
               keySet.push(prop.key.name);
@@ -20861,7 +20866,8 @@
                 keySet.push(prop.value.name);
                 listener.property.push(key);
               } else {
-                key = get.decoratedNode.body[0].expression.properties[0].key.name;
+                key =
+                  get.decoratedNode.body[0].expression.toWatch[0].property.name;
                 listener.property.push(key);
               }
             }
@@ -21012,8 +21018,7 @@
 
     $eval(expr, locals) {
       const fn = $parse(expr);
-      const res = fn(this.$target, locals);
-
+      const res = fn(this, locals);
       if (isUndefined(res) || res === null) {
         return res;
       }
@@ -35821,7 +35826,7 @@
       /**
        * @type {string} `version` from `package.json`
        */
-      this.version = "0.8.3"; //inserted via rollup plugin
+      this.version = "0.8.4"; //inserted via rollup plugin
 
       /** @type {!Array<string|any>} */
       this.bootsrappedModules = [];

@@ -60,7 +60,6 @@ This process based on the idea of minimizing user pain
    - You are responsible for mentoring contributors helping with this issue.
 1. Label `origin: google` for issues from Google
 1. Assign a milestone:
-
    - Backlog - triaged fixes and features, should be the default choice
    - Current 1.x.y milestone (e.g. 1.3.0-beta-2) - regressions and urgent bugs only
 
