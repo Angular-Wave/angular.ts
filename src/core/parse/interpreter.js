@@ -540,7 +540,8 @@ export class ASTInterpreter {
    */
   identifier(name, context, create) {
     return (scope, locals) => {
-      const base = locals && name in locals ? locals : (scope.$proxy ?? scope);
+      const base =
+        locals && name in locals ? locals : ((scope && scope.$proxy) ?? scope);
       if (create && create !== 1 && base && base[name] == null) {
         base[name] = {};
       }
