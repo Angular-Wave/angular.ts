@@ -145,7 +145,11 @@ export class ASTInterpreter {
           ? (scope, locals, assign) => {
               const values = [];
               for (let i = 0; i < args.length; ++i) {
-                const res = args[i](scope.$target, locals, assign);
+                const res = args[i](
+                  scope && scope.$target ? scope.$target : scope,
+                  locals,
+                  assign,
+                );
                 values.push(res);
               }
               const value = () => {
@@ -233,7 +237,7 @@ export class ASTInterpreter {
           return context ? { value } : value;
         };
       case ASTType.ThisExpression:
-        return (scope) => (context ? { value: scope } : scope);
+        return (scope) => (context ? { value: scope } : scope.$proxy);
       case ASTType.LocalsExpression:
         // @ts-ignore
         return (scope, locals) => (context ? { value: locals } : locals);
@@ -509,9 +513,9 @@ export class ASTInterpreter {
    */
   "ternary?:"(test, alternate, consequent, context) {
     return (scope, locals, assign) => {
-      const arg = test(scope.$target, locals, assign)
-        ? alternate(scope.$target, locals, assign)
-        : consequent(scope.$target, locals, assign);
+      const arg = test(scope, locals, assign)
+        ? alternate(scope, locals, assign)
+        : consequent(scope, locals, assign);
       return context ? { value: arg } : arg;
     };
   }
@@ -536,7 +540,7 @@ export class ASTInterpreter {
    */
   identifier(name, context, create) {
     return (scope, locals) => {
-      const base = locals && name in locals ? locals : scope;
+      const base = locals && name in locals ? locals : (scope.$proxy ?? scope);
       if (create && create !== 1 && base && base[name] == null) {
         base[name] = {};
       }
