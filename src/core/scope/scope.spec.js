@@ -2056,7 +2056,7 @@ describe("Scope", () => {
       expect(scope.a).toEqual(1);
 
       scope.$eval((self) => {
-        self.b = 2;
+        self.$proxy.b = 2;
       });
       expect(scope.b).toEqual(2);
     });
@@ -2064,7 +2064,7 @@ describe("Scope", () => {
     it("executes $eval'ed function and returns result", function () {
       scope.aValue = 42;
       const result = scope.$eval(function (scope) {
-        return scope.aValue;
+        return scope.$proxy.aValue;
       });
       expect(result).toBe(42);
     });
@@ -2072,7 +2072,7 @@ describe("Scope", () => {
     it("passes the second $eval argument straight through", function () {
       scope.aValue = 42;
       const result = scope.$eval(function (scope, arg) {
-        return scope.aValue + arg;
+        return scope.$proxy.aValue + arg;
       }, 2);
       expect(result).toBe(44);
     });
@@ -2082,7 +2082,7 @@ describe("Scope", () => {
 
       scope.$eval(
         (scope, locals) => {
-          scope.c = locals.b + 4;
+          scope.$proxy.c = locals.b + 4;
         },
         { b: 3 },
       );

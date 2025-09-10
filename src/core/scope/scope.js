@@ -800,8 +800,8 @@ export class Scope {
               keySet.push(prop.value.name);
               listener.property.push(key);
             } else {
-              key =
-                get.decoratedNode.body[0].expression.toWatch[0].property.name;
+              const target = get.decoratedNode.body[0].expression.toWatch[0];
+              key = target.property ? target.property.name : target.name;
               listener.property.push(key);
             }
           }
