@@ -2,7 +2,7 @@ import { createElementFromHTML, dealoc } from "../../shared/dom.js";
 import { Angular } from "../../angular.js";
 import { wait } from "../../shared/test-utils.js";
 
-fdescribe("ngView", () => {
+describe("ngView", () => {
   window.location.hash = "";
   let $stateProvider,
     scope,
@@ -799,7 +799,7 @@ fdescribe("ngView", () => {
   // });
 });
 
-fdescribe("ngView named", () => {
+describe("ngView named", () => {
   let $stateProvider,
     scope,
     $compile,
@@ -873,7 +873,7 @@ fdescribe("ngView named", () => {
   });
 });
 
-fdescribe("ngView transclusion", () => {
+describe("ngView transclusion", () => {
   let scope, $compile, elem, $injector, $rootScope, $state;
 
   beforeEach(() => {
@@ -929,7 +929,7 @@ fdescribe("ngView transclusion", () => {
   });
 });
 
-fdescribe("ngView controllers or onEnter handlers", () => {
+describe("ngView controllers or onEnter handlers", () => {
   let el, template, scope, count, $rootScope, $compile, $state, elem;
 
   beforeEach(() => {
@@ -1006,7 +1006,7 @@ fdescribe("ngView controllers or onEnter handlers", () => {
   });
 });
 
-fdescribe("angular 1.5+ style .component()", () => {
+describe("angular 1.5+ style .component()", () => {
   let el = document.getElementById("app"),
     app,
     scope,
@@ -1112,8 +1112,9 @@ fdescribe("angular 1.5+ style .component()", () => {
           };
         },
       })
-      .config(function (_$stateProvider_) {
+      .config(function (_$stateProvider_, $locationProvider) {
         $stateProvider = _$stateProvider_;
+        $locationProvider.html5ModeConf.enabled = false;
       });
 
     let $injector = window.angular.bootstrap(document.getElementById("app"), [
@@ -1835,9 +1836,9 @@ fdescribe("angular 1.5+ style .component()", () => {
         name: "ng12-dynamic-directive",
         url: "/ng12dynamicDirective/:type",
         componentProvider: [
-          "$router",
-          function ($router) {
-            return $router.params.type;
+          "$stateParams",
+          function ($stateParams) {
+            return $stateParams.type;
           },
         ],
       });
