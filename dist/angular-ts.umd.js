@@ -1,4 +1,4 @@
-/* Version: 0.8.4 - September 5, 2025 23:28:29 */
+/* Version: 0.9.0 - September 12, 2025 22:41:26 */
 (function (global, factory) {
   typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
   typeof define === 'function' && define.amd ? define(['exports'], factory) :
@@ -15459,7 +15459,11 @@
             ? (scope, locals, assign) => {
                 const values = [];
                 for (let i = 0; i < args.length; ++i) {
-                  const res = args[i](scope.$target, locals, assign);
+                  const res = args[i](
+                    scope && scope.$target ? scope.$target : scope,
+                    locals,
+                    assign,
+                  );
                   values.push(res);
                 }
                 const value = () => {
@@ -15547,7 +15551,7 @@
             return context ? { value } : value;
           };
         case ASTType.ThisExpression:
-          return (scope) => (context ? { value: scope } : scope);
+          return (scope) => (context ? { value: scope } : scope.$proxy);
         case ASTType.LocalsExpression:
           // @ts-ignore
           return (scope, locals) => (context ? { value: locals } : locals);
@@ -15823,9 +15827,9 @@
      */
     "ternary?:"(test, alternate, consequent, context) {
       return (scope, locals, assign) => {
-        const arg = test(scope.$target, locals, assign)
-          ? alternate(scope.$target, locals, assign)
-          : consequent(scope.$target, locals, assign);
+        const arg = test(scope, locals, assign)
+          ? alternate(scope, locals, assign)
+          : consequent(scope, locals, assign);
         return context ? { value: arg } : arg;
       };
     }
@@ -15850,7 +15854,8 @@
      */
     identifier(name, context, create) {
       return (scope, locals) => {
-        const base = locals && name in locals ? locals : scope;
+        const base =
+          locals && name in locals ? locals : ((scope && scope.$proxy) ?? scope);
         if (create && create !== 1 && base && base[name] == null) {
           base[name] = {};
         }
@@ -20866,8 +20871,8 @@
                 keySet.push(prop.value.name);
                 listener.property.push(key);
               } else {
-                key =
-                  get.decoratedNode.body[0].expression.toWatch[0].property.name;
+                const target = get.decoratedNode.body[0].expression.toWatch[0];
+                key = target.property ? target.property.name : target.name;
                 listener.property.push(key);
               }
             }
@@ -35826,7 +35831,7 @@
       /**
        * @type {string} `version` from `package.json`
        */
-      this.version = "0.8.4"; //inserted via rollup plugin
+      this.version = "0.9.0"; //inserted via rollup plugin
 
       /** @type {!Array<string|any>} */
       this.bootsrappedModules = [];
