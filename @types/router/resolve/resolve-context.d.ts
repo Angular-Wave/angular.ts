@@ -80,8 +80,6 @@ export class ResolveContext {
    * @returns {Promise<any>|any}
    */
   resolvePath(when: string, trans: any): Promise<any> | any;
-  injector(): UIInjectorImpl;
-  _injector: UIInjectorImpl;
   findNode(resolvable: any): undefined;
   /**
    * Gets the async dependencies of a Resolvable
@@ -93,10 +91,3 @@ export class ResolveContext {
   getDependencies(resolvable: Resolvable): Resolvable[];
 }
 import { Resolvable } from "./resolvable.js";
-declare class UIInjectorImpl {
-  native: any;
-  get(token: any): any;
-  getAsync(token: any): Promise<any>;
-  getNative(token: any): any;
-}
-export {};

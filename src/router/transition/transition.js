@@ -8,8 +8,6 @@ import {
   arrayTuples,
   unnestR,
   anyTrueR,
-  flattenR,
-  uniqR,
 } from "../../shared/common.js";
 import { isUndefined, isObject, assert } from "../../shared/utils.js";
 import { propEq, val, is } from "../../shared/hof.js";
@@ -184,90 +182,7 @@ export class Transition {
         .reduce((acc, obj) => ({ ...acc, ...obj }), {}),
     );
   }
-  paramsChanged() {
-    const fromParams = this.params("from");
-    const toParams = this.params("to");
-    // All the parameters declared on both the "to" and "from" paths
-    const allParamDescriptors = []
-      .concat(this._treeChanges.to)
-      .concat(this._treeChanges.from)
-      .map((pathNode) => pathNode.paramSchema)
-      .reduce(flattenR, [])
-      .reduce(uniqR, []);
-    const changedParamDescriptors = Param.changed(
-      allParamDescriptors,
-      fromParams,
-      toParams,
-    );
-    return changedParamDescriptors.reduce((changedValues, descriptor) => {
-      changedValues[descriptor.id] = toParams[descriptor.id];
-      return changedValues;
-    }, {});
-  }
-  /**
-   * Creates a [[UIInjector]] Dependency Injector
-   *
-   * Returns a Dependency Injector for the Transition's target state (to state).
-   * The injector provides resolve values which the target state has access to.
-   *
-   * The `UIInjector` can also provide values from the native root/global injector (ng1/ng2).
-   *
-   * #### Example:
-   * ```js
-   * .onEnter({ entering: 'myState' }, trans => {
-   *   var myResolveValue = trans.injector().get('myResolve');
-   *   // Inject a global service from the global/native injector (if it exists)
-   *   var MyService = trans.injector().get('MyService');
-   * })
-   * ```
-   *
-   * In some cases (such as `onBefore`), you may need access to some resolve data but it has not yet been fetched.
-   * You can use [[UIInjector.getAsync]] to get a promise for the data.
-   * #### Example:
-   * ```js
-   * .onBefore({}, trans => {
-   *   return trans.injector().getAsync('myResolve').then(myResolveValue =>
-   *     return myResolveValue !== 'ABORT';
-   *   });
-   * });
-   * ```
-   *
-   * If a `state` is provided, the injector that is returned will be limited to resolve values that the provided state has access to.
-   * This can be useful if both a parent state `foo` and a child state `foo.bar` have both defined a resolve such as `data`.
-   * #### Example:
-   * ```js
-   * .onEnter({ to: 'foo.bar' }, trans => {
-   *   // returns result of `foo` state's `myResolve` resolve
-   *   // even though `foo.bar` also has a `myResolve` resolve
-   *   var fooData = trans.injector('foo').get('myResolve');
-   * });
-   * ```
-   *
-   * If you need resolve data from the exiting states, pass `'from'` as `pathName`.
-   * The resolve data from the `from` path will be returned.
-   * #### Example:
-   * ```js
-   * .onExit({ exiting: 'foo.bar' }, trans => {
-   *   // Gets the resolve value of `myResolve` from the state being exited
-   *   var fooData = trans.injector(null, 'from').get('myResolve');
-   * });
-   * ```
-   *
-   *
-   * @param state Limits the resolves provided to only the resolves the provided state has access to.
-   * @param pathName Default: `'to'`: Chooses the path for which to create the injector. Use this to access resolves for `exiting` states.
-   *
-   * @returns a [[UIInjector]]
-   */
-  injector(state, pathName = "to") {
-    let path = this._treeChanges[pathName];
-    if (state)
-      path = PathUtils.subPath(
-        path,
-        (node) => node.state === state || node.state.name === state,
-      );
-    return new ResolveContext(path).injector();
-  }
+
   /**
    * Gets all available resolve tokens (keys)
    *

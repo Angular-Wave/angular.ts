@@ -19,6 +19,7 @@ import {
   prepareAnimationOptions,
   stripCommentsFromElement,
 } from "./shared.js";
+import { $injectTokens as $t } from "../injection-tokens.js";
 
 const NG_ANIMATE_ATTR_NAME = "data-ng-animate";
 const NG_ANIMATE_PIN_DATA = "$ngAnimatePin";
@@ -142,15 +143,15 @@ export function AnimateQueueProvider($animateProvider) {
   });
 
   this.$get = [
-    "$rootScope",
-    "$injector",
-    "$$animation",
-    "$$AnimateRunner",
-    "$templateRequest",
+    $t.$rootScope,
+    $t.$injector,
+    $t.$$animation,
+    $t.$$AnimateRunner,
+    $t.$templateRequest,
     /**
      *
      * @param {import('../core/scope/scope.js').Scope} $rootScope
-     * @param {*} $injector
+     * @param {import('../core/di/internal-injector.js').InjectorService} $injector
      * @param {*} $$animation
      * @param {*} $$AnimateRunner
      * @param {*} $templateRequest

@@ -155,10 +155,6 @@ export class ResolveContext {
     return Promise.all(promises);
   }
 
-  injector() {
-    return this._injector || (this._injector = new UIInjectorImpl());
-  }
-
   findNode(resolvable) {
     return find(this._path, (node) => node.resolvables.includes(resolvable));
   }
@@ -190,20 +186,5 @@ export class ResolveContext {
       }
       return new Resolvable(token, () => fromInjector, [], fromInjector);
     });
-  }
-}
-
-class UIInjectorImpl {
-  constructor() {
-    this.native = window["angular"].$injector;
-  }
-  get(token) {
-    return window["angular"].$injector.get(token);
-  }
-  getAsync(token) {
-    return Promise.resolve(window["angular"].$injector.get(token));
-  }
-  getNative(token) {
-    return window["angular"].$injector.get(token);
   }
 }

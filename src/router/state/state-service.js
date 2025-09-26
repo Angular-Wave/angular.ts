@@ -14,7 +14,6 @@ import { Rejection, RejectType } from "../transition/reject-factory.js";
 import { TargetState } from "./target-state.js";
 import { Param } from "../params/param.js";
 import { Glob } from "../glob/glob.js";
-import { ResolveContext } from "../resolve/resolve-context.js";
 import { lazyLoadState } from "../hooks/lazy-load.js";
 import { val } from "../../shared/hof.js";
 import { EventBus } from "../../services/pubsub/pubsub.js";
@@ -59,12 +58,14 @@ export class StateProvider {
    *
    * @param {import('../router.js').Router} globals
    * @param {*} transitionService
+   * @param {import('../../core/di/internal-injector.js').InjectorService} $injector
    */
-  constructor(globals, transitionService) {
+  constructor(globals, transitionService, $injector) {
     this.stateRegistry = undefined;
     this.urlService = undefined;
     this.globals = globals;
     this.transitionService = transitionService;
+    this.$injector = $injector;
     this.invalidCallbacks = [];
 
     this._defaultErrorHandler = function $defaultErrorHandler($error$) {
@@ -221,7 +222,7 @@ export class StateProvider {
     const latest = latestThing();
     /** @type {Queue<Function>} */
     const callbackQueue = new Queue(this.invalidCallbacks.slice());
-    const injector = new ResolveContext(fromPath).injector();
+    const injector = this.$injector;
     const checkForRedirect = (result) => {
       if (!(result instanceof TargetState)) {
         return;

@@ -27,8 +27,7 @@ export class StateRegistryProvider {
   matcher: StateMatcher;
   builder: StateBuilder;
   stateQueue: StateQueueManager;
-  /** @type {import('../../interface.ts').AnnotatedFactory} */
-  $get: import("../../interface.ts").AnnotatedFactory;
+  $get: (string | (($injector: any) => StateRegistryProvider))[];
   /**
    * This is a [[StateBuilder.builder]] function for angular1 `onEnter`, `onExit`,
    * `onRetain` callback hooks on a [[StateDeclaration]].

@@ -6,7 +6,7 @@ import { propEq } from "../../shared/hof.js";
 import { ResolveContext } from "../resolve/resolve-context.js";
 import { ng1ViewsBuilder } from "./views.js";
 import { isString } from "../../shared/utils.js";
-import { $injectTokens, provider } from "../../injection-tokens.js";
+import { $injectTokens as $t, provider } from "../../injection-tokens.js";
 
 /** @typedef {import('../../interface.ts').ServiceProvider} ServiceProvider } */
 /**
@@ -16,12 +16,7 @@ import { $injectTokens, provider } from "../../injection-tokens.js";
  *
  */
 export class StateRegistryProvider {
-  /* @ignore */ static $inject = provider([
-    $injectTokens.$url,
-    $injectTokens.$state,
-    $injectTokens.$router,
-    $injectTokens.$view,
-  ]);
+  static $inject = provider([$t.$url, $t.$state, $t.$router, $t.$view]);
 
   /**
    * @param urlService
@@ -60,11 +55,9 @@ export class StateRegistryProvider {
     globals.current = globals.$current.self;
   }
 
-  /** @type {import('../../interface.ts').AnnotatedFactory} */
   $get = [
-    "$injector",
+    $t.$injector,
     /**
-     *
      * @param {import("../../core/di/internal-injector").InjectorService} $injector
      * @returns {StateRegistryProvider}
      */

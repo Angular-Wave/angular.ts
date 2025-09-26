@@ -4,6 +4,7 @@ import {
   applyAnimationStyles,
   prepareAnimationOptions,
 } from "./shared.js";
+import { $injectTokens as $t } from "../injection-tokens.js";
 
 // TODO: use caching here to speed things up for detection
 // TODO: add documentation
@@ -11,7 +12,7 @@ import {
 AnimateJsProvider.$inject = ["$animateProvider"];
 export function AnimateJsProvider($animateProvider) {
   this.$get = [
-    "$injector",
+    $t.$injector,
     "$$AnimateRunner",
     /**
      *

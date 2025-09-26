@@ -9,8 +9,13 @@ export class StateProvider {
    *
    * @param {import('../router.js').Router} globals
    * @param {*} transitionService
+   * @param {import('../../core/di/internal-injector.js').InjectorService} $injector
    */
-  constructor(globals: import("../router.js").Router, transitionService: any);
+  constructor(
+    globals: import("../router.js").Router,
+    transitionService: any,
+    $injector: import("../../core/di/internal-injector.js").InjectorService,
+  );
   /**
    * The latest successful state parameters
    *
@@ -33,6 +38,7 @@ export class StateProvider {
   urlService: any;
   globals: import("../router.js").Router;
   transitionService: any;
+  $injector: import("../../core/di/internal-injector.js").InjectorService;
   invalidCallbacks: any[];
   _defaultErrorHandler: ($error$: any) => never;
   $get: () => this;

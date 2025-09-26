@@ -10,7 +10,7 @@ export class AnimateQueueProvider {
     | string
     | ((
         $rootScope: import("../core/scope/scope.js").Scope,
-        $injector: any,
+        $injector: import("../core/di/internal-injector.js").InjectorService,
         $$animation: any,
         $$AnimateRunner: any,
         $templateRequest: any,
