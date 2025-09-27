@@ -6,8 +6,12 @@
     <link rel="shortcut icon" type="image/png" href="images/favicon.ico" />
     <script type="module" src="/src/index.js"></script>
   </head>
-  <body ng-app ng-init='value = { some: "object" }'>
-    <input type="radio" ng-model="selected" ng-value="value" />
-    <button ng-click="selected = value">Set</button>
+  <body ng-app ng-init="values = [{ name: 0 }, { name: 1 }, { name: 2 }]">
+    <form ng-init="selected = values[0]">
+      <select
+        ng-model="selected"
+        ng-options="value.name for value in values"
+      ></select>
+    </form>
   </body>
 </html>
