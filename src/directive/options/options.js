@@ -19,7 +19,8 @@ const optionTemplate = document.createElement("option");
 const optGroupTemplate = document.createElement("optgroup");
 
 const NG_OPTIONS_REGEXP =
-  /^\s*([\s\S]+?)\s*(\s+as\s+([\s\S]+?))?(\s+group\s+by\s+([\s\S]+?))?(\s+disable\s+when\s+([\s\S]+?))?\s+for\s+([$\w][$\w]*|\(\s*([$\w][$\w]*)\s*,\s*([$\w][$\w]*)\s*\))\s+in\s+([\s\S]+?)(\s+track\s+by\s+([\s\S]+?))?$/;
+  /^\s*([\s\S]+?)(?:\s+as\s+([\s\S]+?))?(?:\s+group\s+by\s+([\s\S]+?))?(?:\s+disable\s+when\s+([\s\S]+?))?\s+for\s+(?:([$\w][$\w]*)|(?:\(\s*([$\w][$\w]*)\s*,\s*([$\w][$\w]*)\s*\)))\s+in\s+([\s\S]+?)(?:\s+track\s+by\s+([\s\S]+?))?$/;
+
 // 1: value expression (valueFn)
 // 2: label expression (displayFn)
 // 3: group by expression (groupByFn)
