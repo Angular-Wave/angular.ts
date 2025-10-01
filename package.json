@@ -7,7 +7,7 @@
   "main": "dist/angular-ts.esm.js",
   "module": "dist/angular-ts.esm.js",
   "browser": "dist/angular-ts.umd.js",
-  "types": "@types/index.d.ts",
+  "types": "@types/interface.d.ts",
   "repository": {
     "type": "git",
     "url": "https://github.com/Angular-Wave/angular.ts.git"

@@ -51,9 +51,8 @@ export class StateProvider {
     return this.globals.$current;
   }
 
-  /* @ignore */ static $inject = ["$routerProvider", "$transitionsProvider"];
+  static $inject = ["$routerProvider", "$transitionsProvider"];
 
-  // Needs access to urlService, stateRegistry
   /**
    *
    * @param {import('../router.js').Router} globals

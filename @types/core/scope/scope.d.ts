@@ -16,10 +16,6 @@ export function createScope(target?: any, context?: Scope): Scope;
  * @property {Object} locals
  */
 export const $postUpdateQueue: any[];
-/**
- * @type {Function[]}
- */
-export const $$applyAsyncQueue: Function[];
 export class RootScopeProvider {
   rootScope: Scope;
   $get: (
@@ -57,6 +53,7 @@ export const NONSCOPE: "$nonscope";
  * Scope class for the Proxy. It intercepts operations like property access (get)
  * and property setting (set), and adds support for deep change tracking and
  * observer-like behavior.
+ * @extends {Record<string, any>}
  */
 export class Scope {
   /**

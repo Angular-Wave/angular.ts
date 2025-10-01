@@ -41,11 +41,6 @@ let $exceptionHandler;
 
 export const $postUpdateQueue = [];
 
-/**
- * @type {Function[]}
- */
-export const $$applyAsyncQueue = [];
-
 export class RootScopeProvider {
   constructor() {
     this.rootScope = createScope();
@@ -143,6 +138,7 @@ export const NONSCOPE = "$nonscope";
  * Scope class for the Proxy. It intercepts operations like property access (get)
  * and property setting (set), and adds support for deep change tracking and
  * observer-like behavior.
+ * @extends {Record<string, any>}
  */
 export class Scope {
   /**
@@ -559,6 +555,7 @@ export class Scope {
     return true;
   }
 
+  /** @internal **/
   #checkeListenersForAllKeys(value) {
     if (isUndefined(value)) {
       return;
@@ -704,10 +701,6 @@ export class Scope {
         get.decoratedNode.body[0].expression.toWatch.forEach((x) => {
           if (isDefined(x)) {
             keys.push(x.name);
-          } else {
-            // Promise.resolve().then(() => {
-            //   listenerFn(this.$target)
-            // });
           }
         });
         keys.forEach((key) => {
@@ -902,6 +895,7 @@ export class Scope {
     return proxy;
   }
 
+  /** @internal **/
   #registerKey(key, listener) {
     if (this.watchers.has(key)) {
       this.watchers.get(key).push(listener);
@@ -910,6 +904,7 @@ export class Scope {
     }
   }
 
+  /** @internal **/
   #registerForeignKey(key, listener) {
     if (this.foreignListeners.has(key)) {
       this.foreignListeners.get(key).push(listener);
@@ -1041,7 +1036,8 @@ export class Scope {
   }
 
   /**
-   * @returns {void}
+   * @internal
+   * @returns {any}
    */
   #eventHelper({ name, event, broadcast }, ...args) {
     if (!broadcast) {
@@ -1122,6 +1118,7 @@ export class Scope {
   }
 
   /**
+   * @internal
    * @returns {boolean}
    */
   #isRoot() {
@@ -1156,6 +1153,7 @@ export class Scope {
   }
 
   /**
+   * @internal
    * @param {Listener} listener - The property path that was changed.
    */
   #notifyListener(listener, target) {

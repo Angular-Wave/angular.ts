@@ -1,6 +1,3 @@
-import { Attributes } from "./core/compile/attributes.js";
-import { Scope } from "./core/scope/scope.js";
-export * from "./core/di/ng-module.js";
 export * from "./services/http/interface.ts";
 export * from "./services/log/interface.ts";
 export * from "./services/log/log.js";
@@ -9,6 +6,24 @@ export * from "./services/location/location.js";
 export * from "./services/pubsub/pubsub.js";
 export * from "./services/template-cache/interface.ts";
 export * from "./services/template-cache/template-cache.js";
+
+import { Attributes } from "./core/compile/attributes.js";
+import { Scope } from "./core/scope/scope.js";
+import { NgModule } from "./core/di/ng-module.js";
+import { PubSubProvider, PubSub } from "./services/pubsub/pubsub.js";
+
+declare global {
+  interface Function {
+    $inject?: readonly string[] | undefined;
+  }
+
+  namespace ng {
+    type Scope = typeof Scope;
+    type NgModule = typeof NgModule;
+    type PubSubProvider = typeof PubSubProvider;
+    type PubSub = typeof PubSub;
+  }
+}
 
 /**
  * A JavaScript expression represented as a string, typically used in interpolation bindings.
