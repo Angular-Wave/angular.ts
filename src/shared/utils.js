@@ -970,16 +970,7 @@ export function assertArgFn(arg, name, acceptArrayAnnotation) {
   return arg;
 }
 
-/**
- * @typedef {Object} ErrorHandlingConfig
- * Error configuration object. May only contain the options that need to be updated.
- * @property {number=} objectMaxDepth - The max depth for stringifying objects. Setting to a
- *   non-positive or non-numeric value removes the max depth limit. Default: 5.
- * @property {boolean=} urlErrorParamsEnabled - Specifies whether the generated error URL will
- *   contain the parameters of the thrown error. Default: true. When used without argument, it returns the current value.
- */
-
-/** @type {ErrorHandlingConfig} */
+/** @type {import("./interface.js").ErrorHandlingConfig} */
 const minErrConfig = {
   objectMaxDepth: 5,
   urlErrorParamsEnabled: true,
@@ -991,8 +982,8 @@ const minErrConfig = {
  *
  * Omitted or undefined options will leave the corresponding configuration values unchanged.
  *
- * @param {ErrorHandlingConfig} [config]
- * @returns {ErrorHandlingConfig}
+ * @param {import("./interface.ts").ErrorHandlingConfig} [config]
+ * @returns {import("./interface.ts").ErrorHandlingConfig}
  */
 export function errorHandlingConfig(config) {
   if (isObject(config)) {

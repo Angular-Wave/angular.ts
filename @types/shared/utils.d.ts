@@ -442,12 +442,12 @@ export function assertArgFn(
  *
  * Omitted or undefined options will leave the corresponding configuration values unchanged.
  *
- * @param {ErrorHandlingConfig} [config]
- * @returns {ErrorHandlingConfig}
+ * @param {import("./interface.ts").ErrorHandlingConfig} [config]
+ * @returns {import("./interface.ts").ErrorHandlingConfig}
  */
 export function errorHandlingConfig(
-  config?: ErrorHandlingConfig,
-): ErrorHandlingConfig;
+  config?: import("./interface.ts").ErrorHandlingConfig,
+): import("./interface.ts").ErrorHandlingConfig;
 /**
  * This object provides a utility for producing rich Error messages within
  * AngularTS. It can be called as follows:
@@ -573,18 +573,3 @@ export function wait(t?: number): Promise<void>;
 export function startsWith(str: string, search: string): boolean;
 export const isProxySymbol: unique symbol;
 export const ngAttrPrefixes: string[];
-/**
- * Error configuration object. May only contain the options that need to be updated.
- */
-export type ErrorHandlingConfig = {
-  /**
-   * - The max depth for stringifying objects. Setting to a
-   * non-positive or non-numeric value removes the max depth limit. Default: 5.
-   */
-  objectMaxDepth?: number | undefined;
-  /**
-   * - Specifies whether the generated error URL will
-   * contain the parameters of the thrown error. Default: true. When used without argument, it returns the current value.
-   */
-  urlErrorParamsEnabled?: boolean | undefined;
-};

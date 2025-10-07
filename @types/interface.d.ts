@@ -10,6 +10,7 @@ import { Attributes } from "./core/compile/attributes.js";
 import { Scope } from "./core/scope/scope.js";
 import { NgModule } from "./core/di/ng-module.js";
 import { PubSubProvider, PubSub } from "./services/pubsub/pubsub.js";
+import type { ErrorHandlingConfig as iErrorHandlingConfig } from "./shared/interface.ts";
 declare global {
   interface Function {
     $inject?: readonly string[] | undefined;
@@ -19,6 +20,7 @@ declare global {
     type NgModule = typeof NgModule;
     type PubSubProvider = typeof PubSubProvider;
     type PubSub = typeof PubSub;
+    type ErrorHandlingConfig = iErrorHandlingConfig;
   }
 }
 /**

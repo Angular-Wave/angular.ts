@@ -454,21 +454,6 @@ declare namespace angular {
     [index: string]: (modelValue: any, viewValue: any) => IPromise<any>;
   }
 
-  interface IErrorHandlingConfig {
-    /**
-     * The max depth for stringifying objects.
-     * Setting to a non-positive or non-numeric value, removes the max depth limit
-     * @default 5
-     */
-    objectMaxDepth?: number | undefined;
-    /**
-     * Specifies whether the generated error url will contain the parameters of the thrown error.
-     * Disabling the parameters can be useful if the generated error url is very long.
-     * @default true;
-     */
-    urlErrorParamsEnabled?: boolean | undefined;
-  }
-
   interface IModelParser {
     (value: any): any;
   }

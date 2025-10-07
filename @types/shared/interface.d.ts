@@ -1,6 +1,5 @@
 export type Predicate<X> = (x?: X) => boolean;
 export type PredicateBinary<X, Y> = (x?: X, y?: Y) => boolean;
-
 /**
  * Error configuration object. May only contain the options that need to be updated.
  */
@@ -11,7 +10,6 @@ export interface ErrorHandlingConfig {
    * Default: 5.
    */
   objectMaxDepth?: number;
-
   /**
    * Specifies whether the generated error URL will contain the parameters
    * of the thrown error. Default: true.
