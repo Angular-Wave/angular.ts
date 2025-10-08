@@ -1,4 +1,4 @@
-/* Version: 0.9.0 - September 12, 2025 22:41:26 */
+/* Version: 0.9.1 - October 8, 2025 04:11:26 */
 (function (global, factory) {
   typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
   typeof define === 'function' && define.amd ? define(['exports'], factory) :
@@ -912,16 +912,7 @@
     return arg;
   }
 
-  /**
-   * @typedef {Object} ErrorHandlingConfig
-   * Error configuration object. May only contain the options that need to be updated.
-   * @property {number=} objectMaxDepth - The max depth for stringifying objects. Setting to a
-   *   non-positive or non-numeric value removes the max depth limit. Default: 5.
-   * @property {boolean=} urlErrorParamsEnabled - Specifies whether the generated error URL will
-   *   contain the parameters of the thrown error. Default: true. When used without argument, it returns the current value.
-   */
-
-  /** @type {ErrorHandlingConfig} */
+  /** @type {import("./interface.js").ErrorHandlingConfig} */
   const minErrConfig = {
     objectMaxDepth: 5,
     urlErrorParamsEnabled: true,
@@ -933,8 +924,8 @@
    *
    * Omitted or undefined options will leave the corresponding configuration values unchanged.
    *
-   * @param {ErrorHandlingConfig} [config]
-   * @returns {ErrorHandlingConfig}
+   * @param {import("./interface.ts").ErrorHandlingConfig} [config]
+   * @returns {import("./interface.ts").ErrorHandlingConfig}
    */
   function errorHandlingConfig(config) {
     if (isObject(config)) {
@@ -12392,6 +12383,7 @@
 
   const NG_OPTIONS_REGEXP =
     /^\s*([\s\S]+?)(?:\s+as\s+([\s\S]+?))?(?:\s+group\s+by\s+([\s\S]+?))?(?:\s+disable\s+when\s+([\s\S]+?))?\s+for\s+(?:([$\w][$\w]*)|(?:\(\s*([$\w][$\w]*)\s*,\s*([$\w][$\w]*)\s*\)))\s+in\s+([\s\S]+?)(?:\s+track\s+by\s+([\s\S]+?))?$/;
+
   // 1: value expression (valueFn)
   // 2: label expression (displayFn)
   // 3: group by expression (groupByFn)
@@ -20219,6 +20211,7 @@
    * Scope class for the Proxy. It intercepts operations like property access (get)
    * and property setting (set), and adds support for deep change tracking and
    * observer-like behavior.
+   * @extends {Record<string, any>}
    */
   class Scope {
     /**
@@ -20634,6 +20627,7 @@
       return true;
     }
 
+    /** @internal **/
     #checkeListenersForAllKeys(value) {
       if (isUndefined(value)) {
         return;
@@ -20973,6 +20967,7 @@
       return proxy;
     }
 
+    /** @internal **/
     #registerKey(key, listener) {
       if (this.watchers.has(key)) {
         this.watchers.get(key).push(listener);
@@ -20981,6 +20976,7 @@
       }
     }
 
+    /** @internal **/
     #registerForeignKey(key, listener) {
       if (this.foreignListeners.has(key)) {
         this.foreignListeners.get(key).push(listener);
@@ -21112,7 +21108,8 @@
     }
 
     /**
-     * @returns {void}
+     * @internal
+     * @returns {any}
      */
     #eventHelper({ name, event, broadcast }, ...args) {
       if (!broadcast) {
@@ -21193,6 +21190,7 @@
     }
 
     /**
+     * @internal
      * @returns {boolean}
      */
     #isRoot() {
@@ -21227,6 +21225,7 @@
     }
 
     /**
+     * @internal
      * @param {Listener} listener - The property path that was changed.
      */
     #notifyListener(listener, target) {
@@ -23262,15 +23261,15 @@
     });
 
     this.$get = [
-      "$rootScope",
-      "$injector",
-      "$$animation",
-      "$$AnimateRunner",
-      "$templateRequest",
+      $injectTokens.$rootScope,
+      $injectTokens.$injector,
+      $injectTokens.$$animation,
+      $injectTokens.$$AnimateRunner,
+      $injectTokens.$templateRequest,
       /**
        *
        * @param {import('../core/scope/scope.js').Scope} $rootScope
-       * @param {*} $injector
+       * @param {import('../core/di/internal-injector.js').InjectorService} $injector
        * @param {*} $$animation
        * @param {*} $$AnimateRunner
        * @param {*} $templateRequest
@@ -23983,7 +23982,7 @@
   AnimateJsProvider.$inject = ["$animateProvider"];
   function AnimateJsProvider($animateProvider) {
     this.$get = [
-      "$injector",
+      $injectTokens.$injector,
       "$$AnimateRunner",
       /**
        *
@@ -25841,20 +25840,6 @@
    * ```
    */
   const unnestR = (memo, elem) => memo.concat(elem);
-  /**
-   * Reduce function which recursively un-nests all arrays
-   *
-   * @example
-   * ```
-   *
-   * let input = [ [ "a", "b" ], [ "c", "d" ], [ [ "double", "nested" ] ] ];
-   * input.reduce(unnestR, []) // [ "a", "b", "c", "d", "double, "nested" ]
-   * ```
-   */
-  const flattenR = (memo, elem) =>
-    Array.isArray(elem)
-      ? memo.concat(elem.reduce(flattenR, []))
-      : pushR(memo, elem);
   /**
    * Reduce function that pushes an object to an array, then returns the array.
    * Mostly just for [[flattenR]] and [[uniqR]]
@@ -27955,10 +27940,6 @@
       return Promise.all(promises);
     }
 
-    injector() {
-      return this._injector || (this._injector = new UIInjectorImpl());
-    }
-
     findNode(resolvable) {
       return find(this._path, (node) => node.resolvables.includes(resolvable));
     }
@@ -27990,21 +27971,6 @@
         }
         return new Resolvable(token, () => fromInjector, [], fromInjector);
       });
-    }
-  }
-
-  class UIInjectorImpl {
-    constructor() {
-      this.native = window["angular"].$injector;
-    }
-    get(token) {
-      return window["angular"].$injector.get(token);
-    }
-    getAsync(token) {
-      return Promise.resolve(window["angular"].$injector.get(token));
-    }
-    getNative(token) {
-      return window["angular"].$injector.get(token);
     }
   }
 
@@ -29709,90 +29675,7 @@
           .reduce((acc, obj) => ({ ...acc, ...obj }), {}),
       );
     }
-    paramsChanged() {
-      const fromParams = this.params("from");
-      const toParams = this.params("to");
-      // All the parameters declared on both the "to" and "from" paths
-      const allParamDescriptors = []
-        .concat(this._treeChanges.to)
-        .concat(this._treeChanges.from)
-        .map((pathNode) => pathNode.paramSchema)
-        .reduce(flattenR, [])
-        .reduce(uniqR, []);
-      const changedParamDescriptors = Param.changed(
-        allParamDescriptors,
-        fromParams,
-        toParams,
-      );
-      return changedParamDescriptors.reduce((changedValues, descriptor) => {
-        changedValues[descriptor.id] = toParams[descriptor.id];
-        return changedValues;
-      }, {});
-    }
-    /**
-     * Creates a [[UIInjector]] Dependency Injector
-     *
-     * Returns a Dependency Injector for the Transition's target state (to state).
-     * The injector provides resolve values which the target state has access to.
-     *
-     * The `UIInjector` can also provide values from the native root/global injector (ng1/ng2).
-     *
-     * #### Example:
-     * ```js
-     * .onEnter({ entering: 'myState' }, trans => {
-     *   var myResolveValue = trans.injector().get('myResolve');
-     *   // Inject a global service from the global/native injector (if it exists)
-     *   var MyService = trans.injector().get('MyService');
-     * })
-     * ```
-     *
-     * In some cases (such as `onBefore`), you may need access to some resolve data but it has not yet been fetched.
-     * You can use [[UIInjector.getAsync]] to get a promise for the data.
-     * #### Example:
-     * ```js
-     * .onBefore({}, trans => {
-     *   return trans.injector().getAsync('myResolve').then(myResolveValue =>
-     *     return myResolveValue !== 'ABORT';
-     *   });
-     * });
-     * ```
-     *
-     * If a `state` is provided, the injector that is returned will be limited to resolve values that the provided state has access to.
-     * This can be useful if both a parent state `foo` and a child state `foo.bar` have both defined a resolve such as `data`.
-     * #### Example:
-     * ```js
-     * .onEnter({ to: 'foo.bar' }, trans => {
-     *   // returns result of `foo` state's `myResolve` resolve
-     *   // even though `foo.bar` also has a `myResolve` resolve
-     *   var fooData = trans.injector('foo').get('myResolve');
-     * });
-     * ```
-     *
-     * If you need resolve data from the exiting states, pass `'from'` as `pathName`.
-     * The resolve data from the `from` path will be returned.
-     * #### Example:
-     * ```js
-     * .onExit({ exiting: 'foo.bar' }, trans => {
-     *   // Gets the resolve value of `myResolve` from the state being exited
-     *   var fooData = trans.injector(null, 'from').get('myResolve');
-     * });
-     * ```
-     *
-     *
-     * @param state Limits the resolves provided to only the resolves the provided state has access to.
-     * @param pathName Default: `'to'`: Chooses the path for which to create the injector. Use this to access resolves for `exiting` states.
-     *
-     * @returns a [[UIInjector]]
-     */
-    injector(state, pathName = "to") {
-      let path = this._treeChanges[pathName];
-      if (state)
-        path = PathUtils.subPath(
-          path,
-          (node) => node.state === state || node.state.name === state,
-        );
-      return new ResolveContext(path).injector();
-    }
+
     /**
      * Gets all available resolve tokens (keys)
      *
@@ -31025,19 +30908,20 @@
       return this.globals.$current;
     }
 
-    /* @ignore */ static $inject = ["$routerProvider", "$transitionsProvider"];
+    static $inject = ["$routerProvider", "$transitionsProvider"];
 
-    // Needs access to urlService, stateRegistry
     /**
      *
      * @param {import('../router.js').Router} globals
      * @param {*} transitionService
+     * @param {import('../../core/di/internal-injector.js').InjectorService} $injector
      */
-    constructor(globals, transitionService) {
+    constructor(globals, transitionService, $injector) {
       this.stateRegistry = undefined;
       this.urlService = undefined;
       this.globals = globals;
       this.transitionService = transitionService;
+      this.$injector = $injector;
       this.invalidCallbacks = [];
 
       this._defaultErrorHandler = function $defaultErrorHandler($error$) {
@@ -31194,7 +31078,7 @@
       const latest = latestThing();
       /** @type {Queue<Function>} */
       const callbackQueue = new Queue(this.invalidCallbacks.slice());
-      const injector = new ResolveContext(fromPath).injector();
+      const injector = this.$injector;
       const checkForRedirect = (result) => {
         if (!(result instanceof TargetState)) {
           return;
@@ -34122,12 +34006,7 @@
    *
    */
   class StateRegistryProvider {
-    /* @ignore */ static $inject = provider([
-      $injectTokens.$url,
-      $injectTokens.$state,
-      $injectTokens.$router,
-      $injectTokens.$view,
-    ]);
+    static $inject = provider([$injectTokens.$url, $injectTokens.$state, $injectTokens.$router, $injectTokens.$view]);
 
     /**
      * @param urlService
@@ -34166,11 +34045,9 @@
       globals.current = globals.$current.self;
     }
 
-    /** @type {import('../../interface.ts').AnnotatedFactory} */
     $get = [
-      "$injector",
+      $injectTokens.$injector,
       /**
-       *
        * @param {import("../../core/di/internal-injector").InjectorService} $injector
        * @returns {StateRegistryProvider}
        */
@@ -35831,7 +35708,7 @@
       /**
        * @type {string} `version` from `package.json`
        */
-      this.version = "0.9.0"; //inserted via rollup plugin
+      this.version = "0.9.1"; //inserted via rollup plugin
 
       /** @type {!Array<string|any>} */
       this.bootsrappedModules = [];
