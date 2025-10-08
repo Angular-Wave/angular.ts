@@ -1,0 +1,44 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>AngularTS</title>
+    <link rel="shortcut icon" type="image/png" href="images/favicon.ico" />
+    <script type="module" src="../../index.js"></script>
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        window.angular.module("router", []).config([
+          "$stateProvider",
+          "$locationProvider",
+          ($stateProvider, $locationProvider) => {
+            $locationProvider.html5ModeConf = {
+              enabled: true,
+              requireBase: false,
+              rewriteLinks: false,
+            };
+            $stateProvider
+              .state({
+                name: "home",
+                url: "/src/directive/http/form-router-test.html",
+                template: `
+                <h1>Home</h1>
+                <form ng-post="/mock/posthtml" state-success="page1">
+                    <input name="name" />
+                    <button type="submit">Test</button>
+                </form>
+              `,
+              })
+              .state({
+                name: "page1",
+                url: "/src/directive/http/page1",
+                template: "<h3>Its the NG-Router hello world app!</h3>",
+              });
+          },
+        ]);
+      });
+    </script>
+  </head>
+  <body ng-app="router">
+    <ng-view></ng-view>
+  </body>
+</html>

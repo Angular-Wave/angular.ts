@@ -419,17 +419,12 @@ describe("ngOptions", () => {
     expect(options[2]).toEqualOption(scope.values[2], "2");
   });
 
-  it("should not be set when an option is selected and options are set asynchronously", async () => {
-    element.innerHTML =
-      '<select ng-model="model" ng-options="opt.id as opt.label for opt in options">' +
-      "</select>";
-
-    injector = window.angular.bootstrap(element, ["myModule"]);
-    scope = injector.get("$rootScope");
-    scope.$apply(() => {
-      scope.model = 0;
-    });
+  fit("should not be set when an option is selected and options are set asynchronously", async () => {
+    compile(
+      '<select ng-model="model" ng-options="opt.id as opt.label for opt in options"></select>',
+    );
     await wait();
+    scope.model = 0;
     scope.options = [
       { id: 0, label: "x" },
       { id: 1, label: "y" },
@@ -441,23 +436,18 @@ describe("ngOptions", () => {
     expect(options[1]).toEqualOption(1, "y");
   });
 
-  it("should grow list", async () => {
-    element.innerHTML =
-      '<select ng-model="selected" ng-options="value.name for value in values"></select>';
-    injector = window.angular.bootstrap(element, ["myModule"]);
-    scope = injector.get("$rootScope");
-
-    scope.$apply(() => {
-      scope.values = [];
-    });
+  fit("should grow list", async () => {
+    compile(
+      '<select ng-model="selected" ng-options="value.name for value in values"></select>',
+    );
+    await wait();
+    scope.values = [];
     await wait();
     expect(element.querySelectorAll("option").length).toEqual(1); // because we add special unknown option
     expect(element.querySelectorAll("option")[0]).toEqualUnknownOption();
 
-    scope.$apply(() => {
-      scope.values.push({ name: "A" });
-      scope.selected = scope.values[0];
-    });
+    scope.values.push({ name: "A" });
+    scope.selected = scope.values[0];
     await wait();
     expect(element.querySelectorAll("option").length).toEqual(1);
     expect(element.querySelectorAll("option")[0]).toEqualOption(
@@ -465,9 +455,7 @@ describe("ngOptions", () => {
       "A",
     );
 
-    scope.$apply(() => {
-      scope.values.push({ name: "B" });
-    });
+    scope.values.push({ name: "B" });
     await wait();
     expect(element.querySelectorAll("option").length).toEqual(2);
     expect(element.querySelectorAll("option")[0]).toEqualOption(
@@ -480,22 +468,17 @@ describe("ngOptions", () => {
     );
   });
 
-  it("should shrink list", async () => {
-    element.innerHTML =
-      '<select ng-model="selected" ng-options="value.name for value in values"></select>';
-    injector = window.angular.bootstrap(element, ["myModule"]);
-    scope = injector.get("$rootScope");
+  fit("should shrink list", async () => {
+    compile(
+      '<select ng-model="selected" ng-options="value.name for value in values"></select>',
+    );
     await wait();
-    scope.$apply(() => {
-      scope.values = [{ name: "A" }, { name: "B" }, { name: "C" }];
-      scope.selected = scope.values[0];
-    });
+    scope.values = [{ name: "A" }, { name: "B" }, { name: "C" }];
+    scope.selected = scope.values[0];
     await wait();
     expect(element.querySelectorAll("option").length).toEqual(3);
 
-    scope.$apply(() => {
-      scope.values.pop();
-    });
+    scope.values.pop();
     await wait();
     expect(element.querySelectorAll("option").length).toEqual(2);
     expect(element.querySelectorAll("option")[0]).toEqualOption(
@@ -506,10 +489,7 @@ describe("ngOptions", () => {
       scope.values[1],
       "B",
     );
-
-    scope.$apply(() => {
-      scope.values.pop();
-    });
+    scope.values.pop();
     await wait();
 
     expect(element.querySelectorAll("option").length).toEqual(1);
@@ -518,10 +498,8 @@ describe("ngOptions", () => {
       "A",
     );
 
-    scope.$apply(() => {
-      scope.values.pop();
-      scope.selected = null;
-    });
+    scope.values.pop();
+    scope.selected = null;
     await wait();
 
     expect(element.querySelectorAll("option").length).toEqual(1); // we add back the special empty option
