@@ -5,7 +5,6 @@
  * @extends {ServiceProvider}
  */
 export class PubSubProvider {
-  /** @private */
   constructor() {
     /**
      * @type {PubSub}

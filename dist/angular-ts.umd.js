@@ -1,4 +1,4 @@
-/* Version: 0.9.2 - October 9, 2025 19:13:00 */
+/* Version: 0.9.3 - October 9, 2025 19:24:11 */
 (function (global, factory) {
   typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
   typeof define === 'function' && define.amd ? define(['exports'], factory) :
@@ -28577,7 +28577,6 @@
    * @extends {ServiceProvider}
    */
   class PubSubProvider {
-    /** @private */
     constructor() {
       /**
        * @type {PubSub}
@@ -35708,7 +35707,7 @@
       /**
        * @type {string} `version` from `package.json`
        */
-      this.version = "0.9.2"; //inserted via rollup plugin
+      this.version = "0.9.3"; //inserted via rollup plugin
 
       /** @type {!Array<string|any>} */
       this.bootsrappedModules = [];

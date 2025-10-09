@@ -20,10 +20,10 @@ declare global {
   }
 
   namespace ng {
-    type Scope = typeof Scope;
-    type NgModule = typeof NgModule;
-    type PubSubProvider = typeof PubSubProvider;
-    type PubSub = typeof PubSub;
+    type Scope = InstanceType<typeof Scope>;
+    type NgModule = InstanceType<typeof NgModule>;
+    type PubSubProvider = InstanceType<typeof PubSubProvider>;
+    type PubSub = InstanceType<typeof PubSub>;
     type ErrorHandlingConfig = iErrorHandlingConfig;
   }
 }

@@ -1,4 +1,4 @@
-/* Version: 0.9.2 - October 9, 2025 19:13:01 */
+/* Version: 0.9.3 - October 9, 2025 19:24:12 */
 const VALID_CLASS = "ng-valid";
 const INVALID_CLASS = "ng-invalid";
 const PRISTINE_CLASS = "ng-pristine";
@@ -28571,7 +28571,6 @@ class Rejection {
  * @extends {ServiceProvider}
  */
 class PubSubProvider {
-  /** @private */
   constructor() {
     /**
      * @type {PubSub}
@@ -35702,7 +35701,7 @@ class Angular {
     /**
      * @type {string} `version` from `package.json`
      */
-    this.version = "0.9.2"; //inserted via rollup plugin
+    this.version = "0.9.3"; //inserted via rollup plugin
 
     /** @type {!Array<string|any>} */
     this.bootsrappedModules = [];
