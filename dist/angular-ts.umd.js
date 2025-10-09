@@ -1,4 +1,4 @@
-/* Version: 0.9.1 - October 8, 2025 04:11:26 */
+/* Version: 0.9.2 - October 9, 2025 19:13:00 */
 (function (global, factory) {
   typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
   typeof define === 'function' && define.amd ? define(['exports'], factory) :
@@ -35708,7 +35708,7 @@
       /**
        * @type {string} `version` from `package.json`
        */
-      this.version = "0.9.1"; //inserted via rollup plugin
+      this.version = "0.9.2"; //inserted via rollup plugin
 
       /** @type {!Array<string|any>} */
       this.bootsrappedModules = [];
