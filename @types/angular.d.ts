@@ -1,9 +1,3 @@
-/**
- * Configuration option for AngularTS bootstrap process.
- *
- * @typedef {Object} AngularBootstrapConfig
- * @property {boolean} [strictDi] - Disable automatic function annotation for the application. This is meant to assist in finding bugs which break minified code. Defaults to `false`.
- */
 export class Angular {
   $cache: Map<number, import("./interface.ts").ExpandoStore>;
   /** @type {import('./services/pubsub/pubsub.js').PubSub} */
@@ -59,13 +53,13 @@ export class Angular {
    *     Each item in the array should be the name of a predefined module or a (DI annotated)
    *     function that will be invoked by the injector as a `config` block.
    *     See: {@link angular.module modules}
-   * @param {AngularBootstrapConfig} [config]
+   * @param {import("./interface.ts").AngularBootstrapConfig} [config]
    * @returns {import('./core/di/internal-injector.js').InjectorService} The created injector instance for this application.
    */
   bootstrap(
     element: string | Element | Document,
     modules?: Array<string | any>,
-    config?: AngularBootstrapConfig,
+    config?: import("./interface.ts").AngularBootstrapConfig,
   ): import("./core/di/internal-injector.js").InjectorService;
   $injector: import("./core/di/internal-injector.js").InjectorService;
   /**
@@ -134,15 +128,6 @@ export class Angular {
     configFn?: import("./interface.js").Injectable,
   ): NgModule;
 }
-/**
- * Configuration option for AngularTS bootstrap process.
- */
-export type AngularBootstrapConfig = {
-  /**
-   * - Disable automatic function annotation for the application. This is meant to assist in finding bugs which break minified code. Defaults to `false`.
-   */
-  strictDi?: boolean;
-};
 import { getController } from "./shared/dom.js";
 import { getInjector } from "./shared/dom.js";
 import { getScope } from "./shared/dom.js";

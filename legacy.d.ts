@@ -1,26 +1,4 @@
-declare var angular: angular.IAngularStatic;
-
-// Support for painless dependency injection
-declare global {
-  interface Function {
-    $inject?: readonly string[] | undefined;
-  }
-}
-
-export as namespace angular;
-export as namespace ng;
-
-// Support AMD require
-export = angular;
-
-import ng = angular;
-
-///////////////////////////////////////////////////////////////////////////////
-// ng module (angular.js)
-///////////////////////////////////////////////////////////////////////////////
 declare namespace angular {
-  type Injectable<T extends Function> = T | Array<string | T>;
-
   // not directly implemented, but ensures that constructed class implements $get
   interface IServiceProviderClass {
     new (...args: any[]): IServiceProvider;
@@ -37,101 +15,6 @@ declare namespace angular {
 
   interface IAngularBootstrapConfig {
     strictDi?: boolean | undefined;
-  }
-
-  ///////////////////////////////////////////////////////////////////////////
-  // AngularStatic
-  // see http://docs.angularjs.org/api
-  ///////////////////////////////////////////////////////////////////////////
-  interface IAngularStatic {
-    bind(context: any, fn: Function, ...args: any[]): Function;
-
-    /**
-     * Use this function to manually start up angular application.
-     *
-     * @param element DOM element which is the root of angular application.
-     * @param modules An array of modules to load into the application.
-     *     Each item in the array should be the name of a predefined module or a (DI annotated)
-     *     function that will be invoked by the injector as a config block.
-     * @param config an object for defining configuration options for the application. The following keys are supported:
-     *     - `strictDi`: disable automatic function annotation for the application. This is meant to assist in finding bugs which break minified code.
-     */
-    bootstrap(
-      element: string | Element | JQuery | Document,
-      modules?: Array<string | Function | any[]>,
-      config?: IAngularBootstrapConfig,
-    ): auto.IInjectorService;
-
-    /**
-     * Creates a deep copy of source, which should be an object or an array.
-     *
-     * - If no destination is supplied, a copy of the object or array is created.
-     * - If a destination is provided, all of its elements (for array) or properties (for objects) are deleted and then all elements/properties from the source are copied to it.
-     * - If source is not an object or array (inc. null and undefined), source is returned.
-     * - If source is identical to 'destination' an exception will be thrown.
-     *
-     * @param source The source that will be used to make a copy. Can be any type, including primitives, null, and undefined.
-     * @param destination Destination into which the source is copied. If provided, must be of the same type as source.
-     */
-    copy<T>(source: T, destination?: T): T;
-
-    /**
-     * Wraps a raw DOM element or HTML string as a jQuery element.
-     *
-     * If jQuery is available, angular.element is an alias for the jQuery function. If jQuery is not available, angular.element delegates to Angular's built-in subset of jQuery, called "jQuery lite" or "jqLite."
-     */
-    element: JQueryStatic;
-    /**
-     * Configure several aspects of error handling in AngularJS if used as a setter
-     * or return the current configuration if used as a getter
-     */
-    errorHandlingConfig(): IErrorHandlingConfig;
-    errorHandlingConfig(config: IErrorHandlingConfig): void;
-    equals(value1: any, value2: any): boolean;
-    extend(destination: any, ...sources: any[]): any;
-
-    /**
-     * The angular.module is a global place for creating, registering and retrieving Angular modules. All modules (angular core or 3rd party) that should be available to an application must be registered using this mechanism.
-     *
-     * When passed two or more arguments, a new module is created. If passed only one argument, an existing module (the name passed as the first argument to module) is retrieved.
-     *
-     * @param name The name of the module to create or retrieve.
-     * @param requires The names of modules this module depends on. If specified then new module is being created. If unspecified then the module is being retrieved for further configuration.
-     * @param configFn Optional configuration function for the module.
-     */
-    module(
-      name: string,
-      requires?: string[],
-      configFn?: Injectable<Function>,
-    ): IModule;
-
-    noop(...args: any[]): void;
-    reloadWithDebugInfo(): void;
-    toJson(obj: any, pretty?: boolean | number): string;
-    version: {
-      full: string;
-      major: number;
-      minor: number;
-      dot: number;
-      codeName: string;
-    };
-
-    /**
-     * If window.name contains prefix NG_DEFER_BOOTSTRAP! when angular.bootstrap is called, the bootstrap process will be paused until angular.resumeBootstrap() is called.
-     * @param extraModules An optional array of modules that should be added to the original list of modules that the app was about to be bootstrapped with.
-     */
-    resumeBootstrap?(extraModules?: string[]): ng.auto.IInjectorService;
-
-    /**
-     * Restores the pre-1.8 behavior of jqLite that turns XHTML-like strings like
-     * `<div /><span />` to `<div></div><span></span>` instead of `<div><span></span></div>`.
-     * The new behavior is a security fix so if you use this method, please try to adjust
-     * to the change & remove the call as soon as possible.
-     * Note that this only patches jqLite. If you use jQuery 3.5.0 or newer, please read
-     * [jQuery 3.5 upgrade guide](https://jquery.com/upgrade-guide/3.5/) for more details
-     * about the workarounds.
-     */
-    UNSAFE_restoreLegacyJqLiteXHTMLReplacement(): void;
   }
 
   ///////////////////////////////////////////////////////////////////////////
@@ -2455,16 +2338,6 @@ declare namespace angular {
     terminal?: boolean | undefined;
     transclude?: boolean | "element" | { [slot: string]: string } | undefined;
   }
-
-  /**
-   * These interfaces are kept for compatibility with older versions of these type definitions.
-   * Actually, Angular doesn't create a special subclass of jQuery objects. It extends jQuery.prototype
-   * like jQuery plugins do, that's why all jQuery objects have these Angular-specific methods, not
-   * only those returned from angular.element.
-   * See: http://docs.angularjs.org/api/angular.element
-   */
-  interface IAugmentedJQueryStatic extends JQueryStatic {}
-  interface IAugmentedJQuery extends JQLite {}
 
   /**
    * Same as IController. Keeping it for compatibility with older versions of these type definitions.

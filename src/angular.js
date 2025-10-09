@@ -26,13 +26,6 @@ const $injectorMinErr = minErr("$injector");
 /** @type {Object.<string, NgModule>} */
 const modules = {};
 
-/**
- * Configuration option for AngularTS bootstrap process.
- *
- * @typedef {Object} AngularBootstrapConfig
- * @property {boolean} [strictDi] - Disable automatic function annotation for the application. This is meant to assist in finding bugs which break minified code. Defaults to `false`.
- */
-
 export class Angular {
   constructor() {
     this.$cache = Cache;
@@ -98,7 +91,7 @@ export class Angular {
    *     Each item in the array should be the name of a predefined module or a (DI annotated)
    *     function that will be invoked by the injector as a `config` block.
    *     See: {@link angular.module modules}
-   * @param {AngularBootstrapConfig} [config]
+   * @param {import("./interface.ts").AngularBootstrapConfig} [config]
    * @returns {import('./core/di/internal-injector.js').InjectorService} The created injector instance for this application.
    */
   bootstrap(element, modules, config) {
