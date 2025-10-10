@@ -48,13 +48,6 @@ export function curry(fn: any): any | (() => any | any);
  */
 export function compose(...args: any[]): () => any;
 /**
- * Given a varargs list of functions, returns a function that is composes the argument functions, left-to-right
- * given: f(x), g(x), h(x)
- * let piped = pipe(f,g,h);
- * then, piped is: h(g(f(x)))
- */
-export function pipe(...args: any[]): any;
-/**
  * Sorta like Pattern Matching (a functional programming conditional construct)
  *
  * See http://c2.com/cgi/wiki?PatternMatching
@@ -103,6 +96,6 @@ export function pattern(struct: any): (arg0: any) => any;
  * getName(obj) === true
  */
 export const propEq: any;
-export function parse(name: any): any;
+export function parse(path: any): (obj: any) => any;
 export function is(ctor: any): (obj: any) => boolean;
 export function val(v: any): () => any;

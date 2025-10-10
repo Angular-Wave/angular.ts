@@ -8,7 +8,7 @@ import {
 } from "../../shared/common.js";
 import { hasOwn, isDefined, isFunction, isString } from "../../shared/utils.js";
 import { stringify } from "../../shared/strings.js";
-import { is, pattern, pipe, val } from "../../shared/hof.js";
+import { is, pattern, val } from "../../shared/hof.js";
 import { Resolvable } from "../resolve/resolvable.js";
 import { annotate } from "../../core/di/injector.js";
 
@@ -209,12 +209,12 @@ export function resolvablesBuilder(state) {
   ]);
   const tuple2Resolvable = pattern([
     [
-      pipe((x) => x.val, isString),
+      (x) => isString(x.val),
       (tuple) =>
         new Resolvable(tuple.token, (x) => x, [tuple.val], tuple.policy),
     ],
     [
-      pipe((x) => x.val, Array.isArray),
+      (x) => Array.isArray(x.val),
       (tuple) =>
         new Resolvable(
           tuple.token,
@@ -224,7 +224,7 @@ export function resolvablesBuilder(state) {
         ),
     ],
     [
-      pipe((x) => x.val, isFunction),
+      (x) => isFunction(x.val),
       (tuple) =>
         new Resolvable(
           tuple.token,

@@ -64,15 +64,6 @@ export function compose() {
     return result;
   };
 }
-/**
- * Given a varargs list of functions, returns a function that is composes the argument functions, left-to-right
- * given: f(x), g(x), h(x)
- * let piped = pipe(f,g,h);
- * then, piped is: h(g(f(x)))
- */
-export function pipe() {
-  return compose.apply(null, [].slice.call(arguments).reverse());
-}
 
 /**
  * Given a property name and a value, returns a function that returns a boolean based on whether
@@ -90,11 +81,10 @@ export const propEq = curry((name, _val, obj) => obj && obj[name] === _val);
  * let propNotFound = prop("this.property.doesnt.exist");
  * propNotFound(obj) === undefined
  */
-export const parse = (name) =>
-  pipe.apply(
-    null,
-    name.split(".").map((name) => (obj) => obj && obj[name]),
-  );
+export const parse = (path) => {
+  const parts = path.split(".");
+  return (obj) => parts.reduce((acc, key) => acc && acc[key], obj);
+};
 
 /** Given a class, returns a Predicate function that returns true if the object is of that class */
 export const is = (ctor) => (obj) =>
