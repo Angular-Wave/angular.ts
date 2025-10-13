@@ -21,6 +21,7 @@ declare global {
     type Angular = InstanceType<typeof Angular>;
     type Attributes = InstanceType<typeof Attributes>;
     type Scope = InstanceType<typeof Scope>;
+    type RootScopeService = InstanceType<typeof Scope>;
     type NgModule = InstanceType<typeof NgModule>;
     type PubSubProvider = InstanceType<typeof PubSubProvider>;
     type PubSub = InstanceType<typeof PubSub>;

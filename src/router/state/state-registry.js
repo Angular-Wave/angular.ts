@@ -145,7 +145,7 @@ export class StateRegistryProvider {
   onStatesChanged(listener) {
     this.listeners.push(listener);
     return function deregisterListener() {
-      removeFrom(this.listeners)(listener);
+      removeFrom(this.listeners, listener);
     }.bind(this);
   }
   /**

@@ -189,7 +189,7 @@ export interface ViewDeclaration {
    * }
    * ```
    */
-  componentProvider?: Injectable;
+  componentProvider?: Injectable<any>;
 
   /**
    * The view's controller function or name
@@ -204,7 +204,7 @@ export interface ViewDeclaration {
    *
    * See: [[Ng1Controller]] for information about component-level router hooks.
    */
-  controller?: Injectable | string;
+  controller?: Injectable<any> | string;
 
   /**
    * A controller alias name.
@@ -240,7 +240,7 @@ export interface ViewDeclaration {
    * }
    * ```
    */
-  controllerProvider?: Injectable;
+  controllerProvider?: Injectable<any>;
 
   /**
    * The scope variable name to use for resolve data.
@@ -319,7 +319,7 @@ export interface ViewDeclaration {
    * }
    * ```
    */
-  templateProvider?: Injectable;
+  templateProvider?: Injectable<any>;
 }
 
 /**
@@ -534,7 +534,7 @@ export interface StateDeclaration {
    * }
    * ```
    */
-  resolve?: ResolveTypes[] | { [key: string]: Injectable };
+  resolve?: ResolveTypes[] | { [key: string]: Injectable<any> };
 
   /**
    * Sets the resolve policy defaults for all resolves on this state
@@ -759,7 +759,7 @@ export interface StateDeclaration {
    * });
    * ```
    */
-  onEnter?: TransitionStateHookFn | Injectable;
+  onEnter?: TransitionStateHookFn | Injectable<any>;
   /**
    * A state hook invoked when a state is being retained.
    *
@@ -786,7 +786,7 @@ export interface StateDeclaration {
    * });
    * ```
    */
-  onRetain?: TransitionStateHookFn | Injectable;
+  onRetain?: TransitionStateHookFn | Injectable<any>;
   /**
    * A state hook invoked when a state is being exited.
    *
@@ -813,7 +813,7 @@ export interface StateDeclaration {
    * });
    * ```
    */
-  onExit?: TransitionStateHookFn | Injectable;
+  onExit?: TransitionStateHookFn | Injectable<any>;
 
   /**
    * A function used to lazy load code

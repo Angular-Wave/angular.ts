@@ -69,25 +69,25 @@ export class TemplateFactoryProvider {
   /**
    * Creates a template by invoking an injectable provider function.
    *
-   * @param {import('../interface.ts').Injectable} provider Function to invoke via `locals`
+   * @param {import('../interface.ts').Injectable<any>} provider Function to invoke via `locals`
    * @param {Function} params a function used to invoke the template provider
    * @param {import("./resolve/resolve-context.js").ResolveContext} context
    * @return {string|Promise.<string>} The template html as a string, or a promise
    * for that string.
    */
   fromProvider(
-    provider: import("../interface.ts").Injectable,
+    provider: import("../interface.ts").Injectable<any>,
     params: Function,
     context: import("./resolve/resolve-context.js").ResolveContext,
   ): string | Promise<string>;
   /**
    * Creates a component's template by invoking an injectable provider function.
    *
-   * @param {import('../interface.ts').Injectable} provider Function to invoke via `locals`
+   * @param {import('../interface.ts').Injectable<any>} provider Function to invoke via `locals`
    * @return {Promise<any>} The template html as a string: "<component-name input1='::$resolve.foo'></component-name>".
    */
   fromComponentProvider(
-    provider: import("../interface.ts").Injectable,
+    provider: import("../interface.ts").Injectable<any>,
     context: any,
   ): Promise<any>;
   /**

@@ -40,26 +40,39 @@ export type ExpandoStore = {
   };
 };
 /**
- * A dependency-annotated factory array used by AngularTS DI system.
- *
- * It consists of zero or more dependency names (as strings), followed by
- * a factory function that takes those dependencies as arguments.
+ * Dependency-annotated factory array used by AngularTS DI system.
  *
  * Example:
- * ```ts
- * ['dep1', 'dep2', function(dep1, dep2) { ... }]
- * ```
+ * ['dep1', 'dep2', (dep1, dep2) => new MyController(dep1, dep2)]
  */
-export type AnnotatedFactory = [...string[], (...args: any[]) => any];
-export type InjectableFactory = (...args: any[]) => any;
-export type InjectableClass = new (...args: any[]) => any;
+export type AnnotatedFactory<TFunction extends (...args: any[]) => any> = [
+  ...string[],
+  TFunction,
+];
 /**
- * A factory that can be either a standalone function or a dependency-annotated array or a class (constructor function).
- *
- * The array form is used to support minification-safe dependency injection.
- * See {@link AnnotatedFactory}.
+ * A class (constructor function) that can be instantiated.
  */
-export type Injectable = AnnotatedFactory | InjectableFactory | InjectableClass;
+export type InjectableClass<TInstance = any> = new (...args: any) => TInstance;
+/**
+ * A factory that can be:
+ * - a standalone function,
+ * - a dependency-annotated array,
+ * - or a class constructor.
+ *
+ * Parentheses are required around constructor types when used in unions.
+ */
+export type Injectable<
+  T extends ((...args: any[]) => any) | (abstract new (...args: any[]) => any),
+> =
+  | AnnotatedFactory<
+      T extends abstract new (...args: any[]) => any
+        ? (...args: ConstructorParameters<T>) => InstanceType<T>
+        : T
+    >
+  | (T extends abstract new (...args: any[]) => any
+      ? InjectableClass<InstanceType<T>>
+      : never)
+  | T;
 /**
  * An object that defines how a service is constructed.
  *
@@ -67,7 +80,7 @@ export type Injectable = AnnotatedFactory | InjectableFactory | InjectableClass;
  * either as a plain factory function or as an {@link AnnotatedFactory}.
  */
 export interface ServiceProvider {
-  $get: Injectable;
+  $get: Injectable<any>;
 }
 /**
  * The API for registering different types of providers with the injector.
@@ -103,13 +116,13 @@ export interface Provider {
    * @param name - The name of the service.
    * @param factoryFn - A function (or annotated array) that returns the service instance.
    */
-  factory(name: string, factoryFn: Injectable): Provider;
+  factory(name: string, factoryFn: Injectable<any>): Provider;
   /**
    * Register a constructor function to create a service.
    * @param name - The name of the service.
    * @param constructor - A class or function to instantiate.
    */
-  service(name: string, constructor: Injectable): Provider;
+  service(name: string, constructor: Injectable<any>): Provider;
   /**
    * Register a fixed value as a service.
    * @param name - The name of the service.
@@ -170,23 +183,61 @@ export interface Controller {
   $postLink?: () => void;
 }
 /**
- * Defines a component's configuration object.
+ * Defines a component's configuration object (a simplified directive definition object).
  */
 export interface ComponentOptions {
-  /** Controller function or injectable string reference */
-  controller?: string | Injectable;
-  /** Alias name for the controller in templates */
-  controllerAs?: string;
-  /** Inline HTML template */
-  template?: string | Injectable;
-  /** URL of the HTML template */
-  templateUrl?: string | Injectable;
-  /** Binding definitions (e.g., `@`, `=`, `<`) */
-  bindings?: Record<string, string>;
-  /** Enable transclusion or specify named slots */
-  transclude?: boolean | Record<string, string>;
-  /** Required controllers from other directives */
-  require?: Record<string, string>;
+  controller?: string | Injectable<ControllerConstructor> | undefined;
+  /**
+   * An identifier name for a reference to the controller. If present, the controller will be published to its scope under
+   * the specified name. If not present, this will default to '$ctrl'.
+   */
+  controllerAs?: string | undefined;
+  /**
+   * html template as a string or a function that returns an html template as a string which should be used as the
+   * contents of this component. Empty string by default.
+   * If template is a function, then it is injected with the following locals:
+   * $element - Current element
+   * $attrs - Current attributes object for the element
+   * Use the array form to define dependencies (necessary if strictDi is enabled and you require dependency injection)
+   */
+  template?: string | Injectable<(...args: any[]) => string> | undefined;
+  /**
+   * Path or function that returns a path to an html template that should be used as the contents of this component.
+   * If templateUrl is a function, then it is injected with the following locals:
+   * $element - Current element
+   * $attrs - Current attributes object for the element
+   * Use the array form to define dependencies (necessary if strictDi is enabled and you require dependency injection)
+   */
+  templateUrl?: string | Injectable<(...args: any[]) => string> | undefined;
+  /**
+   * Define DOM attribute binding to component properties. Component properties are always bound to the component
+   * controller and not to the scope.
+   */
+  bindings?:
+    | {
+        [boundProperty: string]: string;
+      }
+    | undefined;
+  /**
+   * Whether transclusion is enabled. Disabled by default.
+   */
+  transclude?:
+    | boolean
+    | {
+        [slot: string]: string;
+      }
+    | undefined;
+  /**
+   * Requires the controllers of other directives and binds them to this component's controller.
+   * The object keys specify the property names under which the required controllers (object values) will be bound.
+   * Note that the required controllers will not be available during the instantiation of the controller,
+   * but they are guaranteed to be available just before the $onInit method is executed!
+   */
+  require?:
+    | {
+        [controller: string]: string;
+      }
+    | undefined;
 }
 /**
  * A controller instance or object map used in directives.
@@ -237,7 +288,7 @@ export interface Directive {
   /** Compile function for the directive */
   compile?: DirectiveCompileFn;
   /** Controller constructor or injectable string name */
-  controller?: string | Injectable | any;
+  controller?: string | Injectable<any> | any;
   /** Alias name for the controller in templates */
   controllerAs?: string;
   /** Whether to bind scope to controller */
@@ -377,3 +428,11 @@ export declare const SwapMode: {
  * Union type representing all possible DOM insertion modes.
  */
 export type SwapModeType = keyof typeof SwapMode;
+export interface RootElementService extends Element {}
+/**
+ * The minimal local definitions required by $controller(ctrl, locals) calls.
+ */
+export interface ControllerLocals {
+  $scope: Scope;
+  $element: Element;
+}

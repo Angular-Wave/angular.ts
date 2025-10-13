@@ -355,7 +355,7 @@ export function $StateRefActiveDirective(
         };
         states.push(stateInfo);
         return function removeState() {
-          removeFrom(states)(stateInfo);
+          removeFrom(states, stateInfo);
         };
       }
       // Update route state

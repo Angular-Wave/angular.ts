@@ -177,7 +177,7 @@ export class ViewService {
         return;
       }
       trace.traceViewServiceUIViewEvent("<- Deregistering", ngView);
-      removeFrom(ngViews)(ngView);
+      removeFrom(ngViews, ngView);
     };
   }
   /**

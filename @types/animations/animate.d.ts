@@ -38,12 +38,12 @@ export class AnimateProvider {
    * ```
    *
    * @param {string} name The name of the animation (this is what the class-based CSS value will be compared to).
-   * @param {import("../interface.ts").Injectable} factory The factory function that will be executed to return the animation
+   * @param {import("../interface.ts").Injectable<any>} factory The factory function that will be executed to return the animation
    *                           object.
    */
   register: (
     name: string,
-    factory: import("../interface.ts").Injectable,
+    factory: import("../interface.ts").Injectable<any>,
   ) => void;
   /**
    * Sets and/or returns the custom filter function that is used to "filter" animations, i.e.

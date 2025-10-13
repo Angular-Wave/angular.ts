@@ -200,7 +200,7 @@ export class UrlService {
    */
   onChange(callback) {
     this._urlListeners.push(callback);
-    return () => removeFrom(this._urlListeners)(callback);
+    return () => removeFrom(this._urlListeners, callback);
   }
 
   /**

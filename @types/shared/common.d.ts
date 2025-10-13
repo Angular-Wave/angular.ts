@@ -75,7 +75,14 @@ export function createProxyFunctions(
  * @returns {Object} - A new object with `parent` as its prototype and properties from `extra`.
  */
 export function inherit(parent: any, extra?: any): any;
-export function _removeFrom(array: any, obj: any): any;
+/**
+ * Given an array, and an item, if the item is found in the array, it removes it (in-place).
+ * The same array is returned
+ * @param {Array} array
+ * @param {any} obj
+ * @returns {Array}
+ */
+export function removeFrom(array: any[], obj: any): any[];
 /**
  * Applies a set of defaults to an options object.  The options object is filtered
  * to only those properties of the objects in the defaultsList.
@@ -177,11 +184,6 @@ export function tail<T>(arr: T[]): T | undefined;
  * shallow copy from src to dest
  */
 export function copy(src: any, dest: any): any;
-/**
- * Given an array, and an item, if the item is found in the array, it removes it (in-place).
- * The same array is returned
- */
-export const removeFrom: any;
 export function allTrueR(memo: any, elem: any): any;
 export function anyTrueR(memo: any, elem: any): any;
 export function unnestR(memo: any, elem: any): any;

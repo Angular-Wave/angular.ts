@@ -285,7 +285,7 @@ export class StateProvider {
   onInvalid(callback) {
     this.invalidCallbacks.push(callback);
     return function deregisterListener() {
-      removeFrom(this.invalidCallbacks)(callback);
+      removeFrom(this.invalidCallbacks, callback);
     }.bind(this);
   }
   /**

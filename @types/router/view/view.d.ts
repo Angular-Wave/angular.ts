@@ -23,7 +23,7 @@ export class ViewService {
     _registeredUIView: (id: any) => undefined;
     _registeredUIViews: () => any[];
     _activeViewConfigs: () => any[];
-    _onSync: (listener: any) => () => any;
+    _onSync: (listener: any) => () => any[];
   };
   $get: (() => this)[];
   /**

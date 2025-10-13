@@ -73,7 +73,7 @@ export function createInjector(modulesToLoad, strictDi = false) {
   /**
    * Registers a provider.
    * @param {string} name
-   * @param {import('../../interface.ts').ServiceProvider | import('../../interface.ts').InjectableFactory} provider
+   * @param {import('../../interface.ts').ServiceProvider | import('../../interface.ts').Injectable<any>} provider
    * @returns {import('../../interface.ts').ServiceProvider}
    */
   function provider(name, provider) {

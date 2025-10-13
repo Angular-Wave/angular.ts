@@ -1,5 +1,4 @@
 import { isDate, isFunction, isRegExp, isString } from "./utils.js";
-import { curry } from "./hof.js";
 
 export function equals(o1, o2) {
   if (o1 === o2) return true;
@@ -126,11 +125,13 @@ export function inherit(parent, extra) {
 /**
  * Given an array, and an item, if the item is found in the array, it removes it (in-place).
  * The same array is returned
+ * @param {Array} array
+ * @param {any} obj
+ * @returns {Array}
  */
-export const removeFrom = curry(_removeFrom);
-export function _removeFrom(array, obj) {
-  const idx = array.indexOf(obj);
-  if (idx >= 0) array.splice(idx, 1);
+export function removeFrom(array, obj) {
+  const i = array.indexOf(obj);
+  if (i !== -1) array.splice(i, 1);
   return array;
 }
 
