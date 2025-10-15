@@ -1,4 +1,4 @@
-import { applyPairs, equals, find, removeFrom } from "../../shared/common.js";
+import { applyPairs, equals, removeFrom } from "../../shared/common.js";
 import { curry } from "../../shared/hof.js";
 import { trace } from "../common/trace.js";
 import { getViewConfigFactory } from "../state/views.js";
@@ -23,19 +23,7 @@ export class ViewService {
   constructor() {
     this._ngViews = [];
     this._viewConfigs = [];
-    this._viewConfigFactories = {};
     this._listeners = [];
-    this._pluginapi = {
-      _registeredUIView: (id) => {
-        return find(this._ngViews, (view) => view.id === id);
-      },
-      _registeredUIViews: () => this._ngViews,
-      _activeViewConfigs: () => this._viewConfigs,
-      _onSync: (listener) => {
-        this._listeners.push(listener);
-        return () => removeFrom(this._listeners, listener);
-      },
-    };
     this.viewConfigFactory(getViewConfigFactory());
   }
 

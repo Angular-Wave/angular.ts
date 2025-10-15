@@ -1,6 +1,7 @@
 import { assertPredicate, unnestR } from "../../shared/common.js";
 import { TransitionHookPhase, TransitionHookScope } from "./interface.js";
 import { TransitionHook } from "./transition-hook.js";
+
 /**
  * This class returns applicable TransitionHooks for a specific Transition instance.
  *
@@ -15,6 +16,9 @@ import { TransitionHook } from "./transition-hook.js";
  * in the Transition class, so we must also provide the Transition's _treeChanges)
  */
 export class HookBuilder {
+  /**
+   * @param {import("./transition.js").Transition} transition
+   */
   constructor(transition) {
     this.transition = transition;
   }
@@ -24,7 +28,7 @@ export class HookBuilder {
    * @returns
    */
   buildHooksForPhase(phase) {
-    return this.transition.transitionService._pluginapi
+    return this.transition.transitionService
       ._getEvents(phase)
       .map((type) => this.buildHooks(type))
       .reduce(unnestR, [])

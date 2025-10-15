@@ -37,6 +37,14 @@ export function matchState(state, criterion, transition) {
  * The registration data for a registered transition hook
  */
 export class RegisteredHook {
+  /**
+   * @param {import("./transition-service.js").TransitionProvider} tranSvc
+   * @param eventType
+   * @param callback
+   * @param matchCriteria
+   * @param removeHookFromRegistry
+   * @param options
+   */
   constructor(
     tranSvc,
     eventType,
@@ -45,6 +53,7 @@ export class RegisteredHook {
     removeHookFromRegistry,
     options = {},
   ) {
+    /** @type {import("./transition-service.js").TransitionProvider} */
     this.tranSvc = tranSvc;
     this.eventType = eventType;
     this.callback = callback;
@@ -93,7 +102,7 @@ export class RegisteredHook {
    * }
    */
   _getDefaultMatchCriteria() {
-    return map(this.tranSvc._pluginapi._getPathTypes(), () => true);
+    return map(this.tranSvc._getPathTypes(), () => true);
   }
   /**
    * Gets matching nodes as [[IMatchingNodes]]
@@ -115,7 +124,7 @@ export class RegisteredHook {
       this._getDefaultMatchCriteria(),
       this.matchCriteria,
     );
-    const paths = Object.values(this.tranSvc._pluginapi._getPathTypes());
+    const paths = Object.values(this.tranSvc._getPathTypes());
     return paths.reduce((mn, pathtype) => {
       // STATE scope criteria matches against every node in the path.
       // TRANSITION scope criteria matches against only the last node in the path

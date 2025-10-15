@@ -289,9 +289,9 @@ export class Transition implements IHookRegistry {
    *
    * @internal
    *
-   * @returns a promise for a successful transition.
+   * @returns {Promise} a promise for a successful transition.
    */
-  run(): any;
+  run(): Promise<any>;
   success: boolean;
   _error: any;
   /**

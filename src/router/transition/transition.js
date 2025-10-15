@@ -101,7 +101,7 @@ export class Transition {
    * (which can then be used to register hooks)
    */
   createTransitionHookRegFns() {
-    this.transitionService._pluginapi
+    this.transitionService
       ._getEvents()
       .filter((type) => type.hookPhase !== TransitionHookPhase.CREATE)
       .forEach((type) => makeEvent(this, this.transitionService, type));
@@ -516,6 +516,7 @@ export class Transition {
     )
       return "SameAsCurrent";
   }
+
   /**
    * Runs the transition
    *
@@ -523,7 +524,7 @@ export class Transition {
    *
    * @internal
    *
-   * @returns a promise for a successful transition.
+   * @returns {Promise} a promise for a successful transition.
    */
   run() {
     // Gets transition hooks array for the given phase

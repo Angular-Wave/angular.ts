@@ -86,12 +86,28 @@ export const parse = (path) => {
   return (obj) => parts.reduce((acc, key) => acc && acc[key], obj);
 };
 
-/** Given a class, returns a Predicate function that returns true if the object is of that class */
-export const is = (ctor) => (obj) =>
-  (obj != null && obj.constructor === ctor) || obj instanceof ctor;
+/**
+ * Given a class constructor, returns a predicate function that checks
+ * whether a given object is an instance of that class.
+ *
+ * @param {new (...args: any[]) => any} ctor - The class constructor to check against.
+ * @returns {(obj: any) => boolean} A predicate function that returns true if the object is of the given class.
+ */
+export function is(ctor) {
+  /**
+   * Checks if the provided object is an instance of the given constructor.
+   *
+   * @param {any} obj - The object to test.
+   * @returns {boolean} True if the object is an instance of the given class.
+   */
+  return function (obj) {
+    return (obj != null && obj.constructor === ctor) || obj instanceof ctor;
+  };
+}
 
 /** Given a value, returns a function which returns the value */
 export const val = (v) => () => v;
+
 /**
  * Sorta like Pattern Matching (a functional programming conditional construct)
  *

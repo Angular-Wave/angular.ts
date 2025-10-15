@@ -1,5 +1,4 @@
 import {
-  createProxyFunctions,
   defaults,
   removeFrom,
   silenceUncaughtInPromise,
@@ -15,7 +14,6 @@ import { TargetState } from "./target-state.js";
 import { Param } from "../params/param.js";
 import { Glob } from "../glob/glob.js";
 import { lazyLoadState } from "../hooks/lazy-load.js";
-import { val } from "../../shared/hof.js";
 import { EventBus } from "../../services/pubsub/pubsub.js";
 
 const err = minErr("$stateProvider");
@@ -76,16 +74,6 @@ export class StateProvider {
         throw new Error($error$);
       }
     };
-    const getters = ["current", "$current", "params", "transition"];
-    const boundFns = Object.keys(StateProvider.prototype).filter(
-      (x) => !getters.includes(x),
-    );
-    createProxyFunctions(
-      val(StateProvider.prototype),
-      this,
-      val(this),
-      boundFns,
-    );
 
     EventBus.subscribe("$stateService:defaultErrorHandler", (err) =>
       this.defaultErrorHandler()(err),

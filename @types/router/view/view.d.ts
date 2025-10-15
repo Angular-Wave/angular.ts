@@ -17,14 +17,7 @@
 export class ViewService {
   _ngViews: any[];
   _viewConfigs: any[];
-  _viewConfigFactories: {};
   _listeners: any[];
-  _pluginapi: {
-    _registeredUIView: (id: any) => undefined;
-    _registeredUIViews: () => any[];
-    _activeViewConfigs: () => any[];
-    _onSync: (listener: any) => () => any[];
-  };
   $get: (() => this)[];
   /**
    * @param {?import('../state/state-object.js').StateObject} context

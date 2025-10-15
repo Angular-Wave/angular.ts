@@ -37,7 +37,6 @@ export class TransitionProvider {
   globals: import("../router.js").Router;
   $view: any;
   _deregisterHookFns: {};
-  _pluginapi: any;
   $get: (
     | string
     | ((
@@ -94,7 +93,11 @@ export class TransitionProvider {
     getErrorHandler?: () => (error: any) => any,
     synchronous?: boolean,
   ): void;
-  _getEvents(phase: any): any[];
+  /**
+   * @param {TransitionHookPhase} [phase]
+   * @return {any[]}
+   */
+  _getEvents(phase?: TransitionHookPhase): any[];
   /**
    * Adds a Path to be used as a criterion against a TreeChanges path
    *
@@ -114,3 +117,4 @@ export class TransitionProvider {
   _registerCoreTransitionHooks(): void;
 }
 import { Transition } from "./transition.js";
+import { TransitionHookPhase } from "./interface.js";

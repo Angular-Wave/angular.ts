@@ -26,15 +26,24 @@ export function makeEvent(
  * The registration data for a registered transition hook
  */
 export class RegisteredHook {
+  /**
+   * @param {import("./transition-service.js").TransitionProvider} tranSvc
+   * @param eventType
+   * @param callback
+   * @param matchCriteria
+   * @param removeHookFromRegistry
+   * @param options
+   */
   constructor(
-    tranSvc: any,
+    tranSvc: import("./transition-service.js").TransitionProvider,
     eventType: any,
     callback: any,
     matchCriteria: any,
     removeHookFromRegistry: any,
     options?: {},
   );
-  tranSvc: any;
+  /** @type {import("./transition-service.js").TransitionProvider} */
+  tranSvc: import("./transition-service.js").TransitionProvider;
   eventType: any;
   callback: any;
   matchCriteria: any;

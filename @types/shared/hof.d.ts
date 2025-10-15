@@ -48,6 +48,14 @@ export function curry(fn: any): any | (() => any | any);
  */
 export function compose(...args: any[]): () => any;
 /**
+ * Given a class constructor, returns a predicate function that checks
+ * whether a given object is an instance of that class.
+ *
+ * @param {new (...args: any[]) => any} ctor - The class constructor to check against.
+ * @returns {(obj: any) => boolean} A predicate function that returns true if the object is of the given class.
+ */
+export function is(ctor: new (...args: any[]) => any): (obj: any) => boolean;
+/**
  * Sorta like Pattern Matching (a functional programming conditional construct)
  *
  * See http://c2.com/cgi/wiki?PatternMatching
@@ -97,5 +105,4 @@ export function pattern(struct: any): (arg0: any) => any;
  */
 export const propEq: any;
 export function parse(path: any): (obj: any) => any;
-export function is(ctor: any): (obj: any) => boolean;
 export function val(v: any): () => any;

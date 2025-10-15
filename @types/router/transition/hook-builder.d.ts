@@ -12,8 +12,11 @@
  * in the Transition class, so we must also provide the Transition's _treeChanges)
  */
 export class HookBuilder {
-  constructor(transition: any);
-  transition: any;
+  /**
+   * @param {import("./transition.js").Transition} transition
+   */
+  constructor(transition: import("./transition.js").Transition);
+  transition: import("./transition.js").Transition;
   /**
    * @param {TransitionHookPhase} phase
    * @returns

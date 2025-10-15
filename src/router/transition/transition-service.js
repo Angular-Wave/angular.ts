@@ -25,8 +25,6 @@ import { registerLazyLoadHook } from "../hooks/lazy-load.js";
 import { TransitionEventType } from "./transition-event-type.js";
 import { TransitionHook } from "./transition-hook.js";
 import { isDefined } from "../../shared/utils.js";
-import { createProxyFunctions } from "../../shared/common.js";
-import { val } from "../../shared/hof.js";
 import { registerIgnoredTransitionHook } from "../hooks/ignored-transition.js";
 import { registerInvalidTransitionHook } from "../hooks/invalid-transition.js";
 import { registerRedirectToHook } from "../hooks/redirect-to.js";
@@ -79,13 +77,6 @@ export class TransitionProvider {
     this.globals = globals;
     this.$view = viewService;
     this._deregisterHookFns = {};
-    this._pluginapi = createProxyFunctions(val(this), {}, val(this), [
-      "_definePathType",
-      "_defineEvent",
-      "_getPathTypes",
-      "_getEvents",
-      "getHooks",
-    ]);
     this._defineCorePaths();
     this._defineCoreEvents();
     this._registerCoreTransitionHooks();
@@ -243,6 +234,10 @@ export class TransitionProvider {
     makeEvent(this, this, eventType);
   }
 
+  /**
+   * @param {TransitionHookPhase} [phase]
+   * @return {any[]}
+   */
   _getEvents(phase) {
     const transitionHookTypes = isDefined(phase)
       ? this._eventTypes.filter((type) => type.hookPhase === phase)
