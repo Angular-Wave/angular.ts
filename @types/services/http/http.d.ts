@@ -102,7 +102,6 @@ export class HttpProvider {
   $get: (
     | string
     | ((
-        $httpBackend: any,
         $injector: import("../../core/di/internal-injector.js").InjectorService,
         $sce: any,
       ) => {
@@ -132,3 +131,38 @@ export class HttpProvider {
       })
   )[];
 }
+/**
+ * Makes an HTTP request using XMLHttpRequest with flexible options.
+ *
+ * @param {string} method - The HTTP method (e.g., "GET", "POST").
+ * @param {string} [url] - The URL to send the request to. Defaults to the current page URL.
+ * @param {*} [post] - The body to send with the request, if any.
+ * @param {function(number, any, string|null, string, string): void} [callback] - Callback invoked when the request completes.
+ * @param {Object<string, string|undefined>} [headers] - Headers to set on the request.
+ * @param {number|Promise<any>} [timeout] - Timeout in ms or a cancellable promise.
+ * @param {boolean} [withCredentials] - Whether to send credentials with the request.
+ * @param {XMLHttpRequestResponseType} [responseType] - The type of data expected in the response.
+ * @param {Record<string, EventListener>} [eventHandlers] - Event listeners for the XMLHttpRequest object.
+ * @param {Record<string, EventListener>} [uploadEventHandlers] - Event listeners for the XMLHttpRequest.upload object.
+ * @returns {void}
+ */
+export function http(
+  method: string,
+  url?: string,
+  post?: any,
+  callback?: (
+    arg0: number,
+    arg1: any,
+    arg2: string | null,
+    arg3: string,
+    arg4: string,
+  ) => void,
+  headers?: {
+    [x: string]: string;
+  },
+  timeout?: number | Promise<any>,
+  withCredentials?: boolean,
+  responseType?: XMLHttpRequestResponseType,
+  eventHandlers?: Record<string, EventListener>,
+  uploadEventHandlers?: Record<string, EventListener>,
+): void;

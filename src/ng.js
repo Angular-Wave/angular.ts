@@ -65,7 +65,6 @@ import {
   HttpParamSerializerProvider,
   HttpProvider,
 } from "./services/http/http.js";
-import { HttpBackendProvider } from "./services/http-backend/http-backend.js";
 import { LocationProvider } from "./services/location/location.js";
 import { LogProvider } from "./services/log/log.js";
 import { ParseProvider } from "./core/parse/parse.js";
@@ -253,7 +252,6 @@ export function registerNgModule(angular) {
             $interpolate: InterpolateProvider,
             $http: HttpProvider,
             $httpParamSerializer: HttpParamSerializerProvider,
-            $httpBackend: HttpBackendProvider,
             $location: LocationProvider,
             $log: LogProvider,
             $parse: ParseProvider,

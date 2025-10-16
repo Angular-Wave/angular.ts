@@ -39,7 +39,6 @@ export const $injectTokens = Object.freeze({
   $exceptionHandler: "$exceptionHandler",
   $filter: "$filter",
   $http: "$http",
-  $httpBackend: "$httpBackend",
   $httpParamSerializer: "$httpParamSerializer",
   $interpolate: "$interpolate",
   $location: "$location",

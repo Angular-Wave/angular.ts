@@ -5,7 +5,6 @@ import { wait } from "../shared/test-utils.js";
 describe("templateFactory", () => {
   let $injector,
     $templateFactory,
-    $httpBackend,
     $sce,
     $scope,
     $compile,
@@ -26,14 +25,11 @@ describe("templateFactory", () => {
     $injector = window.angular.bootstrap(document.getElementById("app"), [
       "defaultModule",
     ]);
-    $injector.invoke(
-      (_$templateFactory_, _$httpBackend_, _$sce_, $rootScope) => {
-        $templateFactory = _$templateFactory_;
-        $httpBackend = _$httpBackend_;
-        $sce = _$sce_;
-        $scope = $rootScope;
-      },
-    );
+    $injector.invoke((_$templateFactory_, _$sce_, $rootScope) => {
+      $templateFactory = _$templateFactory_;
+      $sce = _$sce_;
+      $scope = $rootScope;
+    });
   });
 
   it("exists", () => {
@@ -73,14 +69,11 @@ describe("templateFactory", () => {
       $injector = window.angular.bootstrap(document.getElementById("app"), [
         "defaultModule",
       ]);
-      $injector.invoke(
-        (_$templateFactory_, _$httpBackend_, _$sce_, $rootScope) => {
-          $templateFactory = _$templateFactory_;
-          $httpBackend = _$httpBackend_;
-          $sce = _$sce_;
-          $scope = $rootScope;
-        },
-      );
+      $injector.invoke((_$templateFactory_, _$sce_, $rootScope) => {
+        $templateFactory = _$templateFactory_;
+        $sce = _$sce_;
+        $scope = $rootScope;
+      });
     });
 
     it("does not restrict URL loading", function () {
@@ -109,7 +102,6 @@ describe("templateFactory", () => {
       $injector.invoke(
         (
           _$templateFactory_,
-          _$httpBackend_,
           _$sce_,
           $rootScope,
           _$stateRegistry_,
@@ -117,7 +109,6 @@ describe("templateFactory", () => {
           _$compile_,
         ) => {
           $templateFactory = _$templateFactory_;
-          $httpBackend = _$httpBackend_;
           $sce = _$sce_;
           $scope = $rootScope;
           $stateRegistry = _$stateRegistry_;
