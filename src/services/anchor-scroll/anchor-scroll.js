@@ -4,8 +4,8 @@ import {
   isNumber,
   isString,
   getNodeName,
-} from "../shared/utils.js";
-import { $injectTokens as $t } from "../injection-tokens.js";
+} from "../../shared/utils.js";
+import { $injectTokens as $t } from "../../injection-tokens.js";
 
 /**
  * @typedef {Object} AnchorScrollObject
@@ -30,8 +30,8 @@ export class AnchorScrollProvider {
     $t.$rootScope,
     /**
      *
-     * @param {import('../services/location/location.js').Location} $location
-     * @param {import('../core/scope/scope.js').Scope} $rootScope
+     * @param {import('../../services/location/location.js').Location} $location
+     * @param {import('../../core/scope/scope.js').Scope} $rootScope
      * @returns
      */
     function ($location, $rootScope) {

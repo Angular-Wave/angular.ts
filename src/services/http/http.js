@@ -23,8 +23,9 @@ import {
   uppercase,
   isPromiseLike,
 } from "../../shared/utils.js";
-import { getCookies } from "../cookie-reader.js";
 
+let lastCookies = {};
+let lastCookieString = "";
 const APPLICATION_JSON = "application/json";
 const CONTENT_TYPE_APPLICATION_JSON = {
   "Content-Type": `${APPLICATION_JSON};charset=utf-8`,
@@ -1055,5 +1056,49 @@ export function http(
       clearTimeout(timeoutId);
     }
     callback(status, response, headersString, statusText, xhrStatus);
+  }
+}
+
+/**
+ * @returns {Object<String, String>} List of all cookies
+ */
+function getCookies() {
+  let cookieArray;
+  let cookie;
+  let i;
+  let index;
+  let name;
+  const currentCookieString = document.cookie;
+
+  if (currentCookieString !== lastCookieString) {
+    lastCookieString = currentCookieString;
+    cookieArray = lastCookieString.split("; ");
+    lastCookies = {};
+
+    for (i = 0; i < cookieArray.length; i++) {
+      cookie = cookieArray[i];
+      index = cookie.indexOf("=");
+      if (index > 0) {
+        // ignore nameless cookies
+        name = safeDecodeURIComponent(cookie.substring(0, index));
+        // the first value that is seen for a cookie is the most
+        // specific one.  values for the same cookie name that
+        // follow are for less specific paths.
+        if (isUndefined(lastCookies[name])) {
+          lastCookies[name] = safeDecodeURIComponent(
+            cookie.substring(index + 1),
+          );
+        }
+      }
+    }
+  }
+  return lastCookies;
+}
+
+function safeDecodeURIComponent(str) {
+  try {
+    return decodeURIComponent(str);
+  } catch {
+    return str;
   }
 }

@@ -50,7 +50,7 @@ import {
 import { ngModelOptionsDirective } from "./directive/model-options/model-options.js";
 import { ngAttributeAliasDirectives } from "./directive/attrs/attrs.js";
 import { ngEventDirectives } from "./directive/events/events.js";
-import { AnchorScrollProvider } from "./services/anchor-scroll.js";
+import { AnchorScrollProvider } from "./services/anchor-scroll/anchor-scroll.js";
 import { AnimateProvider } from "./animations/animate.js";
 import {
   AnimateAsyncRunFactoryProvider,
@@ -70,7 +70,7 @@ import { LogProvider } from "./services/log/log.js";
 import { ParseProvider } from "./core/parse/parse.js";
 import { RootScopeProvider } from "./core/scope/scope.js";
 import { SceDelegateProvider, SceProvider } from "./services/sce/sce.js";
-import { TemplateRequestProvider } from "./services/template-request.js";
+import { TemplateRequestProvider } from "./services/template-request/template-request.js";
 import { SanitizeUriProvider } from "./core/sanitize/sanitize-uri.js";
 import {
   ngMessageDefaultDirective,

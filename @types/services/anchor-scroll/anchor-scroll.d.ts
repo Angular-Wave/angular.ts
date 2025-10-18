@@ -13,8 +13,8 @@ export class AnchorScrollProvider {
   $get: (
     | string
     | ((
-        $location: import("../services/location/location.js").Location,
-        $rootScope: import("../core/scope/scope.js").Scope,
+        $location: import("../../services/location/location.js").Location,
+        $rootScope: import("../../core/scope/scope.js").Scope,
       ) => AnchorScrollFunction)
   )[];
 }

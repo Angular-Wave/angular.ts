@@ -4,7 +4,9 @@ export class ViewScrollProvider {
   $get: (
     | string
     | ((
-        $anchorScroll: import("../services/anchor-scroll.js").AnchorScrollObject,
-      ) => import("../services/anchor-scroll.js").AnchorScrollObject | Function)
+        $anchorScroll: import("../services/anchor-scroll/anchor-scroll.js").AnchorScrollObject,
+      ) =>
+        | import("../services/anchor-scroll/anchor-scroll.js").AnchorScrollObject
+        | Function)
   )[];
 }

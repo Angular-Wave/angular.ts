@@ -1,5 +1,5 @@
 ---
-title: $sce
+title: $sceProvider
 description: >
   Strict Contextual Escaping service
 ---

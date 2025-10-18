@@ -27,7 +27,7 @@ export class ViewService {
     this.viewConfigFactory(getViewConfigFactory());
   }
 
-  $get = [() => this];
+  $get = () => this;
 
   /**
    * @param {?import('../state/state-object.js').StateObject} context

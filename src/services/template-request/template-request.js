@@ -1,5 +1,5 @@
-import { defaultHttpResponseTransform } from "./http/http.js";
-import { extend, isString, minErr } from "../shared/utils.js";
+import { defaultHttpResponseTransform } from "../http/http.js";
+import { extend, isString, minErr } from "../../shared/utils.js";
 
 const $templateRequestMinErr = minErr("$templateRequest");
 
@@ -60,8 +60,8 @@ export function TemplateRequestProvider() {
     "$sce",
     /**
      *
-     * @param {import('./exception/exception-handler.js').ErrorHandler} $exceptionHandler
-     * @param {import('../services/template-cache/interface.ts').TemplateCache} $templateCache
+     * @param {import('../exception/exception-handler.js').ErrorHandler} $exceptionHandler
+     * @param {import('../template-cache/interface.ts').TemplateCache} $templateCache
      * @param {import("interface.ts").HttpService} $http
      * @param {*} $sce
      * @returns

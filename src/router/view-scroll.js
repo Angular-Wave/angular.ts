@@ -12,8 +12,8 @@ export class ViewScrollProvider {
   $get = [
     $t.$anchorScroll,
     /**
-     * @param {import('../services/anchor-scroll.js').AnchorScrollObject} $anchorScroll
-     * @returns {import('../services/anchor-scroll.js').AnchorScrollObject|Function}
+     * @param {import('../services/anchor-scroll/anchor-scroll.js').AnchorScrollObject} $anchorScroll
+     * @returns {import('../services/anchor-scroll/anchor-scroll.js').AnchorScrollObject|Function}
      */
     ($anchorScroll) => {
       if (this.enabled) {

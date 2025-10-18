@@ -18,7 +18,7 @@ export class ViewService {
   _ngViews: any[];
   _viewConfigs: any[];
   _listeners: any[];
-  $get: (() => this)[];
+  $get: () => this;
   /**
    * @param {?import('../state/state-object.js').StateObject} context
    * @return {?import('../state/state-object.js').StateObject}
