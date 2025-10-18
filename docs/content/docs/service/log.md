@@ -1,7 +1,7 @@
 ---
 title: $log
 description: >
-  A simple service for logging
+  Logging service
 ---
 
 ### Using `$log`
