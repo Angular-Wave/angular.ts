@@ -71,7 +71,7 @@ export class ControllerProvider {
 
     /**
      * @param {import("../../core/di/internal-injector.js").InjectorService} $injector
-     * @returns {Function} A service function that creates controllers.
+     * @returns {import("./interface.js").ControllerService} A service function that creates controllers.
      */
     ($injector) => {
       return (expression, locals, later, ident) => {
@@ -82,7 +82,7 @@ export class ControllerProvider {
         later = later === true;
 
         if (isString(expression)) {
-          match = expression.match(CNTRL_REG);
+          match = /** @type {string} */ (expression).match(CNTRL_REG);
           if (!match) {
             throw $controllerMinErr(
               "ctrlfmt",
@@ -119,7 +119,7 @@ export class ControllerProvider {
               locals,
               identifier,
               instance,
-              constructor || expression.name,
+              constructor || /** @type {any} */ (expression).name,
             );
           }
 
@@ -142,7 +142,7 @@ export class ControllerProvider {
                   locals,
                   identifier,
                   instance,
-                  constructor || expression.name,
+                  constructor || /** @type {any} */ (expression).name,
                 );
               }
             }
@@ -151,14 +151,18 @@ export class ControllerProvider {
           }.bind(this, { instance, identifier });
         }
 
-        instance = $injector.instantiate(expression, locals, constructor);
+        instance = $injector.instantiate(
+          /** @type {any} */ (expression),
+          locals,
+          constructor,
+        );
 
         if (identifier) {
           this.addIdentifier(
             locals,
             identifier,
             instance,
-            constructor || expression.name,
+            constructor || /** @type {any} */ (expression).name,
           );
         }
 

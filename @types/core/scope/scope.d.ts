@@ -208,7 +208,10 @@ export class Scope {
    * @returns {any}
    */
   $broadcast(name: string, ...args: any[]): any;
-  $postUpdate(fn: any): void;
+  /**
+   * @param {Function} fn
+   */
+  $postUpdate(fn: Function): void;
   $destroy(): void;
   /**
    * Searches the scope instance

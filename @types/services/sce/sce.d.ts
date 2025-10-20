@@ -227,7 +227,7 @@ export class SceDelegateProvider {
     | ((
         $injector: import("../../core/di/internal-injector.js").InjectorService,
         $$sanitizeUri: any,
-        $exceptionHandler: ErrorHandler,
+        $exceptionHandler: ng.ExceptionHandlerService,
       ) => {
         trustAs: (type: string, trustedValue: any) => any;
         getTrusted: (type: string, maybeTrusted: any) => any;
@@ -235,4 +235,3 @@ export class SceDelegateProvider {
       })
   )[];
 }
-export type ErrorHandler = import("../exception/interface.ts").Interface;

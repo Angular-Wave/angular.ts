@@ -25,7 +25,7 @@ export function nextId() {
 }
 
 /**
- * @type {import('../parse/interface.ts').ParseService}
+ * @type {ng.ParseService}
  */
 let $parse;
 
@@ -1125,6 +1125,9 @@ export class Scope {
     return this.$root == /** @type {Scope} */ (this);
   }
 
+  /**
+   * @param {Function} fn
+   */
   $postUpdate(fn) {
     $postUpdateQueue.push(fn);
   }

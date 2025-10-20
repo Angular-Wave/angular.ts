@@ -14,7 +14,7 @@ ngIncludeDirective.$inject = [
  * @param {*} $templateRequest
  * @param {import("../../services/anchor-scroll/anchor-scroll.js").AnchorScrollFunction} $anchorScroll
  * @param {*} $animate
- * @param {import('../../services/exception/interface.ts').Interface} $exceptionHandler
+ * @param {import('../../services/exception/interface.ts').ErrorHandler} $exceptionHandler
  * @returns {import('../../interface.js').Directive}
  */
 export function ngIncludeDirective(

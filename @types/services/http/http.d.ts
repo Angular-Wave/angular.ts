@@ -11,7 +11,11 @@
  */
 export function HttpParamSerializerProvider(): void;
 export class HttpParamSerializerProvider {
-  $get: () => (params: any) => string;
+  /**
+   * @returns {import('./interface.ts').HttpParamSerializer}
+   * A function that serializes parameters into a query string.
+   */
+  $get: () => import("./interface.ts").HttpParamSerializer;
 }
 export function defaultHttpResponseTransform(data: any, headers: any): any;
 /**

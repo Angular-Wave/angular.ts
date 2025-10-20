@@ -49,7 +49,7 @@ export class StateProvider {
     return this.globals.$current;
   }
 
-  static $inject = ["$routerProvider", "$transitionsProvider"];
+  /* @ignore */ static $inject = ["$routerProvider", "$transitionsProvider"];
 
   /**
    *

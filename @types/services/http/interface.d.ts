@@ -217,3 +217,14 @@ export interface HttpService {
    */
   pendingRequests: RequestConfig[];
 }
+/**
+ * Represents an object of key-value pairs to be serialized into an HTTP query string.
+ */
+export type HttpParams = Record<
+  string,
+  string | number | boolean | null | undefined | unknown[]
+>;
+/**
+ * A function that serializes an object into a URL-encoded query string.
+ */
+export type HttpParamSerializer = (params?: HttpParams) => string;

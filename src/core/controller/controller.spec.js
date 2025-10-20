@@ -220,6 +220,7 @@ describe("$controller", () => {
 
   it("should return instance of given controller class", () => {
     const MyClass = function () {};
+    debugger;
     const ctrl = $controller(MyClass);
 
     expect(ctrl).toBeDefined();

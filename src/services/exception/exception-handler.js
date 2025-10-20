@@ -44,7 +44,7 @@
 
 /** @typedef {import('../log/interface.ts').LogService} LogService */
 
-/** @typedef {import("./interface.ts").Interface}  ErrorHandler */
+/** @typedef {import("./interface.ts").ErrorHandler}  ErrorHandler */
 
 /**
  * Provider for `$exceptionHandler` service. Delegates uncaught exceptions to `$log.error()` by default.

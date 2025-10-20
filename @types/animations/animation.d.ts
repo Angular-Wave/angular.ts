@@ -4,7 +4,7 @@ export class AnimationProvider {
   $get: (
     | string
     | ((
-        $rootScope: any,
+        $rootScope: ng.RootScopeService,
         $injector: any,
         $$AnimateRunner: any,
         $$rAFScheduler: any,

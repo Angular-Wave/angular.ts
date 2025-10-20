@@ -16,8 +16,6 @@ import {
 
 import { snakeToCamel } from "../../shared/dom.js";
 
-/** @typedef {import("../exception/interface.ts").Interface }  ErrorHandler */
-
 const $sceMinErr = minErr("$sce");
 
 export const SCE_CONTEXTS = {
@@ -314,7 +312,7 @@ export class SceDelegateProvider {
        *
        * @param {import("../../core/di/internal-injector.js").InjectorService} $injector
        * @param {*} $$sanitizeUri
-       * @param {ErrorHandler} $exceptionHandler
+       * @param {ng.ExceptionHandlerService} $exceptionHandler
        * @returns
        */
       function ($injector, $$sanitizeUri, $exceptionHandler) {

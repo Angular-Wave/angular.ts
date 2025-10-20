@@ -18,6 +18,6 @@ export class FilterProvider {
     | string
     | ((
         $injector: import("../../core/di/internal-injector.js").InjectorService,
-      ) => import("../../interface.ts").FilterFn)
+      ) => import("../../interface.ts").FilterFactory)
   )[];
 }

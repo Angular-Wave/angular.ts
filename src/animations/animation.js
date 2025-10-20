@@ -12,6 +12,7 @@ import {
   applyAnimationStyles,
   prepareAnimationOptions,
 } from "./shared.js";
+import { $injectTokens as $t } from "../injection-tokens.js";
 
 const RUNNER_STORAGE_KEY = "$$animationRunner";
 const PREPARE_CLASSES_KEY = "$$animatePrepareClasses";
@@ -34,14 +35,14 @@ export function AnimationProvider() {
   }
 
   this.$get = [
-    "$rootScope",
-    "$injector",
-    "$$AnimateRunner",
-    "$$rAFScheduler",
-    "$$animateCache",
+    $t.$rootScope,
+    $t.$injector,
+    $t.$$AnimateRunner,
+    $t.$$rAFScheduler,
+    $t.$$animateCache,
     /**
      *
-     * @param {*} $rootScope
+     * @param {ng.RootScopeService} $rootScope
      * @param {import("../core/di/internal-injector").InjectorService} $injector
      * @param {*} $$AnimateRunner
      * @param {import("./raf-scheduler").RafScheduler} $$rAFScheduler
@@ -207,7 +208,6 @@ export function AnimationProvider() {
         // block. This way we can group animations for all the animations that
         // were apart of the same postDigest flush call.
         if (animationQueue.length > 1) return runner;
-
         $rootScope.$postUpdate(() => {
           const animations = [];
           animationQueue.forEach((entry) => {

@@ -35,7 +35,7 @@ export class ControllerProvider {
     | string
     | ((
         $injector: import("../../core/di/internal-injector.js").InjectorService,
-      ) => Function)
+      ) => import("./interface.js").ControllerService)
   )[];
   /**
    * Adds an identifier to the controller instance in the given locals' scope.

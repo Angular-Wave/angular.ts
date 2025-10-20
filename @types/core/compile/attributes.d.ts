@@ -21,7 +21,7 @@ export class Attributes implements Record<string, any> {
   );
   $rootScope: import("../scope/scope.js").Scope;
   $animate: any;
-  $exceptionHandler: import("../../services/exception/interface.ts").Interface;
+  $exceptionHandler: import("../../services/exception/interface.ts").ErrorHandler;
   $sce: any;
   $attr: {};
   /** @type {import("../../shared/noderef.js").NodeRef} */

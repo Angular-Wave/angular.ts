@@ -48,7 +48,7 @@ export class FilterProvider {
     $t.$injector,
     /**
      * @param {import("../../core/di/internal-injector.js").InjectorService} $injector
-     * @returns {import('../../interface.ts').FilterFn}
+     * @returns {import('../../interface.ts').FilterFactory}
      */
     ($injector) => (/** @type {string} */ name) => $injector.get(name + SUFFIX),
   ];

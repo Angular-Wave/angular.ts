@@ -16,7 +16,12 @@ import { $injectTokens as $t, provider } from "../../injection-tokens.js";
  *
  */
 export class StateRegistryProvider {
-  static $inject = provider([$t.$url, $t.$state, $t.$router, $t.$view]);
+  /* @ignore */ static $inject = provider([
+    $t.$url,
+    $t.$state,
+    $t.$router,
+    $t.$view,
+  ]);
 
   /**
    * @param urlService

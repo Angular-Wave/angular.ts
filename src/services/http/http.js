@@ -23,6 +23,7 @@ import {
   uppercase,
   isPromiseLike,
 } from "../../shared/utils.js";
+import { $injectTokens as $t } from "../../injection-tokens.js";
 
 let lastCookies = {};
 let lastCookieString = "";
@@ -57,8 +58,12 @@ function serializeValue(v) {
  * Note that serializer will sort the request parameters alphabetically.
  */
 export function HttpParamSerializerProvider() {
-  this.$get = function () {
-    return function ngParamSerializer(params) {
+  /**
+   * @returns {import('./interface.ts').HttpParamSerializer}
+   * A function that serializes parameters into a query string.
+   */
+  this.$get = () => {
+    return (params) => {
       if (!params) return "";
       const parts = [];
       Object.keys(params)
@@ -384,8 +389,8 @@ export function HttpProvider() {
   });
 
   this.$get = [
-    "$injector",
-    "$sce",
+    $t.$injector,
+    $t.$sce,
     /**
      *
      * @param {import("../../core/di/internal-injector.js").InjectorService} $injector

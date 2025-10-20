@@ -173,6 +173,8 @@ export class ProviderInjector extends AbstractInjector {
       this.path.join(" <- "),
     );
   }
+
+  loadNewModules() {}
 }
 
 /**

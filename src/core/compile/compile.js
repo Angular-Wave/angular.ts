@@ -42,6 +42,7 @@ import { PREFIX_REGEXP } from "../../shared/constants.js";
 import { createEventDirective } from "../../directive/events/events.js";
 import { Attributes } from "./attributes.js";
 import { ngObserveDirective } from "../../directive/observe/observe.js";
+import { $injectTokens as $t } from "../../injection-tokens.js";
 
 /**
  * A function passed as the fifth argument to a {@type PublicLinkFn} link function.
@@ -139,7 +140,7 @@ const EVENT_HANDLER_ATTR_REGEXP = /^(on[a-z]+|formaction)$/;
 export const DirectiveSuffix = "Directive";
 
 export class CompileProvider {
-  /* @ignore */ static $inject = ["$provide", "$$sanitizeUriProvider"];
+  /* @ignore */ static $inject = [$t.$provide, $t.$$sanitizeUriProvider];
 
   /**
    * @param {import('../../interface.js').Provider} $provide

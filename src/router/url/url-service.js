@@ -19,7 +19,7 @@ import { $injectTokens as $t, provider } from "../../injection-tokens.js";
  * API for URL management
  */
 export class UrlService {
-  static $inject = provider([
+  /* @ignore */ static $inject = provider([
     $t.$location,
     $t.$state,
     $t.$router,
