@@ -6,18 +6,18 @@ export class FilterProvider {
   constructor($provide: import("../../interface.ts").Provider);
   $provide: import("../../interface.ts").Provider;
   /**
-   * @param {string|Record<string, import('../../interface.ts').FilterFactory>} name
-   * @param {import('../../interface.ts').FilterFactory} [factory]
+   * @param {string|Record<string, ng.FilterFn>} name
+   * @param {ng.FilterService} [factory]
    * @return {import('../../interface.ts').Provider}
    */
   register(
-    name: string | Record<string, import("../../interface.ts").FilterFactory>,
-    factory?: import("../../interface.ts").FilterFactory,
+    name: string | Record<string, ng.FilterFn>,
+    factory?: ng.FilterService,
   ): import("../../interface.ts").Provider;
   $get: (
     | string
     | ((
         $injector: import("../../core/di/internal-injector.js").InjectorService,
-      ) => import("../../interface.ts").FilterFactory)
+      ) => ng.FilterService)
   )[];
 }

@@ -6,6 +6,7 @@ import {
   stringify,
 } from "../../shared/utils.js";
 import { constantWatchDelegate } from "../parse/parse.js";
+import { $injectTokens as $t } from "../../injection-tokens.js";
 
 const $interpolateMinErr = minErr("$interpolate");
 function throwNoconcat(text) {
@@ -53,13 +54,13 @@ export class InterpolateProvider {
   }
 
   $get = [
-    "$parse",
-    "$sce",
+    $t.$parse,
+    $t.$sce,
     /**
      *
-     * @param {import("../parse/interface.ts").ParseService} $parse
+     * @param {ng.ParseService} $parse
      * @param {*} $sce
-     * @returns
+     * @returns {ng.InterpolateService}
      */
     function ($parse, $sce) {
       /** @type {InterpolateProvider} */
@@ -308,7 +309,7 @@ export class InterpolateProvider {
             return concat.join("");
           };
 
-          return extend(
+          return /**@type {import("./interface.js").InterpolationFunction}  */ extend(
             (context, cb) => {
               let i = 0;
               const ii = expressions.length;
@@ -402,6 +403,7 @@ export class InterpolateProvider {
         return provider.endSymbol;
       };
 
+      // @ts-ignore
       return $interpolate;
     },
   ];

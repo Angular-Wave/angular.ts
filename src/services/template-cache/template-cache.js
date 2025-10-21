@@ -3,11 +3,11 @@
  */
 export class TemplateCacheProvider {
   constructor() {
-    /** @type {import('./interface.ts').TemplateCache} */
+    /** @type {ng.TemplateCacheService} */
     this.cache = new Map();
   }
   /**
-   * @returns {import('./interface.ts').TemplateCache}
+   * @returns {ng.TemplateCacheService}
    */
   $get() {
     return this.cache;

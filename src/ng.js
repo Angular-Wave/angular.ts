@@ -283,5 +283,7 @@ export function registerNgModule(angular) {
        */
       (globals) => globals.params,
     ])
+    .value("$window", window)
+    .value("$document", document)
     .value("$trace", trace);
 }

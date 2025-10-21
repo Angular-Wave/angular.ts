@@ -58,6 +58,8 @@ export class NgModule {
     if (configFn) {
       this.config(configFn);
     }
+
+    this.services = [];
   }
 
   /**
@@ -134,6 +136,7 @@ export class NgModule {
     if (serviceFunction && isFunction(serviceFunction)) {
       serviceFunction["$$moduleName"] = name;
     }
+    this.services.push(name);
     this.invokeQueue.push([$t.$provide, "service", [name, serviceFunction]]);
     return this;
   }

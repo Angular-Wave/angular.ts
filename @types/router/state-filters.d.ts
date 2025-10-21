@@ -9,11 +9,11 @@
  * ```
  *
  * @param {import('./state/state-service.js').StateProvider} $state
- * @returns {import('../interface.ts').FilterFn}
+ * @returns {ng.FilterFn}
  */
 export function $IsStateFilter(
   $state: import("./state/state-service.js").StateProvider,
-): import("../interface.ts").FilterFn;
+): ng.FilterFn;
 export namespace $IsStateFilter {
   let $inject: string[];
 }
@@ -28,11 +28,11 @@ export namespace $IsStateFilter {
  * ```
  *
  * @param {import('./state/state-service.js').StateProvider} $state
- * @returns {import('../interface.ts').FilterFn}
+ * @returns {ng.FilterFn}
  */
 export function $IncludedByStateFilter(
   $state: import("./state/state-service.js").StateProvider,
-): import("../interface.ts").FilterFn;
+): ng.FilterFn;
 export namespace $IncludedByStateFilter {
   let $inject_1: string[];
   export { $inject_1 as $inject };

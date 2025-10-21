@@ -21,18 +21,6 @@ export class InterpolateProvider {
   endSymbol: string;
   $get: (
     | string
-    | ((
-        $parse: import("../parse/interface.ts").ParseService,
-        $sce: any,
-      ) => {
-        (
-          text: string,
-          mustHaveExpression?: boolean | undefined,
-          trustedContext?: string | undefined,
-          allOrNothing?: boolean | undefined,
-        ): Function;
-        startSymbol(): string;
-        endSymbol(): string;
-      })
+    | (($parse: ng.ParseService, $sce: any) => ng.InterpolateService)
   )[];
 }

@@ -523,7 +523,7 @@ export class LocationProvider {
     $t.$rootElement,
     /**
      *
-     * @param {import('../../core/scope/scope.js').Scope} $rootScope
+     * @param {ng.Scope} $rootScope
      * @param {Element} $rootElement
      * @returns {Location}
      */

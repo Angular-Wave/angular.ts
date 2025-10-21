@@ -30,8 +30,8 @@ export class FilterProvider {
   }
 
   /**
-   * @param {string|Record<string, import('../../interface.ts').FilterFactory>} name
-   * @param {import('../../interface.ts').FilterFactory} [factory]
+   * @param {string|Record<string, ng.FilterFn>} name
+   * @param {ng.FilterService} [factory]
    * @return {import('../../interface.ts').Provider}
    */
   register(name, factory) {
@@ -48,7 +48,7 @@ export class FilterProvider {
     $t.$injector,
     /**
      * @param {import("../../core/di/internal-injector.js").InjectorService} $injector
-     * @returns {import('../../interface.ts').FilterFactory}
+     * @returns {ng.FilterService}
      */
     ($injector) => (/** @type {string} */ name) => $injector.get(name + SUFFIX),
   ];

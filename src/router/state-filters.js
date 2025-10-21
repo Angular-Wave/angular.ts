@@ -13,7 +13,7 @@ $IsStateFilter.$inject = [$t.$state];
  * ```
  *
  * @param {import('./state/state-service.js').StateProvider} $state
- * @returns {import('../interface.ts').FilterFn}
+ * @returns {ng.FilterFn}
  */
 export function $IsStateFilter($state) {
   const isFilter = (state, params, options) =>
@@ -35,7 +35,7 @@ $IncludedByStateFilter.$inject = [$t.$state];
  * ```
  *
  * @param {import('./state/state-service.js').StateProvider} $state
- * @returns {import('../interface.ts').FilterFn}
+ * @returns {ng.FilterFn}
  */
 export function $IncludedByStateFilter($state) {
   const includesFilter = function (state, params, options) {

@@ -11,7 +11,7 @@ import { $injectTokens } from "../injection-tokens.js";
 orderByFilter.$inject = [$injectTokens.$parse];
 
 /**
- * @returns {import('../interface.ts').FilterFn}
+ * @returns {ng.FilterFn}
  */
 export function orderByFilter($parse) {
   return function (array, sortPredicate, reverseOrder, compareFn) {

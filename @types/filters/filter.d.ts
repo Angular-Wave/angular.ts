@@ -1,4 +1,4 @@
 /**
- * @returns {import('../interface.ts').FilterFn}
+ * @returns {ng.FilterFn}
  */
-export function filterFilter(): import("../interface.ts").FilterFn;
+export function filterFilter(): ng.FilterFn;

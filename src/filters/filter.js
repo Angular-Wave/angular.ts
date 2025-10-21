@@ -9,7 +9,7 @@ import {
 } from "../shared/utils.js";
 
 /**
- * @returns {import('../interface.ts').FilterFn}
+ * @returns {ng.FilterFn}
  */
 export function filterFilter() {
   /**

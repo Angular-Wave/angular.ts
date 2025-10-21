@@ -10,7 +10,7 @@ export class SceProvider {
    * Enables/disables SCE and returns the current value.
    */
   enabled: (value?: boolean | undefined, ...args: any[]) => boolean;
-  $get: (string | (($parse: any, $sceDelegate: any) => any))[];
+  $get: (string | (($parse: ng.ParseService, $sceDelegate: any) => any))[];
 }
 export namespace SCE_CONTEXTS {
   let HTML: string;
@@ -225,7 +225,7 @@ export class SceDelegateProvider {
   $get: (
     | string
     | ((
-        $injector: import("../../core/di/internal-injector.js").InjectorService,
+        $injector: ng.InjectorService,
         $$sanitizeUri: any,
         $exceptionHandler: ng.ExceptionHandlerService,
       ) => {

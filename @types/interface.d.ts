@@ -4,7 +4,6 @@ export * from "./services/log/log.js";
 export * from "./services/location/interface.ts";
 export * from "./services/location/location.js";
 export * from "./services/pubsub/pubsub.js";
-export * from "./services/template-cache/interface.ts";
 export * from "./services/template-cache/template-cache.js";
 export * from "./index.js";
 import { Attributes } from "./core/compile/attributes.js";
@@ -142,14 +141,6 @@ export interface Provider {
    */
   decorator(name: string, fn: Function): Provider;
 }
-/**
- * A filter function takes an input and optional arguments, and returns a transformed value.
- */
-export type FilterFn = (input: any, ...args: any[]) => any;
-/**
- * A filter factory function that returns a FilterFn.
- */
-export type FilterFactory = (...args: any[]) => FilterFn;
 /**
  * A controller constructor function used in AngularTS.
  */

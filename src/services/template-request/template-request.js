@@ -60,11 +60,11 @@ export function TemplateRequestProvider() {
     "$sce",
     /**
      *
-     * @param {import('../exception/exception-handler.js').ErrorHandler} $exceptionHandler
-     * @param {import('../template-cache/interface.ts').TemplateCache} $templateCache
-     * @param {import("interface.ts").HttpService} $http
+     * @param {ng.ExceptionHandlerService} $exceptionHandler
+     * @param {ng.TemplateCacheService} $templateCache
+     * @param {ng.HttpService} $http
      * @param {*} $sce
-     * @returns
+     * @returns {ng.TemplateRequestService}
      */
     function ($exceptionHandler, $templateCache, $http, $sce) {
       function handleRequestFn(tpl, ignoreRequestError) {

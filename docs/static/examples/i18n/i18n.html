@@ -1,0 +1,77 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>AngularTS</title>
+    <link rel="shortcut icon" type="image/png" href="images/favicon.ico" />
+    <script type="module" src="/src/index.js"></script>
+    <script src="https://unpkg.com/i18next/dist/umd/i18next.js"></script>
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        i18next.init({
+          lng: 'en', // if you're using a language detector, do not define the lng option
+          debug: true,
+          resources: {
+            en: {
+              translation: {
+                greeting: 'hello world',
+              },
+            },
+            ru: {
+              translation: {
+                greeting: 'привет мир',
+              },
+            },
+          },
+        });
+
+        // Function to get key from translated string
+        function getKeyFromTranslation(
+          translatedText,
+          lang = i18next.language,
+        ) {
+          const translations = i18next.getResourceBundle(lang, 'translation');
+          for (const [key, value] of Object.entries(translations)) {
+            if (value === translatedText) {
+              return key;
+            }
+          }
+          return null; // Not found
+        }
+        window.angular
+          .module('i18n', [])
+          .directive('ngTranslate', ($rootScope) => {
+            return {
+              link(scope, el) {
+                const translation = getKeyFromTranslation(
+                  el.innerText.toLocaleLowerCase(),
+                );
+                $rootScope.$watch('lang', (lang) => {
+                  i18next.changeLanguage(lang);
+                  el.innerText = i18next.t(translation);
+                });
+              },
+            };
+          })
+          .filter('translate', () => {
+            return (x, y) => {
+              i18next.changeLanguage(y);
+              return i18next.t(x);
+            };
+          });
+      });
+    </script>
+    <style>
+      .capitalize::first-letter {
+        text-transform: uppercase;
+      }
+    </style>
+  </head>
+  <body ng-app="i18n" ng-init="lang = 'en'">
+    <input type="radio" ng-model="lang" value="en" /> English
+    <input type="radio" ng-model="lang" value="ru" /> Russian {{ lang }} {{
+    'greeting' | translate:lang }}
+
+    <div ng-translate class="capitalize">Hello world</div>
+  </body>
+</html>

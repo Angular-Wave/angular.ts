@@ -1,7 +1,7 @@
 scriptDirective.$inject = ["$templateCache"];
 
 /**
- * @param {import('../../services/template-cache/interface.ts').TemplateCache} $templateCache
+ * @param {ng.TemplateCacheService} $templateCache
  * @returns {import('../../interface.ts').Directive}
  */
 export function scriptDirective($templateCache) {

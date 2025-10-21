@@ -15,6 +15,7 @@ import {
 } from "../../shared/utils.js";
 
 import { snakeToCamel } from "../../shared/dom.js";
+import { $injectTokens as $t } from "../../injection-tokens.js";
 
 const $sceMinErr = minErr("$sce");
 
@@ -305,12 +306,12 @@ export class SceDelegateProvider {
     };
 
     this.$get = [
-      "$injector",
-      "$$sanitizeUri",
-      "$exceptionHandler",
+      $t.$injector,
+      $t.$$sanitizeUri,
+      $t.$exceptionHandler,
       /**
        *
-       * @param {import("../../core/di/internal-injector.js").InjectorService} $injector
+       * @param {ng.InjectorService} $injector
        * @param {*} $$sanitizeUri
        * @param {ng.ExceptionHandlerService} $exceptionHandler
        * @returns
@@ -331,7 +332,7 @@ export class SceDelegateProvider {
 
         /**
          * @param {string|RegExp} matcher
-         * @param {import("../../shared/url-utils/interface").ParsedUrl} parsedUrl
+         * @param {import("../../shared/url-utils/interface.ts").ParsedUrl} parsedUrl
          * @return {boolean}
          */
         function matchUrl(matcher, parsedUrl) {
@@ -586,9 +587,15 @@ export function SceProvider() {
   };
 
   this.$get = [
-    "$parse",
-    "$sceDelegate",
-    function ($parse, $sceDelegate) {
+    $t.$parse,
+    $t.$sceDelegate,
+    /**
+     *
+     * @param {ng.ParseService} $parse
+     * @param $sceDelegate
+     * @return {*}
+     */
+    ($parse, $sceDelegate) => {
       const sce = shallowCopy(SCE_CONTEXTS);
 
       /**
@@ -622,14 +629,14 @@ export function SceProvider() {
        *
        * @param {string} type The SCE context in which this result will be used.
        * @param {string} expr String expression to compile.
-       * @return {function(context, locals)} A function which represents the compiled expression:
+       * @return {import("../../core/parse/interface.js").CompiledExpression} A function which represents the compiled expression:
        *
        *    * `context` – `{object}` – an object against which any expressions embedded in the
        *      strings are evaluated against (typically a scope object).
        *    * `locals` – `{object=}` – local variables context object, useful for overriding values
        *      in `context`.
        */
-      sce.parseAs = function sceParseAs(type, expr) {
+      sce.parseAs = (type, expr) => {
         const parsed = $parse(expr);
         if (parsed.literal && parsed.constant) {
           return parsed;

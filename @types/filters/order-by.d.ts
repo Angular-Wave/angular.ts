@@ -1,7 +1,7 @@
 /**
- * @returns {import('../interface.ts').FilterFn}
+ * @returns {ng.FilterFn}
  */
-export function orderByFilter($parse: any): import("../interface.ts").FilterFn;
+export function orderByFilter($parse: any): ng.FilterFn;
 export namespace orderByFilter {
   let $inject: string[];
 }

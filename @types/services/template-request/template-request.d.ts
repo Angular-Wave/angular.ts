@@ -43,13 +43,10 @@ export class TemplateRequestProvider {
   $get: (
     | string
     | ((
-        $exceptionHandler: import("../exception/exception-handler.js").ErrorHandler,
-        $templateCache: import("../template-cache/interface.ts").TemplateCache,
-        $http: any,
+        $exceptionHandler: ng.ExceptionHandlerService,
+        $templateCache: ng.TemplateCacheService,
+        $http: ng.HttpService,
         $sce: any,
-      ) => {
-        (tpl: any, ignoreRequestError: any): any;
-        totalPendingRequests: number;
-      })
+      ) => ng.TemplateRequestService)
   )[];
 }

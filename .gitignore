@@ -9,5 +9,4 @@ tsconfig.tsbuildinfo
 /playwright/.cache/
 .idea
 .vscode
-qodana.yaml
 angular.ts.iml

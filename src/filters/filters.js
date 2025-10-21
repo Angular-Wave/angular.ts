@@ -227,7 +227,7 @@ export function formatNumber(
 }
 
 /**
- * @returns {import('../interface.ts').FilterFn}
+ * @returns {ng.FilterFn}
  */
 export function jsonFilter() {
   return function (object, spacing) {

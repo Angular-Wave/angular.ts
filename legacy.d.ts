@@ -789,114 +789,6 @@ declare namespace angular {
   }
 
   ///////////////////////////////////////////////////////////////////////////
-  // AnchorScrollService
-  // see http://docs.angularjs.org/api/ng/service/$anchorScroll
-  ///////////////////////////////////////////////////////////////////////////
-  interface IAnchorScrollService {
-    (): void;
-    (hash: string): void;
-    yOffset: any;
-  }
-
-  interface IAnchorScrollProvider extends IServiceProvider {
-    disableAutoScrolling(): void;
-  }
-
-  /**
-   * $cacheFactory - service in module ng
-   *
-   * Factory that constructs Cache objects and gives access to them.
-   *
-   * see https://docs.angularjs.org/api/ng/service/$cacheFactory
-   */
-  interface ICacheFactoryService {
-    /**
-     * Factory that constructs Cache objects and gives access to them.
-     *
-     * @param cacheId Name or id of the newly created cache.
-     * @param optionsMap Options object that specifies the cache behavior. Properties:
-     *
-     * capacity — turns the cache into LRU cache.
-     */
-    (
-      cacheId: string,
-      optionsMap?: { capacity?: number | undefined },
-    ): ICacheObject;
-
-    /**
-     * Get information about all the caches that have been created.
-     * @returns key-value map of cacheId to the result of calling cache#info
-     */
-    info(): any;
-
-    /**
-     * Get access to a cache object by the cacheId used when it was created.
-     *
-     * @param cacheId Name or id of a cache to access.
-     */
-    get(cacheId: string): ICacheObject;
-  }
-
-  /**
-   * $cacheFactory.Cache - type in module ng
-   *
-   * A cache object used to store and retrieve data, primarily used by $http and the script directive to cache templates and other data.
-   *
-   * see https://docs.angularjs.org/api/ng/type/$cacheFactory.Cache
-   */
-  interface ICacheObject {
-    /**
-     * Retrieve information regarding a particular Cache.
-     */
-    info(): {
-      /**
-       * the id of the cache instance
-       */
-      id: string;
-
-      /**
-       * the number of entries kept in the cache instance
-       */
-      size: number;
-      // ...: any additional properties from the options object when creating the cache.
-    };
-
-    /**
-     * Inserts a named entry into the Cache object to be retrieved later, and incrementing the size of the cache if the key was not already present in the cache. If behaving like an LRU cache, it will also remove stale entries from the set.
-     *
-     * It will not insert undefined values into the cache.
-     *
-     * @param key the key under which the cached data is stored.
-     * @param value the value to store alongside the key. If it is undefined, the key will not be stored.
-     */
-    put<T>(key: string, value?: T): T;
-
-    /**
-     * Retrieves named data stored in the Cache object.
-     *
-     * @param key the key of the data to be retrieved
-     */
-    get<T>(key: string): T | undefined;
-
-    /**
-     * Removes an entry from the Cache object.
-     *
-     * @param key the key of the entry to be removed
-     */
-    remove(key: string): void;
-
-    /**
-     * Clears the cache object of any entries.
-     */
-    removeAll(): void;
-
-    /**
-     * Destroys the Cache object entirely, removing it from the $cacheFactory set.
-     */
-    destroy(): void;
-  }
-
-  ///////////////////////////////////////////////////////////////////////////
   // CompileService
   // see http://docs.angularjs.org/api/ng/service/$compile
   // see http://docs.angularjs.org/api/ng/provider/$compileProvider
@@ -1384,39 +1276,6 @@ declare namespace angular {
   }
 
   ///////////////////////////////////////////////////////////////////////////
-  // InterpolateService
-  // see http://docs.angularjs.org/api/ng/service/$interpolate
-  // see http://docs.angularjs.org/api/ng/provider/$interpolateProvider
-  ///////////////////////////////////////////////////////////////////////////
-  interface IInterpolateService {
-    (
-      text: string,
-      mustHaveExpression?: boolean,
-      trustedContext?: string,
-      allOrNothing?: boolean,
-    ): IInterpolationFunction;
-    endSymbol(): string;
-    startSymbol(): string;
-  }
-
-  interface IInterpolationFunction {
-    (context: any): string;
-  }
-
-  interface IInterpolateProvider extends IServiceProvider {
-    startSymbol(): string;
-    startSymbol(value: string): IInterpolateProvider;
-    endSymbol(): string;
-    endSymbol(value: string): IInterpolateProvider;
-  }
-
-  ///////////////////////////////////////////////////////////////////////////
-  // TemplateCacheService
-  // see http://docs.angularjs.org/api/ng/service/$templateCache
-  ///////////////////////////////////////////////////////////////////////////
-  interface ITemplateCacheService extends ICacheObject {}
-
-  ///////////////////////////////////////////////////////////////////////////
   // SCEService
   // see http://docs.angularjs.org/api/ng/service/$sce
   ///////////////////////////////////////////////////////////////////////////
@@ -1476,33 +1335,6 @@ declare namespace angular {
     resourceUrlWhitelist(trustedList: any[]): void;
     trustedResourceUrlList(): any[];
     trustedResourceUrlList(trustedList: any[]): void;
-  }
-
-  /**
-   * $templateRequest service
-   * see http://docs.angularjs.org/api/ng/service/$templateRequest
-   */
-  interface ITemplateRequestService {
-    /**
-     * Downloads a template using $http and, upon success, stores the
-     * contents inside of $templateCache.
-     *
-     * If the HTTP request fails or the response data of the HTTP request is
-     * empty then a $compile error will be thrown (unless
-     * {ignoreRequestError} is set to true).
-     *
-     * @param tpl                  The template URL.
-     * @param ignoreRequestError   Whether or not to ignore the exception
-     *                             when the request fails or the template is
-     *                             empty.
-     *
-     * @return   A promise whose value is the template content.
-     */
-    (tpl: string, ignoreRequestError?: boolean): IPromise<string>;
-    /**
-     * total amount of pending template requests being downloaded.
-     */
-    totalPendingRequests: number;
   }
 
   type IControllerConstructor =
@@ -1569,22 +1401,6 @@ declare namespace angular {
      * place to put initialization code for your controller.
      */
     $onInit(): void;
-  }
-
-  /**
-   * Interface for the $doCheck lifecycle hook
-   * https://docs.angularjs.org/api/ng/service/$compile#life-cycle-hooks
-   */
-  interface IDoCheck {
-    /**
-     * Called on each turn of the digest cycle. Provides an opportunity to detect and act on changes.
-     * Any actions that you wish to take in response to the changes that you detect must be invoked from this hook;
-     * implementing this has no effect on when `$onChanges` is called. For example, this hook could be useful if you wish
-     * to perform a deep equality check, or to check a `Dat`e object, changes to which would not be detected by Angular's
-     * change detector and thus not trigger `$onChanges`. This hook is invoked with no arguments; if detecting changes,
-     * you must store the previous value(s) for comparison to the current values.
-     */
-    $doCheck(): void;
   }
 
   /**
@@ -1760,11 +1576,6 @@ declare namespace angular {
     transclude?: boolean | "element" | { [slot: string]: string } | undefined;
   }
 
-  /**
-   * Same as IController. Keeping it for compatibility with older versions of these type definitions.
-   */
-  interface IComponentController extends IController {}
-
   ///////////////////////////////////////////////////////////////////////////
   // AUTO module (angular.js)
   ///////////////////////////////////////////////////////////////////////////
@@ -1864,21 +1675,4 @@ declare namespace angular {
       value(name: string, value: any): IServiceProvider;
     }
   }
-
-  /**
-   * $http params serializer that converts objects to strings
-   * see https://docs.angularjs.org/api/ng/service/$httpParamSerializer
-   */
-  interface IHttpParamSerializer {
-    (obj: Object): string;
-  }
-
-  interface IFilterFunction extends Function {
-    /**
-     * By default, filters are only run once the input value changes. By marking the filter as `$stateful`, the filter will be run on every `$digest` to update the output. **This is strongly discouraged.**
-     * See https://docs.angularjs.org/guide/filter#stateful-filters
-     */
-    $stateful?: boolean | undefined;
-  }
-  type FilterFactory = (...I: any[]) => IFilterFunction;
 }

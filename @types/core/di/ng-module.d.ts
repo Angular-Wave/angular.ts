@@ -48,6 +48,7 @@ export class NgModule {
   configBlocks: Array<Array<any>>;
   /** @type {!Array.<import("../../interface.js").Injectable<any>>} */
   runBlocks: Array<import("../../interface.js").Injectable<any>>;
+  services: any[];
   /**
    * @param {string} name
    * @param {any} object
