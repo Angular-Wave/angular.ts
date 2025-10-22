@@ -35,6 +35,7 @@ export const $injectTokens = Object.freeze({
   $aria: "$aria",
   $compile: "$compile",
   $controller: "$controller",
+  $document: "$document",
   $eventBus: "$eventBus",
   $exceptionHandler: "$exceptionHandler",
   $filter: "$filter",
@@ -61,6 +62,7 @@ export const $injectTokens = Object.freeze({
   $urlConfig: "$urlConfig",
   $url: "$url",
   $view: "$view",
+  $window: "$window",
   // provide literals
   $provide: "$provide",
   $injector: "$injector",

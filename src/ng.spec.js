@@ -30,4 +30,16 @@ describe("public", () => {
     const injector = createInjector(["ng"]);
     expect(injector.has("$rootScope")).toBe(true);
   });
+
+  it("sets up $window", () => {
+    const injector = createInjector(["ng"]);
+    expect(injector.has("$window")).toBe(true);
+    expect(injector.get("$window")).toBe(window);
+  });
+
+  it("sets up $document", () => {
+    const injector = createInjector(["ng"]);
+    expect(injector.has("$document")).toBe(true);
+    expect(injector.get("$document")).toBe(document);
+  });
 });

@@ -3,7 +3,7 @@ import { dealoc } from "../../shared/dom.js";
 import { wait } from "../../shared/test-utils.js";
 
 describe("ngInject", () => {
-  let $compile, $rootScope, el, $test;
+  let $compile, $rootScope, el, $test, $log;
 
   beforeEach(() => {
     el = document.getElementById("app");
@@ -30,10 +30,11 @@ describe("ngInject", () => {
       });
     angular
       .bootstrap(el, ["default"])
-      .invoke((_$compile_, _$rootScope_, _$test_) => {
+      .invoke((_$compile_, _$rootScope_, _$test_, _$log_) => {
         $compile = _$compile_;
         $rootScope = _$rootScope_;
         $test = _$test_;
+        $log = _$log_;
       });
   });
 
@@ -57,7 +58,7 @@ describe("ngInject", () => {
 
   it("should evaluate expressions for multiple references", async () => {
     expect($test.a).toEqual(1);
-    el.innerHTML = `<div ng-inject="$test;$a:$b"> {{ $test.a  + $a.x + $b.y}} </div>`;
+    el.innerHTML = `<div ng-inject="$test;$a;$b"> {{ $test.a + $a.x + $b.y}} </div>`;
     $compile(el)($rootScope);
     await wait();
     expect($rootScope.$test).toEqual($test);
@@ -65,7 +66,7 @@ describe("ngInject", () => {
   });
 
   it("should warn and skip missing injectables", async () => {
-    const warnSpy = spyOn(console, "warn");
+    const warnSpy = spyOn($log, "warn");
     el.innerHTML = `<div ng-inject="$notExisting"> {{ $notExisting }} </div>`;
     $compile(el)($rootScope);
     await wait();

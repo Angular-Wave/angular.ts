@@ -1,13 +1,13 @@
 import { $injectTokens as $t } from "../../injection-tokens.js";
 
-ngInjectDirective.$inject = [$t.$parse, $t.$injector];
+ngInjectDirective.$inject = [$t.$log, $t.$injector];
 
 /**
- * @param {ng.ParseService} $parse
+ * @param {ng.LogService} $log
  * @param {ng.InjectorService} $injector
  * @returns {import('interface.ts').Directive}
  */
-export function ngInjectDirective($parse, $injector) {
+export function ngInjectDirective($log, $injector) {
   return {
     restrict: "A",
     link(scope, _element, attrs) {
@@ -20,13 +20,12 @@ export function ngInjectDirective($parse, $injector) {
         /(\$[\w]+|[\w]+(?:Service|Factory))/g,
         (match, name) => {
           try {
-            // Attempt to resolve the injectable directly by its name
             const service = $injector.get(name);
-            scope[name] = service; // expose to scope
-            return name; // return same identifier so expression works
+            scope.$target[name] = service;
+            return name;
           } catch {
-            console.warn(`Injectable ${name} not found in $injector`);
-            return match; // leave text unchanged
+            $log.warn(`Injectable ${name} not found in $injector`);
+            return match;
           }
         },
       );

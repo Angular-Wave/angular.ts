@@ -1,10 +1,10 @@
 /**
- * @param {ng.ParseService} $parse
+ * @param {ng.LogService} $log
  * @param {ng.InjectorService} $injector
  * @returns {import('interface.ts').Directive}
  */
 export function ngInjectDirective(
-  $parse: ng.ParseService,
+  $log: ng.LogService,
   $injector: ng.InjectorService,
 ): any;
 export namespace ngInjectDirective {
