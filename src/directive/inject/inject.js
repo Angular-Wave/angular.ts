@@ -10,32 +10,27 @@ ngInjectDirective.$inject = [$t.$parse, $t.$injector];
 export function ngInjectDirective($parse, $injector) {
   return {
     restrict: "A",
-    link: (scope, element, attrs) => {
-      // Parse the expression from the attribute
-      const expr = attrs["ngService"];
+    link(scope, _element, attrs) {
+      const expr = attrs["ngInject"];
 
       if (!expr) return;
-
-      // Replace service references like $window with actual instances
+      // Match any identifier that starts with $, or ends with Service/Factory
+      // Example matches: $http, userService, authFactory
       const replacedExpr = expr.replace(
-        /\$(\w+)/g,
-        function (match, serviceName) {
+        /(\$[\w]+|[\w]+(?:Service|Factory))/g,
+        (match, name) => {
           try {
-            const service = $injector.get("$" + serviceName);
-            // We store the service in a temporary variable name
-            const tempVarName = "$" + serviceName;
-            scope.$target[tempVarName] = service;
-            return tempVarName;
+            // Attempt to resolve the injectable directly by its name
+            const service = $injector.get(name);
+            scope[name] = service; // expose to scope
+            return name; // return same identifier so expression works
           } catch {
-            console.warn(`Service $${serviceName} not found in $injector`);
-            return match;
+            console.warn(`Injectable ${name} not found in $injector`);
+            return match; // leave text unchanged
           }
         },
       );
-
-      // Evaluate the expression in scope
-      const fn = $parse(replacedExpr);
-      scope.$eval(fn);
+      scope.$apply(replacedExpr);
     },
   };
 }

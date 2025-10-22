@@ -132,6 +132,7 @@ import {
   ngPutDirective,
 } from "./directive/http/http.js";
 import { $injectTokens as $t } from "./injection-tokens.js";
+import { ngInjectDirective } from "./directive/inject/inject.js";
 
 /**
  * Initializes core `ng` module.
@@ -175,6 +176,7 @@ export function registerNgModule(angular) {
               ngHide: ngHideDirective,
               ngIf: ngIfDirective,
               ngInclude: ngIncludeDirective,
+              ngInject: ngInjectDirective,
               ngInit: ngInitDirective,
               ngMessages: ngMessagesDirective,
               ngMessage: ngMessageDirective,

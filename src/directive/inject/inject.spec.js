@@ -1,23 +1,107 @@
 import { Angular } from "../../angular.js";
 import { dealoc } from "../../shared/dom.js";
-// import { browserTrigger, wait } from "../../shared/test-utils.js";
+import { wait } from "../../shared/test-utils.js";
 
 describe("ngInject", () => {
-  let $compile, $rootScope, el;
+  let $compile, $rootScope, el, $test;
 
   beforeEach(() => {
     el = document.getElementById("app");
     dealoc(el);
     el.innerHTML = "";
     let angular = new Angular();
-    angular.module("default", []);
-    angular.bootstrap(el, ["default"]).invoke((_$compile_, _$rootScope_) => {
-      $compile = _$compile_;
-      $rootScope = _$rootScope_;
-    });
+    angular
+      .module("default", [])
+      .value("$test", { a: 1 })
+      .value("$a", { x: 1 })
+      .value("$b", { y: 2 })
+      .service(
+        "userService",
+        class {
+          constructor() {
+            this.name = "Bob";
+          }
+        },
+      )
+      .factory("userFactory", () => {
+        return {
+          name: "Fred",
+        };
+      });
+    angular
+      .bootstrap(el, ["default"])
+      .invoke((_$compile_, _$rootScope_, _$test_) => {
+        $compile = _$compile_;
+        $rootScope = _$rootScope_;
+        $test = _$test_;
+      });
   });
 
-  it("should pass", () => {
-    expect(true).toBeTrue();
+  it("should make $injectable available to scope", async () => {
+    expect($test.a).toEqual(1);
+    el.innerHTML = `<div ng-inject="$test"> {{ $test.a }} </div>`;
+    $compile(el)($rootScope);
+    await wait();
+    expect($rootScope.$test).toEqual($test);
+    expect(el.innerText).toEqual("1");
+  });
+
+  it("should evaluate expressions referencing injected", async () => {
+    expect($test.a).toEqual(1);
+    el.innerHTML = `<div ng-inject="$test"> {{ $test.a  + 1}} </div>`;
+    $compile(el)($rootScope);
+    await wait();
+    expect($rootScope.$test).toEqual($test);
+    expect(el.innerText).toEqual("2");
+  });
+
+  it("should evaluate expressions for multiple references", async () => {
+    expect($test.a).toEqual(1);
+    el.innerHTML = `<div ng-inject="$test;$a:$b"> {{ $test.a  + $a.x + $b.y}} </div>`;
+    $compile(el)($rootScope);
+    await wait();
+    expect($rootScope.$test).toEqual($test);
+    expect(el.innerText).toEqual("4");
+  });
+
+  it("should warn and skip missing injectables", async () => {
+    const warnSpy = spyOn(console, "warn");
+    el.innerHTML = `<div ng-inject="$notExisting"> {{ $notExisting }} </div>`;
+    $compile(el)($rootScope);
+    await wait();
+
+    expect(warnSpy).toHaveBeenCalledWith(
+      "Injectable $notExisting not found in $injector",
+    );
+    expect($rootScope.$notExisting).toBeUndefined();
+  });
+
+  it("should not modify scope if ng-inject is empty", async () => {
+    el.innerHTML = `<div ng-inject=""> {{ 123 }} </div>`;
+    $compile(el)($rootScope);
+    await wait();
+    expect($rootScope.$test).toBeUndefined();
+    expect(el.innerText.trim()).toBe("123");
+  });
+
+  it("should ignore non-$ identifiers", async () => {
+    el.innerHTML = `<div ng-inject="someVar = 5"> {{ someVar }} </div>`;
+    $compile(el)($rootScope);
+    await wait();
+    expect($rootScope.someVar).toBe(5);
+  });
+
+  it("should inject identifiers ending in *Service", async () => {
+    el.innerHTML = `<div ng-inject="userService"> {{ userService.name }} </div>`;
+    $compile(el)($rootScope);
+    await wait();
+    expect(el.innerText.trim()).toBe("Bob");
+  });
+
+  it("should inject identifiers ending in *Factory", async () => {
+    el.innerHTML = `<div ng-inject="userFactory"> {{ userFactory.name }} </div>`;
+    $compile(el)($rootScope);
+    await wait();
+    expect(el.innerText.trim()).toBe("Fred");
   });
 });
