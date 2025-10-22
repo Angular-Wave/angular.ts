@@ -1,4 +1,4 @@
-/* Version: 0.9.3 - October 9, 2025 19:24:12 */
+/* Version: 0.9.4 - October 22, 2025 23:02:04 */
 const VALID_CLASS = "ng-valid";
 const INVALID_CLASS = "ng-invalid";
 const PRISTINE_CLASS = "ng-pristine";
@@ -1792,11 +1792,11 @@ const $injectTokens = Object.freeze({
   $aria: "$aria",
   $compile: "$compile",
   $controller: "$controller",
+  $document: "$document",
   $eventBus: "$eventBus",
   $exceptionHandler: "$exceptionHandler",
   $filter: "$filter",
   $http: "$http",
-  $httpBackend: "$httpBackend",
   $httpParamSerializer: "$httpParamSerializer",
   $interpolate: "$interpolate",
   $location: "$location",
@@ -1810,6 +1810,8 @@ const $injectTokens = Object.freeze({
   $sceDelegate: "$sceDelegate",
   $state: "$state",
   $stateRegistry: "$stateRegistry",
+  $$sanitizeUri: "$$sanitizeUri",
+  $$sanitizeUriProvider: "$$sanitizeUriProvider",
   $templateCache: "$templateCache",
   $templateFactory: "$templateFactory",
   $templateRequest: "$templateRequest",
@@ -1817,6 +1819,7 @@ const $injectTokens = Object.freeze({
   $urlConfig: "$urlConfig",
   $url: "$url",
   $view: "$view",
+  $window: "$window",
   // provide literals
   $provide: "$provide",
   $injector: "$injector",
@@ -1859,7 +1862,7 @@ class NgModule {
   /**
    * @param {string} name - Name of the module
    * @param {Array<string>} requires - List of modules which the injector will load before the current module
-   * @param {import("../../interface.js").Injectable} [configFn]
+   * @param {import("../../interface.js").Injectable<any>} [configFn]
    */
   constructor(name, requires, configFn) {
     assert(isString(name), "name required");
@@ -1885,12 +1888,14 @@ class NgModule {
     /** @type {!Array<Array<*>>} */
     this.configBlocks = [];
 
-    /** @type {!Array.<import("../../interface.js").Injectable>} */
+    /** @type {!Array.<import("../../interface.js").Injectable<any>>} */
     this.runBlocks = [];
 
     if (configFn) {
       this.config(configFn);
     }
+
+    this.services = [];
   }
 
   /**
@@ -1915,7 +1920,7 @@ class NgModule {
 
   /**
    *
-   * @param {import("../../interface.js").Injectable} configFn
+   * @param {import("../../interface.ts").Injectable<any>} configFn
    * @returns {NgModule}
    */
   config(configFn) {
@@ -1924,7 +1929,7 @@ class NgModule {
   }
 
   /**
-   * @param {import("../../interface.js").Injectable} block
+   * @param {import("../../interface.ts").Injectable<any>} block
    * @returns {NgModule}
    */
   run(block) {
@@ -1934,7 +1939,7 @@ class NgModule {
 
   /**
    * @param {string} name
-   * @param {import("../../interface.js").ComponentOptions} options
+   * @param {import("../../interface.ts").Component} options
    * @returns {NgModule}
    */
   component(name, options) {
@@ -1947,7 +1952,7 @@ class NgModule {
 
   /**
    * @param {string} name
-   * @param {import("../../interface.js").Injectable} providerFunction
+   * @param {import("../../interface.ts").Injectable<any>} providerFunction
    * @returns {NgModule}
    */
   factory(name, providerFunction) {
@@ -1960,20 +1965,21 @@ class NgModule {
 
   /**
    * @param {string} name
-   * @param {import("../../interface.js").Injectable} serviceFunction
+   * @param {import("../../interface.ts").Injectable<any>} serviceFunction
    * @returns {NgModule}
    */
   service(name, serviceFunction) {
     if (serviceFunction && isFunction(serviceFunction)) {
       serviceFunction["$$moduleName"] = name;
     }
+    this.services.push(name);
     this.invokeQueue.push([$injectTokens.$provide, "service", [name, serviceFunction]]);
     return this;
   }
 
   /**
    * @param {string} name
-   * @param {import("../../interface.js").Injectable} providerType
+   * @param {import("../../interface.ts").Injectable<any>} providerType
    * @returns {NgModule}
    */
   provider(name, providerType) {
@@ -1986,7 +1992,7 @@ class NgModule {
 
   /**
    * @param {string} name
-   * @param {import("../../interface.js").Injectable} decorFn
+   * @param {import("../../interface.js").Injectable<any>} decorFn
    * @returns {NgModule}
    */
   decorator(name, decorFn) {
@@ -1999,7 +2005,7 @@ class NgModule {
 
   /**
    * @param {string} name
-   * @param {import("../../interface.js").Injectable} directiveFactory
+   * @param {import("../../interface.js").Injectable<any>} directiveFactory
    * @returns {NgModule}
    */
   directive(name, directiveFactory) {
@@ -2016,7 +2022,7 @@ class NgModule {
 
   /**
    * @param {string} name
-   * @param {import("../../interface.js").Injectable} animationFactory
+   * @param {import("../../interface.js").Injectable<any>} animationFactory
    * @returns {NgModule}
    */
   animation(name, animationFactory) {
@@ -2033,7 +2039,7 @@ class NgModule {
 
   /**
    * @param {string} name
-   * @param {import("../../interface.js").Injectable} filterFn
+   * @param {import("../../interface.js").Injectable<any>} filterFn
    * @return {NgModule}
    */
   filter(name, filterFn) {
@@ -2046,7 +2052,7 @@ class NgModule {
 
   /**
    * @param {string} name
-   * @param {import("../../interface.js").Injectable} ctlFn
+   * @param {import("../../interface.js").Injectable<any>} ctlFn
    * @returns {NgModule}
    */
   controller(name, ctlFn) {
@@ -2230,6 +2236,8 @@ class ProviderInjector extends AbstractInjector {
       this.path.join(" <- "),
     );
   }
+
+  loadNewModules() {}
 }
 
 /**
@@ -2401,7 +2409,7 @@ function createInjector(modulesToLoad, strictDi = false) {
   /**
    * Registers a provider.
    * @param {string} name
-   * @param {import('../../interface.ts').ServiceProvider | import('../../interface.ts').InjectableFactory} provider
+   * @param {import('../../interface.ts').ServiceProvider | import('../../interface.ts').Injectable<any>} provider
    * @returns {import('../../interface.ts').ServiceProvider}
    */
   function provider(name, provider) {
@@ -2920,7 +2928,7 @@ class ControllerProvider {
 
     /**
      * @param {import("../../core/di/internal-injector.js").InjectorService} $injector
-     * @returns {Function} A service function that creates controllers.
+     * @returns {import("./interface.js").ControllerService} A service function that creates controllers.
      */
     ($injector) => {
       return (expression, locals, later, ident) => {
@@ -2931,7 +2939,7 @@ class ControllerProvider {
         later = later === true;
 
         if (isString(expression)) {
-          match = expression.match(CNTRL_REG);
+          match = /** @type {string} */ (expression).match(CNTRL_REG);
           if (!match) {
             throw $controllerMinErr(
               "ctrlfmt",
@@ -2968,7 +2976,7 @@ class ControllerProvider {
               locals,
               identifier,
               instance,
-              constructor || expression.name,
+              constructor || /** @type {any} */ (expression).name,
             );
           }
 
@@ -2991,7 +2999,7 @@ class ControllerProvider {
                   locals,
                   identifier,
                   instance,
-                  constructor || expression.name,
+                  constructor || /** @type {any} */ (expression).name,
                 );
               }
             }
@@ -3000,14 +3008,18 @@ class ControllerProvider {
           }.bind(this, { instance, identifier });
         }
 
-        instance = $injector.instantiate(expression, locals, constructor);
+        instance = $injector.instantiate(
+          /** @type {any} */ (expression),
+          locals,
+          constructor,
+        );
 
         if (identifier) {
           this.addIdentifier(
             locals,
             identifier,
             instance,
-            constructor || expression.name,
+            constructor || /** @type {any} */ (expression).name,
           );
         }
 
@@ -3157,8 +3169,6 @@ function urlsAreSameOrigin(url1, url2) {
 function trimEmptyHash(url) {
   return url.replace(/#$/, "");
 }
-
-/** @typedef {import("../exception/interface.ts").Interface }  ErrorHandler */
 
 const $sceMinErr = minErr("$sce");
 
@@ -3449,14 +3459,14 @@ class SceDelegateProvider {
     };
 
     this.$get = [
-      "$injector",
-      "$$sanitizeUri",
-      "$exceptionHandler",
+      $injectTokens.$injector,
+      $injectTokens.$$sanitizeUri,
+      $injectTokens.$exceptionHandler,
       /**
        *
-       * @param {import("../../core/di/internal-injector.js").InjectorService} $injector
+       * @param {ng.InjectorService} $injector
        * @param {*} $$sanitizeUri
-       * @param {ErrorHandler} $exceptionHandler
+       * @param {ng.ExceptionHandlerService} $exceptionHandler
        * @returns
        */
       function ($injector, $$sanitizeUri, $exceptionHandler) {
@@ -3475,7 +3485,7 @@ class SceDelegateProvider {
 
         /**
          * @param {string|RegExp} matcher
-         * @param {import("../../shared/url-utils/interface").ParsedUrl} parsedUrl
+         * @param {import("../../shared/url-utils/interface.ts").ParsedUrl} parsedUrl
          * @return {boolean}
          */
         function matchUrl(matcher, parsedUrl) {
@@ -3730,9 +3740,15 @@ function SceProvider() {
   };
 
   this.$get = [
-    "$parse",
-    "$sceDelegate",
-    function ($parse, $sceDelegate) {
+    $injectTokens.$parse,
+    $injectTokens.$sceDelegate,
+    /**
+     *
+     * @param {ng.ParseService} $parse
+     * @param $sceDelegate
+     * @return {*}
+     */
+    ($parse, $sceDelegate) => {
       const sce = shallowCopy(SCE_CONTEXTS);
 
       /**
@@ -3766,14 +3782,14 @@ function SceProvider() {
        *
        * @param {string} type The SCE context in which this result will be used.
        * @param {string} expr String expression to compile.
-       * @return {function(context, locals)} A function which represents the compiled expression:
+       * @return {import("../../core/parse/interface.js").CompiledExpression} A function which represents the compiled expression:
        *
        *    * `context` – `{object}` – an object against which any expressions embedded in the
        *      strings are evaluated against (typically a scope object).
        *    * `locals` – `{object=}` – local variables context object, useful for overriding values
        *      in `context`.
        */
-      sce.parseAs = function sceParseAs(type, expr) {
+      sce.parseAs = (type, expr) => {
         const parsed = $parse(expr);
         if (parsed.literal && parsed.constant) {
           return parsed;
@@ -4511,7 +4527,7 @@ const EVENT_HANDLER_ATTR_REGEXP = /^(on[a-z]+|formaction)$/;
 const DirectiveSuffix = "Directive";
 
 class CompileProvider {
-  /* @ignore */ static $inject = ["$provide", "$$sanitizeUriProvider"];
+  /* @ignore */ static $inject = [$injectTokens.$provide, $injectTokens.$$sanitizeUriProvider];
 
   /**
    * @param {import('../../interface.js').Provider} $provide
@@ -4705,7 +4721,7 @@ class CompileProvider {
     /**
      * @param {string|Object} name Name of the component in camelCase (i.e. `myComp` which will match `<my-comp>`),
      *    or an object map of components where the keys are the names and the values are the component definition objects.
-     * @param {import("../../interface.js").ComponentOptions} options Component definition object (a simplified
+     * @param {import("../../interface.js").Component} options Component definition object (a simplified
      *    {directive definition object}),
      *    with the following properties (all optional):
      *
@@ -10619,7 +10635,7 @@ function ngValueDirective() {
 scriptDirective.$inject = ["$templateCache"];
 
 /**
- * @param {import('../../services/template-cache/interface.ts').TemplateCache} $templateCache
+ * @param {ng.TemplateCacheService} $templateCache
  * @returns {import('../../interface.ts').Directive}
  */
 function scriptDirective($templateCache) {
@@ -11636,9 +11652,9 @@ ngIncludeDirective.$inject = [
 /**
  *
  * @param {*} $templateRequest
- * @param {import("../../services/anchor-scroll.js").AnchorScrollFunction} $anchorScroll
+ * @param {import("../../services/anchor-scroll/anchor-scroll.js").AnchorScrollFunction} $anchorScroll
  * @param {*} $animate
- * @param {import('../../services/exception/interface.ts').Interface} $exceptionHandler
+ * @param {import('../../services/exception/interface.ts').ErrorHandler} $exceptionHandler
  * @returns {import('../../interface.js').Directive}
  */
 function ngIncludeDirective(
@@ -13478,8 +13494,8 @@ class AnchorScrollProvider {
     $injectTokens.$rootScope,
     /**
      *
-     * @param {import('../services/location/location.js').Location} $location
-     * @param {import('../core/scope/scope.js').Scope} $rootScope
+     * @param {import('../../services/location/location.js').Location} $location
+     * @param {import('../../core/scope/scope.js').Scope} $rootScope
      * @returns
      */
     function ($location, $rootScope) {
@@ -14026,7 +14042,7 @@ function AnimateProvider($provide) {
    * ```
    *
    * @param {string} name The name of the animation (this is what the class-based CSS value will be compared to).
-   * @param {import("../interface.ts").Injectable} factory The factory function that will be executed to return the animation
+   * @param {import("../interface.ts").Injectable<any>} factory The factory function that will be executed to return the animation
    *                           object.
    */
   this.register = function (name, factory) {
@@ -14694,11 +14710,11 @@ class AnimateRunner {
  */
 class TemplateCacheProvider {
   constructor() {
-    /** @type {import('./interface.ts').TemplateCache} */
+    /** @type {ng.TemplateCacheService} */
     this.cache = new Map();
   }
   /**
-   * @returns {import('./interface.ts').TemplateCache}
+   * @returns {ng.TemplateCacheService}
    */
   $get() {
     return this.cache;
@@ -14751,7 +14767,7 @@ class TemplateCacheProvider {
 
 /** @typedef {import('../log/interface.ts').LogService} LogService */
 
-/** @typedef {import("./interface.ts").Interface}  ErrorHandler */
+/** @typedef {import("./interface.ts").ErrorHandler}  ErrorHandler */
 
 /**
  * Provider for `$exceptionHandler` service. Delegates uncaught exceptions to `$log.error()` by default.
@@ -14782,7 +14798,7 @@ class ExceptionHandlerProvider {
 }
 
 /**
- * @returns {import('../interface.ts').FilterFn}
+ * @returns {ng.FilterFn}
  */
 function filterFilter() {
   /**
@@ -14986,7 +15002,7 @@ function getTypeForFilter(val) {
 }
 
 /**
- * @returns {import('../interface.ts').FilterFn}
+ * @returns {ng.FilterFn}
  */
 function jsonFilter() {
   return function (object, spacing) {
@@ -14998,7 +15014,7 @@ function jsonFilter() {
 }
 
 /**
- * @returns {import('../interface.ts').FilterFn}
+ * @returns {ng.FilterFn}
  */
 function limitToFilter() {
   /**
@@ -15048,7 +15064,7 @@ function sliceFn(input, begin, end) {
 orderByFilter.$inject = [$injectTokens.$parse];
 
 /**
- * @returns {import('../interface.ts').FilterFn}
+ * @returns {ng.FilterFn}
  */
 function orderByFilter($parse) {
   return function (array, sortPredicate, reverseOrder, compareFn) {
@@ -15230,7 +15246,7 @@ $IsStateFilter.$inject = [$injectTokens.$state];
  * ```
  *
  * @param {import('./state/state-service.js').StateProvider} $state
- * @returns {import('../interface.ts').FilterFn}
+ * @returns {ng.FilterFn}
  */
 function $IsStateFilter($state) {
   const isFilter = (state, params, options) =>
@@ -15252,7 +15268,7 @@ $IncludedByStateFilter.$inject = [$injectTokens.$state];
  * ```
  *
  * @param {import('./state/state-service.js').StateProvider} $state
- * @returns {import('../interface.ts').FilterFn}
+ * @returns {ng.FilterFn}
  */
 function $IncludedByStateFilter($state) {
   const includesFilter = function (state, params, options) {
@@ -15283,8 +15299,8 @@ class FilterProvider {
   }
 
   /**
-   * @param {string|Record<string, import('../../interface.ts').FilterFactory>} name
-   * @param {import('../../interface.ts').FilterFactory} [factory]
+   * @param {string|Record<string, ng.FilterFn>} name
+   * @param {ng.FilterService} [factory]
    * @return {import('../../interface.ts').Provider}
    */
   register(name, factory) {
@@ -15300,7 +15316,7 @@ class FilterProvider {
     $injectTokens.$injector,
     /**
      * @param {import("../../core/di/internal-injector.js").InjectorService} $injector
-     * @returns {import('../../interface.ts').FilterFn}
+     * @returns {ng.FilterService}
      */
     ($injector) => (/** @type {string} */ name) => $injector.get(name + SUFFIX),
   ];
@@ -17562,13 +17578,13 @@ class InterpolateProvider {
   }
 
   $get = [
-    "$parse",
-    "$sce",
+    $injectTokens.$parse,
+    $injectTokens.$sce,
     /**
      *
-     * @param {import("../parse/interface.ts").ParseService} $parse
+     * @param {ng.ParseService} $parse
      * @param {*} $sce
-     * @returns
+     * @returns {ng.InterpolateService}
      */
     function ($parse, $sce) {
       /** @type {InterpolateProvider} */
@@ -17817,7 +17833,7 @@ class InterpolateProvider {
             return concat.join("");
           };
 
-          return extend(
+          return /**@type {import("./interface.js").InterpolationFunction}  */ extend(
             (context, cb) => {
               let i = 0;
               const ii = expressions.length;
@@ -17911,6 +17927,7 @@ class InterpolateProvider {
         return provider.endSymbol;
       };
 
+      // @ts-ignore
       return $interpolate;
     },
   ];
@@ -17918,51 +17935,6 @@ class InterpolateProvider {
 
 let lastCookies = {};
 let lastCookieString = "";
-
-/**
- * @returns {Object<String, String>} List of all cookies
- */
-function getCookies() {
-  let cookieArray;
-  let cookie;
-  let i;
-  let index;
-  let name;
-  const currentCookieString = document.cookie;
-
-  if (currentCookieString !== lastCookieString) {
-    lastCookieString = currentCookieString;
-    cookieArray = lastCookieString.split("; ");
-    lastCookies = {};
-
-    for (i = 0; i < cookieArray.length; i++) {
-      cookie = cookieArray[i];
-      index = cookie.indexOf("=");
-      if (index > 0) {
-        // ignore nameless cookies
-        name = safeDecodeURIComponent(cookie.substring(0, index));
-        // the first value that is seen for a cookie is the most
-        // specific one.  values for the same cookie name that
-        // follow are for less specific paths.
-        if (isUndefined(lastCookies[name])) {
-          lastCookies[name] = safeDecodeURIComponent(
-            cookie.substring(index + 1),
-          );
-        }
-      }
-    }
-  }
-  return lastCookies;
-}
-
-function safeDecodeURIComponent(str) {
-  try {
-    return decodeURIComponent(str);
-  } catch {
-    return str;
-  }
-}
-
 const APPLICATION_JSON = "application/json";
 const CONTENT_TYPE_APPLICATION_JSON = {
   "Content-Type": `${APPLICATION_JSON};charset=utf-8`,
@@ -17994,8 +17966,12 @@ function serializeValue(v) {
  * Note that serializer will sort the request parameters alphabetically.
  */
 function HttpParamSerializerProvider() {
-  this.$get = function () {
-    return function ngParamSerializer(params) {
+  /**
+   * @returns {import('./interface.ts').HttpParamSerializer}
+   * A function that serializes parameters into a query string.
+   */
+  this.$get = () => {
+    return (params) => {
       if (!params) return "";
       const parts = [];
       Object.keys(params)
@@ -18321,17 +18297,15 @@ function HttpProvider() {
   });
 
   this.$get = [
-    "$httpBackend",
-    "$injector",
-    "$sce",
+    $injectTokens.$injector,
+    $injectTokens.$sce,
     /**
      *
-     * @param {*} $httpBackend
      * @param {import("../../core/di/internal-injector.js").InjectorService} $injector
      * @param {*} $sce
      * @returns
      */
-    function ($httpBackend, $injector, $sce) {
+    function ($injector, $sce) {
       /**
        * @type {Map<string, string>}
        */
@@ -18667,7 +18641,7 @@ function HttpProvider() {
        * Makes the request.
        *
        * !!! ACCESSES CLOSURE VARS:
-       * $httpBackend, defaults, $log, $rootScope, defaultCache, $http.pendingRequests
+       * defaults, $log, $rootScope, defaultCache, $http.pendingRequests
        */
       function sendReq(config, reqData) {
         const { promise, resolve, reject } = Promise.withResolvers();
@@ -18738,7 +18712,7 @@ function HttpProvider() {
               xsrfValue;
           }
 
-          $httpBackend(
+          http(
             config.method,
             url,
             reqData,
@@ -18754,6 +18728,10 @@ function HttpProvider() {
 
         return promise;
 
+        /**
+         * @param eventHandlers
+         * @return {Record<string, EventListener>}
+         */
         function createApplyHandlers(eventHandlers) {
           if (eventHandlers) {
             const applyHandlers = {};
@@ -18770,12 +18748,14 @@ function HttpProvider() {
                 }
               };
             });
-            return applyHandlers;
+            return /** @type {Record<string, EventListener>} */ (applyHandlers);
+          } else {
+            return {};
           }
         }
 
         /**
-         * Callback registered to $httpBackend():
+         * Callback registered to http():
          *  - caches the response if desired
          *  - resolves the raw $http promise
          *  - calls $apply
@@ -18863,159 +18843,177 @@ function HttpProvider() {
 }
 
 /**
- * HTTP backend used by the `$http` that delegates to
- * XMLHttpRequest object and deals with browser incompatibilities.
- * You should never need to use this service directly.
+ * Makes an HTTP request using XMLHttpRequest with flexible options.
+ *
+ * @param {string} method - The HTTP method (e.g., "GET", "POST").
+ * @param {string} [url] - The URL to send the request to. Defaults to the current page URL.
+ * @param {*} [post] - The body to send with the request, if any.
+ * @param {function(number, any, string|null, string, string): void} [callback] - Callback invoked when the request completes.
+ * @param {Object<string, string|undefined>} [headers] - Headers to set on the request.
+ * @param {number|Promise<any>} [timeout] - Timeout in ms or a cancellable promise.
+ * @param {boolean} [withCredentials] - Whether to send credentials with the request.
+ * @param {XMLHttpRequestResponseType} [responseType] - The type of data expected in the response.
+ * @param {Record<string, EventListener>} [eventHandlers] - Event listeners for the XMLHttpRequest object.
+ * @param {Record<string, EventListener>} [uploadEventHandlers] - Event listeners for the XMLHttpRequest.upload object.
+ * @returns {void}
  */
-class HttpBackendProvider {
-  constructor() {
-    this.$get = () => createHttpBackend();
+function http(
+  method,
+  url,
+  post,
+  callback,
+  headers,
+  timeout,
+  withCredentials,
+  responseType,
+  eventHandlers,
+  uploadEventHandlers,
+) {
+  url = url || trimEmptyHash(window.location.href);
+
+  const xhr = new XMLHttpRequest();
+  let abortedByTimeout = false;
+  let timeoutId;
+
+  xhr.open(method, url, true);
+
+  if (headers) {
+    for (const [key, value] of Object.entries(headers)) {
+      if (isDefined(value)) {
+        xhr.setRequestHeader(key, value);
+      }
+    }
+  }
+
+  xhr.onload = () => {
+    let status = xhr.status || 0;
+    const statusText = xhr.statusText || "";
+
+    if (status === 0) {
+      status = xhr.response ? 200 : new URL(url).protocol === "file:" ? 404 : 0;
+    }
+
+    completeRequest(
+      status,
+      xhr.response,
+      xhr.getAllResponseHeaders(),
+      statusText,
+      "complete",
+    );
+  };
+
+  xhr.onerror = () => completeRequest(-1, null, null, "", "error");
+  xhr.ontimeout = () => completeRequest(-1, null, null, "", "timeout");
+
+  xhr.onabort = () => {
+    completeRequest(-1, null, null, "", abortedByTimeout ? "timeout" : "abort");
+  };
+
+  if (eventHandlers) {
+    for (const [key, handler] of Object.entries(eventHandlers)) {
+      xhr.addEventListener(key, handler);
+    }
+  }
+
+  if (uploadEventHandlers) {
+    for (const [key, handler] of Object.entries(uploadEventHandlers)) {
+      xhr.upload.addEventListener(key, handler);
+    }
+  }
+
+  if (withCredentials) {
+    xhr.withCredentials = true;
+  }
+
+  if (responseType) {
+    try {
+      xhr.responseType = responseType;
+    } catch (e) {
+      if (responseType !== "json") throw e;
+    }
+  }
+
+  xhr.send(isUndefined(post) ? null : post);
+
+  if (typeof timeout === "number" && timeout > 0) {
+    timeoutId = setTimeout(() => timeoutRequest("timeout"), timeout);
+  } else if (isPromiseLike(timeout)) {
+    /** @type {Promise} */ (timeout).then(() => {
+      timeoutRequest(isDefined(timeout["$$timeoutId"]) ? "timeout" : "abort");
+    });
+  }
+
+  /**
+   * @param {"timeout"|"abort"} reason
+   */
+  function timeoutRequest(reason) {
+    abortedByTimeout = reason === "timeout";
+    if (xhr) xhr.abort();
+  }
+
+  /**
+   * @param {number} status - HTTP status code or -1 for network errors.
+   * @param {*} response - The parsed or raw response from the server.
+   * @param {string|null} headersString - The raw response headers as a string.
+   * @param {string} statusText - The status text returned by the server.
+   * @param {"complete"|"error"|"timeout"|"abort"} xhrStatus - Final status of the request.
+   */
+  function completeRequest(
+    status,
+    response,
+    headersString,
+    statusText,
+    xhrStatus,
+  ) {
+    if (isDefined(timeoutId)) {
+      clearTimeout(timeoutId);
+    }
+    callback(status, response, headersString, statusText, xhrStatus);
   }
 }
 
 /**
- * @returns
+ * @returns {Object<String, String>} List of all cookies
  */
-function createHttpBackend() {
-  /**
-   * Makes an HTTP request using XMLHttpRequest with flexible options.
-   *
-   * @param {string} method - The HTTP method (e.g., "GET", "POST").
-   * @param {string} [url] - The URL to send the request to. Defaults to the current page URL.
-   * @param {*} [post] - The body to send with the request, if any.
-   * @param {function(number, any, string|null, string, string): void} [callback] - Callback invoked when the request completes.
-   * @param {Object<string, string|undefined>} [headers] - Headers to set on the request.
-   * @param {number|Promise<any>} [timeout] - Timeout in ms or a cancellable promise.
-   * @param {boolean} [withCredentials] - Whether to send credentials with the request.
-   * @param {XMLHttpRequestResponseType} [responseType] - The type of data expected in the response.
-   * @param {Object<string, EventListener>} [eventHandlers] - Event listeners for the XMLHttpRequest object.
-   * @param {Object<string, EventListener>} [uploadEventHandlers] - Event listeners for the XMLHttpRequest.upload object.
-   * @returns {void}
-   */
-  return function (
-    method,
-    url,
-    post,
-    callback,
-    headers,
-    timeout,
-    withCredentials,
-    responseType,
-    eventHandlers,
-    uploadEventHandlers,
-  ) {
-    url = url || trimEmptyHash(window.location.href);
+function getCookies() {
+  let cookieArray;
+  let cookie;
+  let i;
+  let index;
+  let name;
+  const currentCookieString = document.cookie;
 
-    const xhr = new XMLHttpRequest();
-    let abortedByTimeout = false;
-    let timeoutId;
+  if (currentCookieString !== lastCookieString) {
+    lastCookieString = currentCookieString;
+    cookieArray = lastCookieString.split("; ");
+    lastCookies = {};
 
-    xhr.open(method, url, true);
-
-    if (headers) {
-      for (const [key, value] of Object.entries(headers)) {
-        if (isDefined(value)) {
-          xhr.setRequestHeader(key, value);
+    for (i = 0; i < cookieArray.length; i++) {
+      cookie = cookieArray[i];
+      index = cookie.indexOf("=");
+      if (index > 0) {
+        // ignore nameless cookies
+        name = safeDecodeURIComponent(cookie.substring(0, index));
+        // the first value that is seen for a cookie is the most
+        // specific one.  values for the same cookie name that
+        // follow are for less specific paths.
+        if (isUndefined(lastCookies[name])) {
+          lastCookies[name] = safeDecodeURIComponent(
+            cookie.substring(index + 1),
+          );
         }
       }
     }
+  }
+  return lastCookies;
+}
 
-    xhr.onload = () => {
-      let status = xhr.status || 0;
-      const statusText = xhr.statusText || "";
-
-      if (status === 0) {
-        status = xhr.response
-          ? 200
-          : new URL(url).protocol === "file:"
-            ? 404
-            : 0;
-      }
-
-      completeRequest(
-        status,
-        xhr.response,
-        xhr.getAllResponseHeaders(),
-        statusText,
-        "complete",
-      );
-    };
-
-    xhr.onerror = () => completeRequest(-1, null, null, "", "error");
-    xhr.ontimeout = () => completeRequest(-1, null, null, "", "timeout");
-
-    xhr.onabort = () => {
-      completeRequest(
-        -1,
-        null,
-        null,
-        "",
-        abortedByTimeout ? "timeout" : "abort",
-      );
-    };
-
-    if (eventHandlers) {
-      for (const [key, handler] of Object.entries(eventHandlers)) {
-        xhr.addEventListener(key, handler);
-      }
-    }
-
-    if (uploadEventHandlers) {
-      for (const [key, handler] of Object.entries(uploadEventHandlers)) {
-        xhr.upload.addEventListener(key, handler);
-      }
-    }
-
-    if (withCredentials) {
-      xhr.withCredentials = true;
-    }
-
-    if (responseType) {
-      try {
-        xhr.responseType = responseType;
-      } catch (e) {
-        if (responseType !== "json") throw e;
-      }
-    }
-
-    xhr.send(isUndefined(post) ? null : post);
-
-    if (typeof timeout === "number" && timeout > 0) {
-      timeoutId = setTimeout(() => timeoutRequest("timeout"), timeout);
-    } else if (isPromiseLike(timeout)) {
-      /** @type {Promise} */ (timeout).then(() => {
-        timeoutRequest(isDefined(timeout["$$timeoutId"]) ? "timeout" : "abort");
-      });
-    }
-
-    /**
-     * @param {"timeout"|"abort"} reason
-     */
-    function timeoutRequest(reason) {
-      abortedByTimeout = reason === "timeout";
-      if (xhr) xhr.abort();
-    }
-
-    /**
-     * @param {number} status - HTTP status code or -1 for network errors.
-     * @param {*} response - The parsed or raw response from the server.
-     * @param {string|null} headersString - The raw response headers as a string.
-     * @param {string} statusText - The status text returned by the server.
-     * @param {"complete"|"error"|"timeout"|"abort"} xhrStatus - Final status of the request.
-     */
-    function completeRequest(
-      status,
-      response,
-      headersString,
-      statusText,
-      xhrStatus,
-    ) {
-      if (isDefined(timeoutId)) {
-        clearTimeout(timeoutId);
-      }
-      callback(status, response, headersString, statusText, xhrStatus);
-    }
-  };
+function safeDecodeURIComponent(str) {
+  try {
+    return decodeURIComponent(str);
+  } catch {
+    return str;
+  }
 }
 
 const PATH_MATCH = /^([^?#]*)(\?([^#]*))?(#(.*))?$/;
@@ -19526,7 +19524,7 @@ class LocationProvider {
     $injectTokens.$rootElement,
     /**
      *
-     * @param {import('../../core/scope/scope.js').Scope} $rootScope
+     * @param {ng.Scope} $rootScope
      * @param {Element} $rootElement
      * @returns {Location}
      */
@@ -20092,7 +20090,7 @@ function nextId() {
 }
 
 /**
- * @type {import('../parse/interface.ts').ParseService}
+ * @type {ng.ParseService}
  */
 let $parse;
 
@@ -21191,6 +21189,9 @@ class Scope {
     return this.$root == /** @type {Scope} */ (this);
   }
 
+  /**
+   * @param {Function} fn
+   */
   $postUpdate(fn) {
     $postUpdateQueue.push(fn);
   }
@@ -21373,11 +21374,11 @@ function TemplateRequestProvider() {
     "$sce",
     /**
      *
-     * @param {import('./exception/exception-handler.js').ErrorHandler} $exceptionHandler
-     * @param {import('../services/template-cache/interface.ts').TemplateCache} $templateCache
-     * @param {import("interface.ts").HttpService} $http
+     * @param {ng.ExceptionHandlerService} $exceptionHandler
+     * @param {ng.TemplateCacheService} $templateCache
+     * @param {ng.HttpService} $http
      * @param {*} $sce
-     * @returns
+     * @returns {ng.TemplateRequestService}
      */
     function ($exceptionHandler, $templateCache, $http, $sce) {
       function handleRequestFn(tpl, ignoreRequestError) {
@@ -24355,14 +24356,14 @@ function AnimationProvider() {
   }
 
   this.$get = [
-    "$rootScope",
-    "$injector",
-    "$$AnimateRunner",
-    "$$rAFScheduler",
-    "$$animateCache",
+    $injectTokens.$rootScope,
+    $injectTokens.$injector,
+    $injectTokens.$$AnimateRunner,
+    $injectTokens.$$rAFScheduler,
+    $injectTokens.$$animateCache,
     /**
      *
-     * @param {*} $rootScope
+     * @param {ng.RootScopeService} $rootScope
      * @param {import("../core/di/internal-injector").InjectorService} $injector
      * @param {*} $$AnimateRunner
      * @param {import("./raf-scheduler").RafScheduler} $$rAFScheduler
@@ -24528,7 +24529,6 @@ function AnimationProvider() {
         // block. This way we can group animations for all the animations that
         // were apart of the same postDigest flush call.
         if (animationQueue.length > 1) return runner;
-
         $rootScope.$postUpdate(() => {
           const animations = [];
           animationQueue.forEach((entry) => {
@@ -25418,158 +25418,6 @@ function $$AnimateChildrenDirective($interpolate) {
   };
 }
 
-/**
- * Returns a new function for [Partial Application](https://en.wikipedia.org/wiki/Partial_application) of the original function.
- *
- * Given a function with N parameters, returns a new function that supports partial application.
- * The new function accepts anywhere from 1 to N parameters.  When that function is called with M parameters,
- * where M is less than N, it returns a new function that accepts the remaining parameters.  It continues to
- * accept more parameters until all N parameters have been supplied.
- *
- *
- * This contrived example uses a partially applied function as an predicate, which returns true
- * if an object is found in both arrays.
- * @example
- * ```
- * // returns true if an object is in both of the two arrays
- * function inBoth(array1, array2, object) {
- *   return array1.indexOf(object) !== -1 &&
- *          array2.indexOf(object) !== 1;
- * }
- * let obj1, obj2, obj3, obj4, obj5, obj6, obj7
- * let foos = [obj1, obj3]
- * let bars = [obj3, obj4, obj5]
- *
- * // A curried "copy" of inBoth
- * let curriedInBoth = curry(inBoth);
- * // Partially apply both the array1 and array2
- * let inFoosAndBars = curriedInBoth(foos, bars);
- *
- * // Supply the final argument; since all arguments are
- * // supplied, the original inBoth function is then called.
- * let obj1InBoth = inFoosAndBars(obj1); // false
- *
- * // Use the inFoosAndBars as a predicate.
- * // Filter, on each iteration, supplies the final argument
- * let allObjs = [ obj1, obj2, obj3, obj4, obj5, obj6, obj7 ];
- * let foundInBoth = allObjs.filter(inFoosAndBars); // [ obj3 ]
- *
- * ```
- *
- * @param fn
- * @returns {*|function(): (*|any)}
- */
-function curry(fn) {
-  return function curried() {
-    if (arguments.length >= fn.length) {
-      return fn.apply(this, arguments);
-    }
-    const args = Array.prototype.slice.call(arguments);
-    return curried.bind(this, ...args);
-  };
-}
-/**
- * Given a varargs list of functions, returns a function that composes the argument functions, right-to-left
- * given: f(x), g(x), h(x)
- * let composed = compose(f,g,h)
- * then, composed is: f(g(h(x)))
- */
-function compose() {
-  const args = arguments;
-  const start = args.length - 1;
-  return function () {
-    let i = start,
-      result = args[start].apply(this, arguments);
-    while (i--) result = args[i].call(this, result);
-    return result;
-  };
-}
-/**
- * Given a varargs list of functions, returns a function that is composes the argument functions, left-to-right
- * given: f(x), g(x), h(x)
- * let piped = pipe(f,g,h);
- * then, piped is: h(g(f(x)))
- */
-function pipe() {
-  return compose.apply(null, [].slice.call(arguments).reverse());
-}
-
-/**
- * Given a property name and a value, returns a function that returns a boolean based on whether
- * the passed object has a property that matches the value
- * let obj = { foo: 1, name: "blarg" };
- * let getName = propEq("name", "blarg");
- * getName(obj) === true
- */
-const propEq = curry((name, _val, obj) => obj && obj[name] === _val);
-/**
- * Given a dotted property name, returns a function that returns a nested property from an object, or undefined
- * let obj = { id: 1, nestedObj: { foo: 1, name: "blarg" }, };
- * let getName = prop("nestedObj.name");
- * getName(obj) === "blarg"
- * let propNotFound = prop("this.property.doesnt.exist");
- * propNotFound(obj) === undefined
- */
-const parse = (name) =>
-  pipe.apply(
-    null,
-    name.split(".").map((name) => (obj) => obj && obj[name]),
-  );
-
-/** Given a class, returns a Predicate function that returns true if the object is of that class */
-const is = (ctor) => (obj) =>
-  (obj != null && obj.constructor === ctor) || obj instanceof ctor;
-
-/** Given a value, returns a function which returns the value */
-const val = (v) => () => v;
-/**
- * Sorta like Pattern Matching (a functional programming conditional construct)
- *
- * See http://c2.com/cgi/wiki?PatternMatching
- *
- * This is a conditional construct which allows a series of predicates and output functions
- * to be checked and then applied.  Each predicate receives the input.  If the predicate
- * returns truthy, then its matching output function (mapping function) is provided with
- * the input and, then the result is returned.
- *
- * Each combination (2-tuple) of predicate + output function should be placed in an array
- * of size 2: [ predicate, mapFn ]
- *
- * These 2-tuples should be put in an outer array.
- *
- * @example
- * ```
- *
- * // Here's a 2-tuple where the first element is the isString predicate
- * // and the second element is a function that returns a description of the input
- * let firstTuple = [ angular.isString, (input) => `Heres your string ${input}` ];
- *
- * // Second tuple: predicate "isNumber", mapfn returns a description
- * let secondTuple = [ angular.isNumber, (input) => `(${input}) That's a number!` ];
- *
- * let third = [ (input) => input === null,  (input) => `Oh, null...` ];
- *
- * let fourth = [ (input) => input === undefined,  (input) => `notdefined` ];
- *
- * let descriptionOf = pattern([ firstTuple, secondTuple, third, fourth ]);
- *
- * console.log(descriptionOf(undefined)); // 'notdefined'
- * console.log(descriptionOf(55)); // '(55) That's a number!'
- * console.log(descriptionOf("foo")); // 'Here's your string foo'
- * ```
- *
- * @param struct A 2D array.  Each element of the array should be an array, a 2-tuple,
- * with a Predicate and a mapping/output function
- * @returns {function(any): *}
- */
-function pattern(struct) {
-  return function (x) {
-    for (let i = 0; i < struct.length; i++) {
-      if (struct[i][0](x)) return struct[i][1](x);
-    }
-  };
-}
-
 function equals(o1, o2) {
   if (o1 === o2) return true;
   if (o1 === null || o2 === null) return false;
@@ -25596,81 +25444,7 @@ function equals(o1, o2) {
   }
   return true;
 }
-/**
- * Builds proxy functions on the `to` object which pass through to the `from` object.
- *
- * For each key in `fnNames`, creates a proxy function on the `to` object.
- * The proxy function calls the real function on the `from` object.
- *
- *
- * #### Example:
- * This example creates an new class instance whose functions are prebound to the new'd object.
- * ```js
- * class Foo {
- *   constructor(data) {
- *     // Binds all functions from Foo.prototype to 'this',
- *     // then copies them to 'this'
- *     bindFunctions(Foo.prototype, this, this);
- *     this.data = data;
- *   }
- *
- *   log() {
- *     console.log(this.data);
- *   }
- * }
- *
- * let myFoo = new Foo([1,2,3]);
- * var logit = myFoo.log;
- * logit(); // logs [1, 2, 3] from the myFoo 'this' instance
- * ```
- *
- * #### Example:
- * This example creates a bound version of a service function, and copies it to another object
- * ```
- *
- * var SomeService = {
- *   this.data = [3, 4, 5];
- *   this.log = function() {
- *     console.log(this.data);
- *   }
- * }
- *
- * // Constructor fn
- * function OtherThing() {
- *   // Binds all functions from SomeService to SomeService,
- *   // then copies them to 'this'
- *   bindFunctions(SomeService, this, SomeService);
- * }
- *
- * let myOtherThing = new OtherThing();
- * myOtherThing.log(); // logs [3, 4, 5] from SomeService's 'this'
- * ```
- *
- * @param source A function that returns the source object which contains the original functions to be bound
- * @param target A function that returns the target object which will receive the bound functions
- * @param bind A function that returns the object which the functions will be bound to
- * @param fnNames The function names which will be bound (Defaults to all the functions found on the 'from' object)
- * @param latebind If true, the binding of the function is delayed until the first time it's invoked
- */
-function createProxyFunctions(
-  source,
-  target,
-  bind,
-  fnNames,
-  latebind = false,
-) {
-  const bindFunction = (fnName) => source()[fnName].bind(bind());
-  const makeLateRebindFn = (fnName) =>
-    function lateRebindFunction() {
-      target[fnName] = bindFunction(fnName);
-      return target[fnName].apply(null, arguments);
-    };
-  fnNames = fnNames || Object.keys(source());
-  return fnNames.reduce((acc, name) => {
-    acc[name] = latebind ? makeLateRebindFn(name) : bindFunction(name);
-    return acc;
-  }, target);
-}
+
 /**
  * prototypal inheritance helper.
  * Creates a new object which has `parent` object as its prototype, and then copies the properties from `extra` onto it
@@ -25695,11 +25469,13 @@ function inherit(parent, extra) {
 /**
  * Given an array, and an item, if the item is found in the array, it removes it (in-place).
  * The same array is returned
+ * @param {Array} array
+ * @param {any} obj
+ * @returns {Array}
  */
-const removeFrom = curry(_removeFrom);
-function _removeFrom(array, obj) {
-  const idx = array.indexOf(obj);
-  if (idx >= 0) array.splice(idx, 1);
+function removeFrom(array, obj) {
+  const i = array.indexOf(obj);
+  if (i !== -1) array.splice(i, 1);
   return array;
 }
 
@@ -25981,6 +25757,148 @@ const silenceUncaughtInPromise = (promise) =>
   promise.catch(() => 0) && promise;
 const silentRejection = (error) =>
   silenceUncaughtInPromise(Promise.reject(error));
+
+/**
+ * Returns a new function for [Partial Application](https://en.wikipedia.org/wiki/Partial_application) of the original function.
+ *
+ * Given a function with N parameters, returns a new function that supports partial application.
+ * The new function accepts anywhere from 1 to N parameters.  When that function is called with M parameters,
+ * where M is less than N, it returns a new function that accepts the remaining parameters.  It continues to
+ * accept more parameters until all N parameters have been supplied.
+ *
+ *
+ * This contrived example uses a partially applied function as an predicate, which returns true
+ * if an object is found in both arrays.
+ * @example
+ * ```
+ * // returns true if an object is in both of the two arrays
+ * function inBoth(array1, array2, object) {
+ *   return array1.indexOf(object) !== -1 &&
+ *          array2.indexOf(object) !== 1;
+ * }
+ * let obj1, obj2, obj3, obj4, obj5, obj6, obj7
+ * let foos = [obj1, obj3]
+ * let bars = [obj3, obj4, obj5]
+ *
+ * // A curried "copy" of inBoth
+ * let curriedInBoth = curry(inBoth);
+ * // Partially apply both the array1 and array2
+ * let inFoosAndBars = curriedInBoth(foos, bars);
+ *
+ * // Supply the final argument; since all arguments are
+ * // supplied, the original inBoth function is then called.
+ * let obj1InBoth = inFoosAndBars(obj1); // false
+ *
+ * // Use the inFoosAndBars as a predicate.
+ * // Filter, on each iteration, supplies the final argument
+ * let allObjs = [ obj1, obj2, obj3, obj4, obj5, obj6, obj7 ];
+ * let foundInBoth = allObjs.filter(inFoosAndBars); // [ obj3 ]
+ *
+ * ```
+ *
+ * @param fn
+ * @returns {*|function(): (*|any)}
+ */
+function curry(fn) {
+  return function curried() {
+    if (arguments.length >= fn.length) {
+      return fn.apply(this, arguments);
+    }
+    const args = Array.prototype.slice.call(arguments);
+    return curried.bind(this, ...args);
+  };
+}
+
+/**
+ * Given a property name and a value, returns a function that returns a boolean based on whether
+ * the passed object has a property that matches the value
+ * let obj = { foo: 1, name: "blarg" };
+ * let getName = propEq("name", "blarg");
+ * getName(obj) === true
+ */
+const propEq = curry((name, _val, obj) => obj && obj[name] === _val);
+/**
+ * Given a dotted property name, returns a function that returns a nested property from an object, or undefined
+ * let obj = { id: 1, nestedObj: { foo: 1, name: "blarg" }, };
+ * let getName = prop("nestedObj.name");
+ * getName(obj) === "blarg"
+ * let propNotFound = prop("this.property.doesnt.exist");
+ * propNotFound(obj) === undefined
+ */
+const parse = (path) => {
+  const parts = path.split(".");
+  return (obj) => parts.reduce((acc, key) => acc && acc[key], obj);
+};
+
+/**
+ * Given a class constructor, returns a predicate function that checks
+ * whether a given object is an instance of that class.
+ *
+ * @param {new (...args: any[]) => any} ctor - The class constructor to check against.
+ * @returns {(obj: any) => boolean} A predicate function that returns true if the object is of the given class.
+ */
+function is(ctor) {
+  /**
+   * Checks if the provided object is an instance of the given constructor.
+   *
+   * @param {any} obj - The object to test.
+   * @returns {boolean} True if the object is an instance of the given class.
+   */
+  return function (obj) {
+    return (obj != null && obj.constructor === ctor) || obj instanceof ctor;
+  };
+}
+
+/** Given a value, returns a function which returns the value */
+const val = (v) => () => v;
+
+/**
+ * Sorta like Pattern Matching (a functional programming conditional construct)
+ *
+ * See http://c2.com/cgi/wiki?PatternMatching
+ *
+ * This is a conditional construct which allows a series of predicates and output functions
+ * to be checked and then applied.  Each predicate receives the input.  If the predicate
+ * returns truthy, then its matching output function (mapping function) is provided with
+ * the input and, then the result is returned.
+ *
+ * Each combination (2-tuple) of predicate + output function should be placed in an array
+ * of size 2: [ predicate, mapFn ]
+ *
+ * These 2-tuples should be put in an outer array.
+ *
+ * @example
+ * ```
+ *
+ * // Here's a 2-tuple where the first element is the isString predicate
+ * // and the second element is a function that returns a description of the input
+ * let firstTuple = [ angular.isString, (input) => `Heres your string ${input}` ];
+ *
+ * // Second tuple: predicate "isNumber", mapfn returns a description
+ * let secondTuple = [ angular.isNumber, (input) => `(${input}) That's a number!` ];
+ *
+ * let third = [ (input) => input === null,  (input) => `Oh, null...` ];
+ *
+ * let fourth = [ (input) => input === undefined,  (input) => `notdefined` ];
+ *
+ * let descriptionOf = pattern([ firstTuple, secondTuple, third, fourth ]);
+ *
+ * console.log(descriptionOf(undefined)); // 'notdefined'
+ * console.log(descriptionOf(55)); // '(55) That's a number!'
+ * console.log(descriptionOf("foo")); // 'Here's your string foo'
+ * ```
+ *
+ * @param struct A 2D array.  Each element of the array should be an array, a 2-tuple,
+ * with a Predicate and a mapping/output function
+ * @returns {function(any): *}
+ */
+function pattern(struct) {
+  return function (x) {
+    for (let i = 0; i < struct.length; i++) {
+      if (struct[i][0](x)) return struct[i][1](x);
+    }
+  };
+}
 
 /**
  * An internal class which implements [[ParamTypeDefinition]].
@@ -28176,23 +28094,11 @@ class ViewService {
   constructor() {
     this._ngViews = [];
     this._viewConfigs = [];
-    this._viewConfigFactories = {};
     this._listeners = [];
-    this._pluginapi = {
-      _registeredUIView: (id) => {
-        return find(this._ngViews, (view) => view.id === id);
-      },
-      _registeredUIViews: () => this._ngViews,
-      _activeViewConfigs: () => this._viewConfigs,
-      _onSync: (listener) => {
-        this._listeners.push(listener);
-        return () => removeFrom(this._listeners, listener);
-      },
-    };
     this.viewConfigFactory(getViewConfigFactory());
   }
 
-  $get = [() => this];
+  $get = () => this;
 
   /**
    * @param {?import('../state/state-object.js').StateObject} context
@@ -28330,7 +28236,7 @@ class ViewService {
         return;
       }
       trace.traceViewServiceUIViewEvent("<- Deregistering", ngView);
-      removeFrom(ngViews)(ngView);
+      removeFrom(ngViews, ngView);
     };
   }
   /**
@@ -29242,6 +29148,14 @@ function matchState(state, criterion, transition) {
  * The registration data for a registered transition hook
  */
 class RegisteredHook {
+  /**
+   * @param {import("./transition-service.js").TransitionProvider} tranSvc
+   * @param eventType
+   * @param callback
+   * @param matchCriteria
+   * @param removeHookFromRegistry
+   * @param options
+   */
   constructor(
     tranSvc,
     eventType,
@@ -29250,6 +29164,7 @@ class RegisteredHook {
     removeHookFromRegistry,
     options = {},
   ) {
+    /** @type {import("./transition-service.js").TransitionProvider} */
     this.tranSvc = tranSvc;
     this.eventType = eventType;
     this.callback = callback;
@@ -29298,7 +29213,7 @@ class RegisteredHook {
    * }
    */
   _getDefaultMatchCriteria() {
-    return map(this.tranSvc._pluginapi._getPathTypes(), () => true);
+    return map(this.tranSvc._getPathTypes(), () => true);
   }
   /**
    * Gets matching nodes as [[IMatchingNodes]]
@@ -29320,7 +29235,7 @@ class RegisteredHook {
       this._getDefaultMatchCriteria(),
       this.matchCriteria,
     );
-    const paths = Object.values(this.tranSvc._pluginapi._getPathTypes());
+    const paths = Object.values(this.tranSvc._getPathTypes());
     return paths.reduce((mn, pathtype) => {
       // STATE scope criteria matches against every node in the path.
       // TRANSITION scope criteria matches against only the last node in the path
@@ -29358,7 +29273,7 @@ function makeEvent(registry, transitionService, eventType) {
   const _registeredHooks = (registry._registeredHooks =
     registry._registeredHooks || {});
   const hooks = (_registeredHooks[eventType.name] = []);
-  const removeHookFn = removeFrom(hooks);
+  const removeHookFn = (x) => removeFrom(hooks, x);
   // Create hook registration function on the IHookRegistry for the event
   registry[eventType.name] = hookRegistrationFn;
   function hookRegistrationFn(matchObject, callback, options = {}) {
@@ -29390,6 +29305,9 @@ function makeEvent(registry, transitionService, eventType) {
  * in the Transition class, so we must also provide the Transition's _treeChanges)
  */
 class HookBuilder {
+  /**
+   * @param {import("./transition.js").Transition} transition
+   */
   constructor(transition) {
     this.transition = transition;
   }
@@ -29399,7 +29317,7 @@ class HookBuilder {
    * @returns
    */
   buildHooksForPhase(phase) {
-    return this.transition.transitionService._pluginapi
+    return this.transition.transitionService
       ._getEvents(phase)
       .map((type) => this.buildHooks(type))
       .reduce(unnestR, [])
@@ -29587,7 +29505,7 @@ class Transition {
    * (which can then be used to register hooks)
    */
   createTransitionHookRegFns() {
-    this.transitionService._pluginapi
+    this.transitionService
       ._getEvents()
       .filter((type) => type.hookPhase !== TransitionHookPhase.CREATE)
       .forEach((type) => makeEvent(this, this.transitionService, type));
@@ -30002,6 +29920,7 @@ class Transition {
     )
       return "SameAsCurrent";
   }
+
   /**
    * Runs the transition
    *
@@ -30009,7 +29928,7 @@ class Transition {
    *
    * @internal
    *
-   * @returns a promise for a successful transition.
+   * @returns {Promise} a promise for a successful transition.
    */
   run() {
     // Gets transition hooks array for the given phase
@@ -30646,13 +30565,6 @@ class TransitionProvider {
     this.globals = globals;
     this.$view = viewService;
     this._deregisterHookFns = {};
-    this._pluginapi = createProxyFunctions(val(this), {}, val(this), [
-      "_definePathType",
-      "_defineEvent",
-      "_getPathTypes",
-      "_getEvents",
-      "getHooks",
-    ]);
     this._defineCorePaths();
     this._defineCoreEvents();
     this._registerCoreTransitionHooks();
@@ -30810,6 +30722,10 @@ class TransitionProvider {
     makeEvent(this, this, eventType);
   }
 
+  /**
+   * @param {TransitionHookPhase} [phase]
+   * @return {any[]}
+   */
   _getEvents(phase) {
     const transitionHookTypes = isDefined(phase)
       ? this._eventTypes.filter((type) => type.hookPhase === phase)
@@ -30901,7 +30817,7 @@ class StateProvider {
     return this.globals.$current;
   }
 
-  static $inject = ["$routerProvider", "$transitionsProvider"];
+  /* @ignore */ static $inject = ["$routerProvider", "$transitionsProvider"];
 
   /**
    *
@@ -30926,16 +30842,6 @@ class StateProvider {
         throw new Error($error$);
       }
     };
-    const getters = ["current", "$current", "params", "transition"];
-    const boundFns = Object.keys(StateProvider.prototype).filter(
-      (x) => !getters.includes(x),
-    );
-    createProxyFunctions(
-      val(StateProvider.prototype),
-      this,
-      val(this),
-      boundFns,
-    );
 
     EventBus.subscribe("$stateService:defaultErrorHandler", (err) =>
       this.defaultErrorHandler()(err),
@@ -31135,7 +31041,7 @@ class StateProvider {
   onInvalid(callback) {
     this.invalidCallbacks.push(callback);
     return function deregisterListener() {
-      removeFrom(this.invalidCallbacks)(callback);
+      removeFrom(this.invalidCallbacks, callback);
     }.bind(this);
   }
   /**
@@ -31560,8 +31466,8 @@ class ViewScrollProvider {
   $get = [
     $injectTokens.$anchorScroll,
     /**
-     * @param {import('../services/anchor-scroll.js').AnchorScrollObject} $anchorScroll
-     * @returns {import('../services/anchor-scroll.js').AnchorScrollObject|Function}
+     * @param {import('../services/anchor-scroll/anchor-scroll.js').AnchorScrollObject} $anchorScroll
+     * @returns {import('../services/anchor-scroll/anchor-scroll.js').AnchorScrollObject|Function}
      */
     ($anchorScroll) => {
       if (this.enabled) {
@@ -31602,7 +31508,7 @@ class TemplateFactoryProvider {
     $injectTokens.$injector,
     /**
      * @param {import("interface.ts").HttpService} $http
-     * @param {import("../services/template-cache/interface.ts").TemplateCache} $templateCache
+     * @param {ng.TemplateCacheService} $templateCache
      * @param {any} $templateRequest
      * @param {import("../core/di/internal-injector.js").InjectorService} $injector
      * @returns
@@ -31714,7 +31620,7 @@ class TemplateFactoryProvider {
   /**
    * Creates a template by invoking an injectable provider function.
    *
-   * @param {import('../interface.ts').Injectable} provider Function to invoke via `locals`
+   * @param {import('../interface.ts').Injectable<any>} provider Function to invoke via `locals`
    * @param {Function} params a function used to invoke the template provider
    * @param {import("./resolve/resolve-context.js").ResolveContext} context
    * @return {string|Promise.<string>} The template html as a string, or a promise
@@ -31729,7 +31635,7 @@ class TemplateFactoryProvider {
   /**
    * Creates a component's template by invoking an injectable provider function.
    *
-   * @param {import('../interface.ts').Injectable} provider Function to invoke via `locals`
+   * @param {import('../interface.ts').Injectable<any>} provider Function to invoke via `locals`
    * @return {Promise<any>} The template html as a string: "<component-name input1='::$resolve.foo'></component-name>".
    */
   fromComponentProvider(provider, context) {
@@ -33045,7 +32951,7 @@ class ParamFactory {
  * API for URL management
  */
 class UrlService {
-  static $inject = provider([
+  /* @ignore */ static $inject = provider([
     $injectTokens.$location,
     $injectTokens.$state,
     $injectTokens.$router,
@@ -33226,7 +33132,7 @@ class UrlService {
    */
   onChange(callback) {
     this._urlListeners.push(callback);
-    return () => removeFrom(this._urlListeners)(callback);
+    return () => removeFrom(this._urlListeners, callback);
   }
 
   /**
@@ -33732,12 +33638,12 @@ function resolvablesBuilder(state) {
   ]);
   const tuple2Resolvable = pattern([
     [
-      pipe((x) => x.val, isString),
+      (x) => isString(x.val),
       (tuple) =>
         new Resolvable(tuple.token, (x) => x, [tuple.val], tuple.policy),
     ],
     [
-      pipe((x) => x.val, Array.isArray),
+      (x) => Array.isArray(x.val),
       (tuple) =>
         new Resolvable(
           tuple.token,
@@ -33747,7 +33653,7 @@ function resolvablesBuilder(state) {
         ),
     ],
     [
-      pipe((x) => x.val, isFunction),
+      (x) => isFunction(x.val),
       (tuple) =>
         new Resolvable(
           tuple.token,
@@ -33999,7 +33905,12 @@ class StateQueueManager {
  *
  */
 class StateRegistryProvider {
-  static $inject = provider([$injectTokens.$url, $injectTokens.$state, $injectTokens.$router, $injectTokens.$view]);
+  /* @ignore */ static $inject = provider([
+    $injectTokens.$url,
+    $injectTokens.$state,
+    $injectTokens.$router,
+    $injectTokens.$view,
+  ]);
 
   /**
    * @param urlService
@@ -34128,7 +34039,7 @@ class StateRegistryProvider {
   onStatesChanged(listener) {
     this.listeners.push(listener);
     return function deregisterListener() {
-      removeFrom(this.listeners)(listener);
+      removeFrom(this.listeners, listener);
     }.bind(this);
   }
   /**
@@ -34591,7 +34502,7 @@ function $StateRefActiveDirective(
         };
         states.push(stateInfo);
         return function removeState() {
-          removeFrom(states)(stateInfo);
+          removeFrom(states, stateInfo);
         };
       }
       // Update route state
@@ -35135,8 +35046,8 @@ function ngChannelDirective($eventBus) {
 ngSetterDirective.$inject = [$injectTokens.$parse, $injectTokens.$log];
 
 /**
- * @param {import('../../core/parse/interface.ts').ParseService} $parse
- * @param {import('../../services/log/interface.ts').LogService} $log
+ * @param {ng.ParseService} $parse
+ * @param {ng.LogService} $log
  * @returns {import('interface.ts').Directive}
  */
 function ngSetterDirective($parse, $log) {
@@ -35192,7 +35103,7 @@ function ngSetterDirective($parse, $log) {
 
 /**
  * @param {"get" | "delete" | "post" | "put"} method
- * @returns {import('../../interface.ts').DirectiveFactory}
+ * @returns {ng.DirectiveFactory}
  */
 function defineDirective(method) {
   const attrName = "ng" + method.charAt(0).toUpperCase() + method.slice(1);
@@ -35201,16 +35112,16 @@ function defineDirective(method) {
   return directive;
 }
 
-/** @type {import('../../interface.ts').DirectiveFactory} */
+/** @type {ng.DirectiveFactory} */
 const ngGetDirective = defineDirective("get");
 
-/** @type {import('../../interface.ts').DirectiveFactory} */
+/** @type {ng.DirectiveFactory} */
 const ngDeleteDirective = defineDirective("delete");
 
-/** @type {import('../../interface.ts').DirectiveFactory} */
+/** @type {ng.DirectiveFactory} */
 const ngPostDirective = defineDirective("post");
 
-/** @type {import('../../interface.ts').DirectiveFactory} */
+/** @type {ng.DirectiveFactory} */
 const ngPutDirective = defineDirective("put");
 
 /**
@@ -35237,10 +35148,10 @@ function getEventNameForElement(element) {
  * Handles DOM manipulation based on a swap strategy and server-rendered HTML.
  *
  * @param {string} html - The HTML string returned from the server.
- * @param {import("../../interface.ts").SwapModeType} swap
+ * @param {import("./interface.ts").SwapModeType} swap
  * @param {Element} target - The target DOM element to apply the swap to.
- * @param {import('../../core/scope/scope.js').Scope} scope
- * @param {import('../../core/compile/compile.js').CompileFn} $compile
+ * @param {ng.Scope} scope
+ * @param {ng.CompileService} $compile
  */
 function handleSwapResponse(html, swap, target, scope, $compile) {
   let nodes = [];
@@ -35321,16 +35232,16 @@ function handleSwapResponse(html, swap, target, scope, $compile) {
  *
  * @param {"get" | "delete" | "post" | "put"} method - HTTP method to use.
  * @param {string} attrName - Attribute name containing the URL.
- * @returns {import('../../interface.ts').DirectiveFactory}
+ * @returns {ng.DirectiveFactory}
  */
 function createHttpDirective(method, attrName) {
   /**
-   * @param {import("interface.ts").HttpService} $http
-   * @param {import("../../core/compile/compile.js").CompileFn} $compile
-   * @param {import("../../services/log/interface.ts").LogService} $log
-   * @param {import("../../core/parse/interface.ts").ParseService} $parse
-   * @param {import("../../router/state/state-service.js").StateProvider} $state
-   * @returns {import('../../interface.ts').Directive}
+   * @param {ng.HttpService} $http
+   * @param {ng.CompileService} $compile
+   * @param {ng.LogService} $log
+   * @param {ng.ParseService} $parse
+   * @param {ng.StateService} $state
+   * @returns {ng.Directive}
    */
   return function ($http, $compile, $log, $parse, $state) {
     /**
@@ -35469,7 +35380,7 @@ function createHttpDirective(method, attrName) {
 
             handleSwapResponse(
               html,
-              /** @type {import("../../interface.ts").SwapModeType} */ (swap),
+              /** @type {import("./interface.ts").SwapModeType} */ (swap),
               target,
               scope,
               $compile,
@@ -35524,6 +35435,40 @@ function createHttpDirective(method, attrName) {
   };
 }
 
+ngInjectDirective.$inject = [$injectTokens.$log, $injectTokens.$injector];
+
+/**
+ * @param {ng.LogService} $log
+ * @param {ng.InjectorService} $injector
+ * @returns {import('interface.ts').Directive}
+ */
+function ngInjectDirective($log, $injector) {
+  return {
+    restrict: "A",
+    link(scope, _element, attrs) {
+      const expr = attrs["ngInject"];
+
+      if (!expr) return;
+      // Match any identifier that starts with $, or ends with Service/Factory
+      // Example matches: $http, userService, authFactory
+      const replacedExpr = expr.replace(
+        /(\$[\w]+|[\w]+(?:Service|Factory))/g,
+        (match, name) => {
+          try {
+            const service = $injector.get(name);
+            scope.$target[name] = service;
+            return name;
+          } catch {
+            $log.warn(`Injectable ${name} not found in $injector`);
+            return match;
+          }
+        },
+      );
+      scope.$apply(replacedExpr);
+    },
+  };
+}
+
 /**
  * Initializes core `ng` module.
  * @param {import('./angular.js').Angular} angular
@@ -35542,6 +35487,8 @@ function registerNgModule(angular) {
           $provide.provider({
             $$sanitizeUri: SanitizeUriProvider,
           });
+          $provide.value("$window", window);
+          $provide.value("$document", document);
           $provide
             .provider($injectTokens.$compile, CompileProvider)
             .directive({
@@ -35566,6 +35513,7 @@ function registerNgModule(angular) {
               ngHide: ngHideDirective,
               ngIf: ngIfDirective,
               ngInclude: ngIncludeDirective,
+              ngInject: ngInjectDirective,
               ngInit: ngInitDirective,
               ngMessages: ngMessagesDirective,
               ngMessage: ngMessageDirective,
@@ -35643,7 +35591,6 @@ function registerNgModule(angular) {
             $interpolate: InterpolateProvider,
             $http: HttpProvider,
             $httpParamSerializer: HttpParamSerializerProvider,
-            $httpBackend: HttpBackendProvider,
             $location: LocationProvider,
             $log: LogProvider,
             $parse: ParseProvider,
@@ -35684,13 +35631,6 @@ const $injectorMinErr = minErr("$injector");
 /** @type {Object.<string, NgModule>} */
 const modules = {};
 
-/**
- * Configuration option for AngularTS bootstrap process.
- *
- * @typedef {Object} AngularBootstrapConfig
- * @property {boolean} [strictDi] - Disable automatic function annotation for the application. This is meant to assist in finding bugs which break minified code. Defaults to `false`.
- */
-
 class Angular {
   constructor() {
     this.$cache = Cache;
@@ -35701,7 +35641,7 @@ class Angular {
     /**
      * @type {string} `version` from `package.json`
      */
-    this.version = "0.9.3"; //inserted via rollup plugin
+    this.version = "0.9.4"; //inserted via rollup plugin
 
     /** @type {!Array<string|any>} */
     this.bootsrappedModules = [];
@@ -35756,7 +35696,7 @@ class Angular {
    *     Each item in the array should be the name of a predefined module or a (DI annotated)
    *     function that will be invoked by the injector as a `config` block.
    *     See: {@link angular.module modules}
-   * @param {AngularBootstrapConfig} [config]
+   * @param {import("./interface.ts").AngularBootstrapConfig} [config]
    * @returns {import('./core/di/internal-injector.js').InjectorService} The created injector instance for this application.
    */
   bootstrap(element, modules, config) {
@@ -35924,7 +35864,7 @@ class Angular {
    * @param {string} name The name of the module to create or retrieve.
    * @param {Array.<string>} [requires] If specified then new module is being created. If
    *        unspecified then the module is being retrieved for further configuration.
-   * @param {import("./interface.js").Injectable} [configFn] Optional configuration function for the module that gets
+   * @param {import("./interface.js").Injectable<any>} [configFn] Optional configuration function for the module that gets
    *        passed to {@link NgModule.config NgModule.config()}.
    * @returns {NgModule} A newly registered module.
    */
