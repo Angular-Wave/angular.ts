@@ -9,7 +9,7 @@ import {
 
 /**
  * @param {"get" | "delete" | "post" | "put"} method
- * @returns {import('../../interface.ts').DirectiveFactory}
+ * @returns {ng.DirectiveFactory}
  */
 function defineDirective(method) {
   const attrName = "ng" + method.charAt(0).toUpperCase() + method.slice(1);
@@ -18,16 +18,16 @@ function defineDirective(method) {
   return directive;
 }
 
-/** @type {import('../../interface.ts').DirectiveFactory} */
+/** @type {ng.DirectiveFactory} */
 export const ngGetDirective = defineDirective("get");
 
-/** @type {import('../../interface.ts').DirectiveFactory} */
+/** @type {ng.DirectiveFactory} */
 export const ngDeleteDirective = defineDirective("delete");
 
-/** @type {import('../../interface.ts').DirectiveFactory} */
+/** @type {ng.DirectiveFactory} */
 export const ngPostDirective = defineDirective("post");
 
-/** @type {import('../../interface.ts').DirectiveFactory} */
+/** @type {ng.DirectiveFactory} */
 export const ngPutDirective = defineDirective("put");
 
 /**
@@ -54,10 +54,10 @@ export function getEventNameForElement(element) {
  * Handles DOM manipulation based on a swap strategy and server-rendered HTML.
  *
  * @param {string} html - The HTML string returned from the server.
- * @param {import("../../interface.ts").SwapModeType} swap
+ * @param {import("./interface.ts").SwapModeType} swap
  * @param {Element} target - The target DOM element to apply the swap to.
- * @param {import('../../core/scope/scope.js').Scope} scope
- * @param {import('../../core/compile/compile.js').CompileFn} $compile
+ * @param {ng.Scope} scope
+ * @param {ng.CompileService} $compile
  */
 export function handleSwapResponse(html, swap, target, scope, $compile) {
   let nodes = [];
@@ -138,16 +138,16 @@ export function handleSwapResponse(html, swap, target, scope, $compile) {
  *
  * @param {"get" | "delete" | "post" | "put"} method - HTTP method to use.
  * @param {string} attrName - Attribute name containing the URL.
- * @returns {import('../../interface.ts').DirectiveFactory}
+ * @returns {ng.DirectiveFactory}
  */
 export function createHttpDirective(method, attrName) {
   /**
-   * @param {import("interface.ts").HttpService} $http
-   * @param {import("../../core/compile/compile.js").CompileFn} $compile
-   * @param {import("../../services/log/interface.ts").LogService} $log
-   * @param {import("../../core/parse/interface.ts").ParseService} $parse
-   * @param {import("../../router/state/state-service.js").StateProvider} $state
-   * @returns {import('../../interface.ts').Directive}
+   * @param {ng.HttpService} $http
+   * @param {ng.CompileService} $compile
+   * @param {ng.LogService} $log
+   * @param {ng.ParseService} $parse
+   * @param {ng.StateService} $state
+   * @returns {ng.Directive}
    */
   return function ($http, $compile, $log, $parse, $state) {
     /**
@@ -286,7 +286,7 @@ export function createHttpDirective(method, attrName) {
 
             handleSwapResponse(
               html,
-              /** @type {import("../../interface.ts").SwapModeType} */ (swap),
+              /** @type {import("./interface.ts").SwapModeType} */ (swap),
               target,
               scope,
               $compile,

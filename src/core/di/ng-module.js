@@ -103,7 +103,7 @@ export class NgModule {
 
   /**
    * @param {string} name
-   * @param {import("../../interface.ts").ComponentOptions} options
+   * @param {import("../../interface.ts").Component} options
    * @returns {NgModule}
    */
   component(name, options) {

@@ -32,6 +32,13 @@ import { FilterFactory, FilterFn as TFilterFn } from "./filters/interface.ts";
 import { InterpolateService as TInterpolateService } from "./core/interpolate/interface.ts";
 import { InterpolateProvider } from "./core/interpolate/interpolate.js";
 import { SceDelegateProvider, SceProvider } from "./services/sce/sce.js";
+import {
+  Directive as TDirective,
+  DirectiveFactory as TDirectiveFactory,
+  Component as TComponent,
+  Controller as TController,
+} from "./interface.ts";
+import { StateProvider } from "./router/state/state-service.js";
 declare global {
   interface Function {
     $inject?: readonly string[] | undefined;
@@ -39,6 +46,10 @@ declare global {
   namespace ng {
     type Angular = InstanceType<typeof Angular>;
     type Attributes = InstanceType<typeof Attributes>;
+    type Directive = TDirective;
+    type DirectiveFactory = TDirectiveFactory;
+    type Component = TComponent;
+    type Controller = TController;
     type Scope = InstanceType<typeof Scope>;
     type NgModule = InstanceType<typeof NgModule>;
     type PubSubProvider = InstanceType<typeof PubSubProvider>;
@@ -64,6 +75,7 @@ declare global {
     type PubSubService = InstanceType<typeof PubSub>;
     type RootElementService = Element;
     type RootScopeService = InstanceType<typeof Scope>;
+    type StateService = InstanceType<typeof StateProvider>;
     type TemplateCacheService = InstanceType<typeof Map<string, string>>;
     type TemplateRequestService = TTemplateRequestService;
     type ErrorHandlingConfig = TErrorHandlingConfig;

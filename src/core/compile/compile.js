@@ -334,7 +334,7 @@ export class CompileProvider {
     /**
      * @param {string|Object} name Name of the component in camelCase (i.e. `myComp` which will match `<my-comp>`),
      *    or an object map of components where the keys are the names and the values are the component definition objects.
-     * @param {import("../../interface.js").ComponentOptions} options Component definition object (a simplified
+     * @param {import("../../interface.js").Component} options Component definition object (a simplified
      *    {directive definition object}),
      *    with the following properties (all optional):
      *

@@ -74,12 +74,12 @@ export class NgModule {
   run(block: import("../../interface.ts").Injectable<any>): NgModule;
   /**
    * @param {string} name
-   * @param {import("../../interface.ts").ComponentOptions} options
+   * @param {import("../../interface.ts").Component} options
    * @returns {NgModule}
    */
   component(
     name: string,
-    options: import("../../interface.ts").ComponentOptions,
+    options: import("../../interface.ts").Component,
   ): NgModule;
   /**
    * @param {string} name
