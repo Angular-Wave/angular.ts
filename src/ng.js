@@ -152,6 +152,8 @@ export function registerNgModule(angular) {
           $provide.provider({
             $$sanitizeUri: SanitizeUriProvider,
           });
+          $provide.value("$window", window);
+          $provide.value("$document", document);
           $provide
             .provider($t.$compile, CompileProvider)
             .directive({
@@ -285,7 +287,5 @@ export function registerNgModule(angular) {
        */
       (globals) => globals.params,
     ])
-    .value("$window", window)
-    .value("$document", document)
     .value("$trace", trace);
 }
