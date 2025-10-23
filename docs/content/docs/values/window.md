@@ -17,8 +17,8 @@ mocking a browser dependency in non-browser environment tests:
 angular.module('demo', []).value('$window', {});
 ```
 
-The wrapper also make accessible `window` directly in template scope via
-`ng-inject` directive.
+When combined with `ng-inject` directive, the wrapper also makes `window` object
+directly accessible in the template scope.
 
 #### Demo
 
