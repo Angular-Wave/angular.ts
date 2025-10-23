@@ -9,6 +9,6 @@
     "outDir": "@types",
     "target": "ES2023"
   },
-  "include": ["src/interface.ts"],
+  "include": ["src/namespace.ts"],
   "exclude": ["**/*.test.js", "**/*.spec.js"]
 }

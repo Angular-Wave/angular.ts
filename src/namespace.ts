@@ -1,18 +1,11 @@
+export * from "./index.js";
+
 import {
   AnchorScrollProvider,
   AnchorScrollService as TAnchorScrollService,
 } from "./services/anchor-scroll/anchor-scroll.js";
 import { ControllerService as TControllerService } from "./core/controller/interface.ts";
 import { ErrorHandler } from "./services/exception/interface.ts";
-export * from "./services/http/interface.ts";
-export * from "./services/log/interface.ts";
-export * from "./services/log/log.js";
-export * from "./services/location/interface.ts";
-export * from "./services/location/location.js";
-export * from "./services/pubsub/pubsub.js";
-export * from "./services/template-cache/template-cache.js";
-export * from "./index.js";
-
 import { Angular } from "./angular.js";
 import { Attributes } from "./core/compile/attributes.js";
 import { Scope } from "./core/scope/scope.js";
@@ -21,13 +14,10 @@ import { PubSubProvider, PubSub } from "./services/pubsub/pubsub.js";
 import type { ErrorHandlingConfig as TErrorHandlingConfig } from "./shared/interface.ts";
 import { InjectorService } from "./core/di/internal-injector.js";
 import { CompileFn } from "./core/compile/compile.js";
-import {
-  HttpParamSerializer,
-  HttpService as THttpService,
-  LogService as TLogService,
-} from "./interface.ts";
+
 import { ParseService as TParseService } from "./core/parse/interface.ts";
 import { TemplateRequestService as TTemplateRequestService } from "./services/template-request/interface.ts";
+import { HttpParamSerializer } from "./services/http/interface.ts";
 import { HttpParamSerializerProvider } from "./services/http/http.js";
 import { FilterFactory, FilterFn as TFilterFn } from "./filters/interface.ts";
 import { InterpolateService as TInterpolateService } from "./core/interpolate/interface.ts";
@@ -40,6 +30,8 @@ import {
   Controller as TController,
 } from "./interface.ts";
 import { StateProvider } from "./router/state/state-service.js";
+import { HttpService as THttpService } from "./services/http/interface.ts";
+import { LogService as TLogService } from "./services/log/interface.ts";
 
 declare global {
   interface Function {

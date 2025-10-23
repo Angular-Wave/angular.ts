@@ -12,14 +12,14 @@ export class TemplateFactoryProvider {
   $get: (
     | string
     | ((
-        $http: any,
+        $http: ng.HttpService,
         $templateCache: ng.TemplateCacheService,
         $templateRequest: any,
         $injector: import("../core/di/internal-injector.js").InjectorService,
       ) => this)
   )[];
   $templateRequest: any;
-  $http: any;
+  $http: import("../interface.ts").HttpService;
   $templateCache: Map<string, string>;
   $injector: import("../core/di/internal-injector.js").InjectorService;
   /**
