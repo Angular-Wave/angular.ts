@@ -1,4 +1,4 @@
-/* Version: 0.9.4 - October 22, 2025 23:02:04 */
+/* Version: 0.9.5 - October 23, 2025 19:32:47 */
 const VALID_CLASS = "ng-valid";
 const INVALID_CLASS = "ng-invalid";
 const PRISTINE_CLASS = "ng-pristine";
@@ -31507,7 +31507,7 @@ class TemplateFactoryProvider {
     $injectTokens.$templateRequest,
     $injectTokens.$injector,
     /**
-     * @param {import("interface.ts").HttpService} $http
+     * @param {ng.HttpService} $http
      * @param {ng.TemplateCacheService} $templateCache
      * @param {any} $templateRequest
      * @param {import("../core/di/internal-injector.js").InjectorService} $injector
@@ -35641,7 +35641,7 @@ class Angular {
     /**
      * @type {string} `version` from `package.json`
      */
-    this.version = "0.9.4"; //inserted via rollup plugin
+    this.version = "0.9.5"; //inserted via rollup plugin
 
     /** @type {!Array<string|any>} */
     this.bootsrappedModules = [];

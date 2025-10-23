@@ -1,4 +1,4 @@
-/* Version: 0.9.4 - October 22, 2025 23:02:02 */
+/* Version: 0.9.5 - October 23, 2025 19:32:46 */
 (function (global, factory) {
   typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
   typeof define === 'function' && define.amd ? define(['exports'], factory) :
@@ -31513,7 +31513,7 @@
       $injectTokens.$templateRequest,
       $injectTokens.$injector,
       /**
-       * @param {import("interface.ts").HttpService} $http
+       * @param {ng.HttpService} $http
        * @param {ng.TemplateCacheService} $templateCache
        * @param {any} $templateRequest
        * @param {import("../core/di/internal-injector.js").InjectorService} $injector
@@ -35647,7 +35647,7 @@
       /**
        * @type {string} `version` from `package.json`
        */
-      this.version = "0.9.4"; //inserted via rollup plugin
+      this.version = "0.9.5"; //inserted via rollup plugin
 
       /** @type {!Array<string|any>} */
       this.bootsrappedModules = [];
