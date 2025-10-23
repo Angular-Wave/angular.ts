@@ -8,6 +8,13 @@
   "module": "dist/angular-ts.esm.js",
   "browser": "dist/angular-ts.umd.js",
   "types": "@types/interface.d.ts",
+  "files": [
+    "@types",
+    "css/",
+    "dist/",
+    "README.md",
+    "LICENSE"
+  ],
   "repository": {
     "type": "git",
     "url": "https://github.com/Angular-Wave/angular.ts.git"
