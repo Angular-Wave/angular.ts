@@ -1,4 +1,4 @@
-export * from "./index.js";
+export { angular } from "./index.js";
 import {
   AnchorScrollProvider,
   AnchorScrollService as TAnchorScrollService,

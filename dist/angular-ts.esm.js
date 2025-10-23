@@ -1,4 +1,4 @@
-/* Version: 0.9.5 - October 23, 2025 19:32:47 */
+/* Version: 0.9.6 - October 23, 2025 19:46:24 */
 const VALID_CLASS = "ng-valid";
 const INVALID_CLASS = "ng-invalid";
 const PRISTINE_CLASS = "ng-pristine";
@@ -35641,7 +35641,7 @@ class Angular {
     /**
      * @type {string} `version` from `package.json`
      */
-    this.version = "0.9.5"; //inserted via rollup plugin
+    this.version = "0.9.6"; //inserted via rollup plugin
 
     /** @type {!Array<string|any>} */
     this.bootsrappedModules = [];
