@@ -6,7 +6,7 @@ import { directiveNormalize } from "../../shared/utils.js";
  */
 
 /**
- * @type {Record<string, import("../../interface.js").DirectiveFactory>}
+ * @type {Record<string, ng.DirectiveFactory>}
  */
 export const ngEventDirectives = {};
 
@@ -19,7 +19,7 @@ export const ngEventDirectives = {};
       "$exceptionHandler",
       /**
        * @param {import("../../core/parse/interface.ts").ParseService} $parse
-       * @param {import('../../services/exception/exception-handler.js').ErrorHandler} $exceptionHandler
+       * @param {ng.ExceptionHandlerService} $exceptionHandler
        * @returns
        */
       ($parse, $exceptionHandler) => {
@@ -35,11 +35,11 @@ export const ngEventDirectives = {};
 
 /**
  *
- * @param {import("../../core/parse/interface.ts").ParseService} $parse
- * @param {import('../../services/exception/exception-handler.js').ErrorHandler} $exceptionHandler
+ * @param {ng.ParseService} $parse
+ * @param {ng.ExceptionHandlerService} $exceptionHandler
  * @param {string} directiveName
  * @param {string} eventName
- * @returns {import("../../interface.ts").Directive}
+ * @returns {ng.Directive}
  */
 export function createEventDirective(
   $parse,

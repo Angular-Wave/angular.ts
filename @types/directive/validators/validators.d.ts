@@ -104,9 +104,7 @@ export const patternDirective: (
  */
 export const maxlengthDirective: (
   | string
-  | ((
-      $parse: import("../../core/parse/interface.ts").ParseService,
-    ) => import("../../interface.ts").Directive)
+  | (($parse: ng.ParseService) => ng.Directive)
 )[];
 /**
  *

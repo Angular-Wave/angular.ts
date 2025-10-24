@@ -217,17 +217,17 @@ export const patternDirective = [
 export const maxlengthDirective = [
   $t.$parse,
   /**
-   * @param {import("../../core/parse/interface.ts").ParseService} $parse
-   * @returns {import("../../interface.ts").Directive}
+   * @param {ng.ParseService} $parse
+   * @returns {ng.Directive}
    */
   ($parse) => ({
     restrict: "A",
     require: "?ngModel",
     link:
       /**
-       * @param {import("../../core/scope/scope.js").Scope} scope
-       * @param {*} _elm
-       * @param {import("../../core/compile/attributes.js").Attributes} attr
+       * @param {ng.Scope} scope
+       * @param {Element} _elm
+       * @param {ng.Attributes} attr
        * @param {import("../../interface.ts").NgModelController} ctrl
        * @returns
        */

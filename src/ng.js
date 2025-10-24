@@ -133,6 +133,7 @@ import {
 } from "./directive/http/http.js";
 import { $injectTokens as $t } from "./injection-tokens.js";
 import { ngInjectDirective } from "./directive/inject/inject.js";
+import { ngElDirective } from "./directive/el/el.js";
 
 /**
  * Initializes core `ng` module.
@@ -173,6 +174,7 @@ export function registerNgModule(angular) {
               ngController: ngControllerDirective,
               ngDelete: ngDeleteDirective,
               ngDisabled: ngDisabledAriaDirective,
+              ngEl: ngElDirective,
               ngForm: ngFormDirective,
               ngGet: ngGetDirective,
               ngHide: ngHideDirective,

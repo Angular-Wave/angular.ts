@@ -1,21 +1,18 @@
 /**
  *
- * @param {import("../../core/parse/interface.ts").ParseService} $parse
- * @param {import('../../services/exception/exception-handler.js').ErrorHandler} $exceptionHandler
+ * @param {ng.ParseService} $parse
+ * @param {ng.ExceptionHandlerService} $exceptionHandler
  * @param {string} directiveName
  * @param {string} eventName
- * @returns {import("../../interface.ts").Directive}
+ * @returns {ng.Directive}
  */
 export function createEventDirective(
-  $parse: import("../../core/parse/interface.ts").ParseService,
-  $exceptionHandler: import("../../services/exception/exception-handler.js").ErrorHandler,
+  $parse: ng.ParseService,
+  $exceptionHandler: ng.ExceptionHandlerService,
   directiveName: string,
   eventName: string,
-): import("../../interface.ts").Directive;
+): ng.Directive;
 /**
- * @type {Record<string, import("../../interface.js").DirectiveFactory>}
+ * @type {Record<string, ng.DirectiveFactory>}
  */
-export const ngEventDirectives: Record<
-  string,
-  import("../../interface.js").DirectiveFactory
->;
+export const ngEventDirectives: Record<string, ng.DirectiveFactory>;
