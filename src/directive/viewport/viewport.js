@@ -33,7 +33,7 @@ export function ngViewportDirective() {
         mutationObserver = new MutationObserver((mutations) => {
           for (const mutation of mutations) {
             Array.from(mutation.removedNodes).forEach((removedNode) => {
-              if (removedNode === element[0]) {
+              if (removedNode === element) {
                 observer.disconnect();
                 mutationObserver.disconnect();
               }
