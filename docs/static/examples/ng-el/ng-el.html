@@ -1,10 +1,14 @@
 <section ng-app>
-  <div ng-el="$item"></div>
-  <div ng-el id="description"></div>
+  <div ng-el="$chesireCat"></div>
+  <div ng-el id="response"></div>
   <button
     class="btn"
-    ng-click="$item.innerHTML = '🐱'; description.innerHTML='The cat has been inserted'"
+    ng-el="$button"
+    ng-click="
+      $chesireCat.innerHTML = '🐱';
+      response.innerHTML='That depends a good deal on where you want to get to.';
+      $button.hidden = true"
   >
-    Insert a cat
+    Which way I ought to go?
   </button>
 </section>
