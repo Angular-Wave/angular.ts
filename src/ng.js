@@ -136,6 +136,7 @@ import { $injectTokens as $t } from "./injection-tokens.js";
 import { ngInjectDirective } from "./directive/inject/inject.js";
 import { ngElDirective } from "./directive/el/el.js";
 import { SseProvider } from "./services/sse/sse.js";
+import { ngViewportDirective } from "./directive/viewport/viewport.js";
 
 /**
  * Initializes core `ng` module.
@@ -214,6 +215,7 @@ export function registerNgModule(angular) {
               maxlength: maxlengthDirective,
               ngValue: ngValueDirective,
               ngModelOptions: ngModelOptionsDirective,
+              ngViewport: ngViewportDirective,
             })
             .directive({
               input: hiddenInputBrowserCacheDirective,
