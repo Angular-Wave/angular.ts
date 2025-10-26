@@ -1,0 +1,10 @@
+<section ng-app>
+  <div ng-el="$item"></div>
+  <div ng-el id="description"></div>
+  <button
+    class="btn"
+    ng-click="$item.innerHTML = '🐱'; description.innerHTML='The cat has been inserted'"
+  >
+    Insert a cat
+  </button>
+</section>
