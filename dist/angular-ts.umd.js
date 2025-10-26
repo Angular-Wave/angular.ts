@@ -1,4 +1,4 @@
-/* Version: 0.9.8 - October 26, 2025 19:05:34 */
+/* Version: 0.9.8 - October 26, 2025 21:59:26 */
 (function (global, factory) {
   typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
   typeof define === 'function' && define.amd ? define(['exports'], factory) :
@@ -35259,7 +35259,7 @@
      * @param {ng.LogService} $log
      * @param {ng.ParseService} $parse
      * @param {ng.StateService} $state
-     * @param {Function} $sse
+     * @param {ng.SseService} $sse
      * @returns {ng.Directive}
      */
     return function ($http, $compile, $log, $parse, $state, $sse) {

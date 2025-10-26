@@ -10,7 +10,6 @@
   "types": "@types/namespace.d.ts",
   "files": [
     "@types",
-    "css/",
     "dist/",
     "README.md",
     "LICENSE"
@@ -42,6 +41,7 @@
     "@rollup/plugin-node-resolve": "latest",
     "@rollup/plugin-terser": "latest",
     "@types/jasmine": "latest",
+    "cssnano": "^7.1.1",
     "eslint": "^9.28.0",
     "eslint-config-prettier": "^10.1.5",
     "eslint-plugin-import": "latest",
@@ -53,6 +53,7 @@
     "jasmine-core": "latest",
     "npm-run-all": "latest",
     "playwright": "latest",
+    "postcss": "^8.5.6",
     "prettier": "latest",
     "rollup": "latest",
     "rollup-plugin-version-injector": "latest",

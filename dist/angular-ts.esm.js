@@ -1,4 +1,4 @@
-/* Version: 0.9.8 - October 26, 2025 19:05:36 */
+/* Version: 0.9.8 - October 26, 2025 21:59:27 */
 const VALID_CLASS = "ng-valid";
 const INVALID_CLASS = "ng-invalid";
 const PRISTINE_CLASS = "ng-pristine";
@@ -35253,7 +35253,7 @@ function createHttpDirective(method, attrName) {
    * @param {ng.LogService} $log
    * @param {ng.ParseService} $parse
    * @param {ng.StateService} $state
-   * @param {Function} $sse
+   * @param {ng.SseService} $sse
    * @returns {ng.Directive}
    */
   return function ($http, $compile, $log, $parse, $state, $sse) {
