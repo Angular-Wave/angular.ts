@@ -53,6 +53,7 @@ export const $injectTokens = Object.freeze({
   $sceDelegate: "$sceDelegate",
   $state: "$state",
   $stateRegistry: "$stateRegistry",
+  $sse: "$sse",
   $$sanitizeUri: "$$sanitizeUri",
   $$sanitizeUriProvider: "$$sanitizeUriProvider",
   $templateCache: "$templateCache",

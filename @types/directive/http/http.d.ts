@@ -43,4 +43,6 @@ export const ngDeleteDirective: ng.DirectiveFactory;
 export const ngPostDirective: ng.DirectiveFactory;
 /** @type {ng.DirectiveFactory} */
 export const ngPutDirective: ng.DirectiveFactory;
+/** @type {ng.DirectiveFactory} */
+export const ngSseDirective: ng.DirectiveFactory;
 export type EventType = "click" | "change" | "submit";

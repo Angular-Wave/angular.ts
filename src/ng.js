@@ -130,10 +130,12 @@ import {
   ngGetDirective,
   ngPostDirective,
   ngPutDirective,
+  ngSseDirective,
 } from "./directive/http/http.js";
 import { $injectTokens as $t } from "./injection-tokens.js";
 import { ngInjectDirective } from "./directive/inject/inject.js";
 import { ngElDirective } from "./directive/el/el.js";
+import { SseProvider } from "./services/sse/sse.js";
 
 /**
  * Initializes core `ng` module.
@@ -195,6 +197,7 @@ export function registerNgModule(angular) {
               ngSetter: ngSetterDirective,
               ngShow: ngShowDirective,
               ngStyle: ngStyleDirective,
+              ngSse: ngSseDirective,
               ngSwitch: ngSwitchDirective,
               ngSwitchWhen: ngSwitchWhenDirective,
               ngSwitchDefault: ngSwitchDefaultDirective,
@@ -266,6 +269,7 @@ export function registerNgModule(angular) {
             $router: Router,
             $sce: SceProvider,
             $sceDelegate: SceDelegateProvider,
+            $sse: SseProvider,
             $templateCache: TemplateCacheProvider,
             $templateRequest: TemplateRequestProvider,
             $urlConfig: UrlConfigProvider,

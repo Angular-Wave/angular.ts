@@ -32,6 +32,10 @@ import {
 import { StateProvider } from "./router/state/state-service.js";
 import { HttpService as THttpService } from "./services/http/interface.ts";
 import { LogService as TLogService } from "./services/log/interface.ts";
+import {
+  SseService as TSseService,
+  SseConfig as TSseConfig,
+} from "./services/sse/interface.ts";
 
 declare global {
   interface Function {
@@ -77,6 +81,8 @@ declare global {
     type RootElementService = Element;
     type RootScopeService = InstanceType<typeof Scope>;
     type StateService = InstanceType<typeof StateProvider>;
+    type SseService = TSseService;
+    type SseConfig = TSseConfig;
     type TemplateCacheService = InstanceType<typeof Map<string, string>>;
     type TemplateRequestService = TTemplateRequestService;
 

@@ -393,7 +393,7 @@ export function HttpProvider() {
     $t.$sce,
     /**
      *
-     * @param {import("../../core/di/internal-injector.js").InjectorService} $injector
+     * @param {ng.InjectorService} $injector
      * @param {*} $sce
      * @returns
      */

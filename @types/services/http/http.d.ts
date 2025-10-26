@@ -106,7 +106,7 @@ export class HttpProvider {
   $get: (
     | string
     | ((
-        $injector: import("../../core/di/internal-injector.js").InjectorService,
+        $injector: ng.InjectorService,
         $sce: any,
       ) => {
         (requestConfig: any): Promise<any>;

@@ -11,10 +11,18 @@ import {
  * @param {"get" | "delete" | "post" | "put"} method
  * @returns {ng.DirectiveFactory}
  */
-function defineDirective(method) {
-  const attrName = "ng" + method.charAt(0).toUpperCase() + method.slice(1);
+function defineDirective(method, attrOverride) {
+  const attrName =
+    attrOverride || "ng" + method.charAt(0).toUpperCase() + method.slice(1);
   const directive = createHttpDirective(method, attrName);
-  directive["$inject"] = [$.$http, $.$compile, $.$log, $.$parse, $.$state];
+  directive["$inject"] = [
+    $.$http,
+    $.$compile,
+    $.$log,
+    $.$parse,
+    $.$state,
+    $.$sse,
+  ];
   return directive;
 }
 
@@ -29,6 +37,9 @@ export const ngPostDirective = defineDirective("post");
 
 /** @type {ng.DirectiveFactory} */
 export const ngPutDirective = defineDirective("put");
+
+/** @type {ng.DirectiveFactory} */
+export const ngSseDirective = defineDirective("get", "ngSse");
 
 /**
  * @typedef {"click" | "change" | "submit"} EventType
@@ -147,9 +158,10 @@ export function createHttpDirective(method, attrName) {
    * @param {ng.LogService} $log
    * @param {ng.ParseService} $parse
    * @param {ng.StateService} $state
+   * @param {Function} $sse
    * @returns {ng.Directive}
    */
-  return function ($http, $compile, $log, $parse, $state) {
+  return function ($http, $compile, $log, $parse, $state, $sse) {
     /**
      * Collects form data from the element or its associated form.
      *
@@ -238,7 +250,6 @@ export function createHttpDirective(method, attrName) {
         element.addEventListener(eventName, async (event) => {
           if (/** @type {HTMLButtonElement} */ (element).disabled) return;
           if (tag === "form") event.preventDefault();
-
           const swap = attrs["swap"] || "innerHTML";
           const targetSelector = attrs["target"];
           const target = targetSelector
@@ -292,7 +303,6 @@ export function createHttpDirective(method, attrName) {
               $compile,
             );
           };
-
           if (isDefined(attrs["delay"])) {
             await wait(parseInt(attrs["delay"]) | 0);
           }
@@ -331,11 +341,57 @@ export function createHttpDirective(method, attrName) {
             }
             $http[method](url, data, config).then(handler).catch(handler);
           } else {
-            $http[method](url).then(handler).catch(handler);
+            // If SSE mode is enabled
+            if (method === "get" && attrs["ngSse"]) {
+              const sseUrl = url;
+              const config = {
+                withCredentials: attrs["withCredentials"] === "true",
+                transformMessage: (data) => {
+                  try {
+                    return JSON.parse(data);
+                  } catch {
+                    return data;
+                  }
+                },
+                onOpen: () => {
+                  $log.info(`${attrName}: SSE connection opened to ${sseUrl}`);
+                  if (isDefined(attrs["loading"])) attrs.$set("loading", false);
+                  if (isDefined(attrs["loadingClass"]))
+                    attrs.$removeClass(attrs["loadingClass"]);
+                },
+                onMessage: (data) => {
+                  const res = { status: 200, data };
+                  handler(res);
+                },
+                onError: (err) => {
+                  $log.error(`${attrName}: SSE error`, err);
+                  const res = { status: 500, data: err };
+                  handler(res);
+                },
+              };
+
+              // Open the SSE connection using the injected service
+              const source = $sse(sseUrl, config);
+
+              // Cleanup on scope destroy
+              scope.$on("$destroy", () => {
+                $log.info(`${attrName}: closing SSE connection`);
+                source.close();
+              });
+            } else {
+              $http[method](url).then(handler).catch(handler);
+            }
           }
         });
 
-        scope.$on("$destroy", () => clearInterval(intervalId));
+        if (intervalId) {
+          scope.$on("$destroy", () => clearInterval(intervalId));
+        }
+
+        // Eagerly execute for 'load' event
+        if (eventName == "load") {
+          element.dispatchEvent(new Event("load"));
+        }
       },
     };
   };

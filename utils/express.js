@@ -201,3 +201,30 @@ app.post("/urlencoded", (req, res) => {
   console.log(req.body); // Access parsed form data
   res.send("Form data: " + req.body.name);
 });
+
+// SSE endpoint
+app.get("/events", (req, res) => {
+  res.setHeader("Content-Type", "text/event-stream");
+  res.setHeader("Cache-Control", "no-cache");
+  res.setHeader("Connection", "keep-alive");
+
+  // Send an initial message
+  res.write(`data: Connected to SSE stream\n\n`);
+
+  // Send messages every 2 seconds
+  const interval = setInterval(() => {
+    const now = new Date();
+
+    // Format hours, minutes, seconds
+    const pad = (num) => String(num).padStart(2, "0");
+    const timeStr = `${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;
+
+    res.write(`data: ${timeStr}\n\n`);
+  }, 1000);
+
+  // Cleanup when the client closes the connection
+  req.on("close", () => {
+    clearInterval(interval);
+    res.end();
+  });
+});
