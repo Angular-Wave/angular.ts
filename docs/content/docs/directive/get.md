@@ -8,9 +8,9 @@ description: >
 
 The `ng-get` directive allows you to fetch content via `$http` service from a
 remote URL and insert, replace, or manipulate it into the DOM. For DOM
-manipulation to work, the response must be HTML or text content. If the server
-endpoint returns a JSON-response, the directive will treat it as an object to be
-merged into the current scope and the swap strategy will be ignored.
+manipulation to work, the response must be HTML content. If the server endpoint
+returns a JSON-response, the directive will treat it as an object to be merged
+into the current scope and the swap strategy will be ignored.
 
 #### Example
 
@@ -19,12 +19,26 @@ merged into the current scope and the swap strategy will be ignored.
   <div ng-get="/json">Get</div>
   <!-- Enpoint returns {name: 'Bob'}-->
   {{ name }}
-  <!-- 'Bob' will be merged into current scope. Nothing to swap -->
+  <!-- 'Bob' will be merged into current scope. -->
 </section>
 ```
 
-In case of error, the directive displays the error in place of success result.
-This behavior can be modified with error parameters below.
+In case of error, the directive displays the error in place of success result or
+will merge it into the current scope if response contains JSON.
+
+#### Example
+
+```html
+<section>
+  <div ng-post="/json">Get</div>
+  <!-- Enpoint returns 404 with {error: 'Not found'}-->
+  {{ error }}
+  <!-- 'Not found' will be merged into current scope. Nothing to swap -->
+</section>
+```
+
+Additional options for request and response handling can be modified with
+attributes provided below.
 
 ### Parameters
 

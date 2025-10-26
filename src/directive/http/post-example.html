@@ -18,6 +18,30 @@
       <input name="name" />
       <button type="submit">Test</button>
     </form>
+
+    Nested
+    <form>
+      <input ng-post="/mock/posthtml" data-target="#output" name="name" />
+      <button type="submit">Test</button>
+    </form>
+
+    Reference
+    <button ng-post="/mock/posthtml" target="#output" form="$ngForm">
+      Test
+    </button>
+    <form id="$ngForm">
+      <input name="name" />
+    </form>
+
+    Input only
+    <input
+      name="name"
+      ng-post="/mock/posthtml"
+      target="#output"
+      trigger="keyup"
+      placeholder="Search..."
+    />
+
     <div id="output"></div>
   </body>
 </html>

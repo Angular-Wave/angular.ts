@@ -6,26 +6,80 @@ description: >
 
 ### Description
 
-The `ng-post` directive allows you to fetch content via `$http` service from a
-remote URL and insert, replace, or manipulate it into the DOM. The directive
-assumes a response will be HTML content. If the server endpoint returns a
-JSON-response, the directive will treat it as an object to be merged into the
-current scope. In such a case, the swap strategy will be ignored and the content
-will be interpolated into current scope.
+The `ng-post` directive allows you to send data via `$http` service to a remote
+URL and insert, replace, or manipulate the server's response into the DOM. The
+directive assumes a response will be HTML content. If the server endpoint
+returns a JSON-response, the directive will treat it as an object to be merged
+into the current scope. In such a case, the swap strategy will be ignored and
+the content will be interpolated into current scope. Unlike its sister `ng-get`
+directive, `ng-post` assumes it is attached to a `form`, `input`, `textarea`, or
+`select` element, which act as the source of data for request payload:
 
 #### Example
 
 ```html
-<section>
-  <div ng-post="/json">Get</div>
-  <!-- Enpoint returns {name: 'Bob'}-->
-  {{ name }}
-  <!-- 'Bob' will be merged into current scope -->
-</section>
+<form ng-post="/register">
+  <input name="username" type="text" />
+</form>
 ```
 
-In case of error, the directive displays the error in place of success result.
-This behavior can be modified with error parameters below.
+With `form` elements, the directive can be registered anywhere inside a form:
+
+#### Example
+
+```html
+<form>
+  <input name="username" type="text" />
+  <button ng-post="/register">Send</button>
+</form>
+```
+
+In case of error, the directive displays the error in place of success result or
+will merge it into the current scope if response contains JSON. The behavior can
+be combined with other directivs to create complex form-handling strategies.
+Below is a form that dissappears in case of success or adds error state in case
+of validation errors.
+
+#### Example
+
+```html
+<form
+  ng-post="/register"
+  ng-if="$ctrl.success === false"
+  success="$ctrl.success = true"
+>
+  <h2>Register form</h2>
+
+  <label ng-class="{ error: errors.username }">
+    Username
+    <input
+      name="username"
+      type="text"
+      aria-invalid="{{ errors.username !== undefined}}"
+      ng-keyup="errors.username = undefined"
+    />
+    <span>{{ errors.username }}</span>
+  </label>
+
+  <button type="submit">Sign up</button>
+</form>
+```
+
+For other input elements, the directive adds form-like behavior. The example
+below showcases an input acting as a search form:
+
+```html
+<input
+  name="seach"
+  ng-post="/search"
+  target="#output"
+  trigger="keyup"
+  placeholder="Search..."
+/>
+```
+
+Additional options for request and response handling can be modified with
+attributes provided below.
 
 ### Parameters
 
@@ -44,6 +98,38 @@ This behavior can be modified with error parameters below.
 ---
 
 ### Modifiers
+
+#### `data-enctype`
+
+- **Type:** `string`
+- **Description:** Specifies the content type of form. Defaults to
+  `application/json`. To send regular URL-encoded data form, use
+  `application/x-www-form-urlencoded`.
+- **Example:**
+
+  ```html
+  <form ng-post="/urlencoded" enctype="application/x-www-form-urlencoded">
+    <input type="text" name="name" />
+  </form>
+  ```
+
+---
+
+#### `data-form`
+
+- **Type:** `string`
+- **Description:** If placed outside a `form` element, specifies `id` of the
+  form to use for datasource.
+- **Example:**
+
+  ```html
+  <button ng-post="/register" form="register">Send</button>
+  <form id="register">
+    <input name="username" type="text" />
+  </form>
+  ```
+
+---
 
 #### `data-trigger`
 
@@ -92,7 +178,7 @@ This behavior can be modified with error parameters below.
 
 ---
 
-#### `data-tarpost`
+#### `data-target`
 
 - **Type:**
   [selectors](https://developer.mozilla.org/en-US/docs/Web/API/Document/querySelector#selectors)
@@ -100,7 +186,7 @@ This behavior can be modified with error parameters below.
 - **Example:**
 
   ```html
-  <div ng-post="/example" tarpost=".test">Get</div>
+  <div ng-post="/example" target=".test">Get</div>
   ```
 
 ---
