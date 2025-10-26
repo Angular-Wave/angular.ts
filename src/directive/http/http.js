@@ -158,7 +158,7 @@ export function createHttpDirective(method, attrName) {
    * @param {ng.LogService} $log
    * @param {ng.ParseService} $parse
    * @param {ng.StateService} $state
-   * @param {Function} $sse
+   * @param {ng.SseService} $sse
    * @returns {ng.Directive}
    */
   return function ($http, $compile, $log, $parse, $state, $sse) {

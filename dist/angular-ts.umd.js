@@ -1,4 +1,4 @@
-/* Version: 0.9.7 - October 26, 2025 04:17:18 */
+/* Version: 0.9.8 - October 26, 2025 19:05:34 */
 (function (global, factory) {
   typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
   typeof define === 'function' && define.amd ? define(['exports'], factory) :
@@ -1816,6 +1816,7 @@
     $sceDelegate: "$sceDelegate",
     $state: "$state",
     $stateRegistry: "$stateRegistry",
+    $sse: "$sse",
     $$sanitizeUri: "$$sanitizeUri",
     $$sanitizeUriProvider: "$$sanitizeUriProvider",
     $templateCache: "$templateCache",
@@ -18307,7 +18308,7 @@
       $injectTokens.$sce,
       /**
        *
-       * @param {import("../../core/di/internal-injector.js").InjectorService} $injector
+       * @param {ng.InjectorService} $injector
        * @param {*} $sce
        * @returns
        */
@@ -35111,10 +35112,18 @@
    * @param {"get" | "delete" | "post" | "put"} method
    * @returns {ng.DirectiveFactory}
    */
-  function defineDirective(method) {
-    const attrName = "ng" + method.charAt(0).toUpperCase() + method.slice(1);
+  function defineDirective(method, attrOverride) {
+    const attrName =
+      attrOverride || "ng" + method.charAt(0).toUpperCase() + method.slice(1);
     const directive = createHttpDirective(method, attrName);
-    directive["$inject"] = [$injectTokens.$http, $injectTokens.$compile, $injectTokens.$log, $injectTokens.$parse, $injectTokens.$state];
+    directive["$inject"] = [
+      $injectTokens.$http,
+      $injectTokens.$compile,
+      $injectTokens.$log,
+      $injectTokens.$parse,
+      $injectTokens.$state,
+      $injectTokens.$sse,
+    ];
     return directive;
   }
 
@@ -35129,6 +35138,9 @@
 
   /** @type {ng.DirectiveFactory} */
   const ngPutDirective = defineDirective("put");
+
+  /** @type {ng.DirectiveFactory} */
+  const ngSseDirective = defineDirective("get", "ngSse");
 
   /**
    * @typedef {"click" | "change" | "submit"} EventType
@@ -35247,9 +35259,10 @@
      * @param {ng.LogService} $log
      * @param {ng.ParseService} $parse
      * @param {ng.StateService} $state
+     * @param {Function} $sse
      * @returns {ng.Directive}
      */
-    return function ($http, $compile, $log, $parse, $state) {
+    return function ($http, $compile, $log, $parse, $state, $sse) {
       /**
        * Collects form data from the element or its associated form.
        *
@@ -35338,7 +35351,6 @@
           element.addEventListener(eventName, async (event) => {
             if (/** @type {HTMLButtonElement} */ (element).disabled) return;
             if (tag === "form") event.preventDefault();
-
             const swap = attrs["swap"] || "innerHTML";
             const targetSelector = attrs["target"];
             const target = targetSelector
@@ -35392,7 +35404,6 @@
                 $compile,
               );
             };
-
             if (isDefined(attrs["delay"])) {
               await wait(parseInt(attrs["delay"]) | 0);
             }
@@ -35431,11 +35442,57 @@
               }
               $http[method](url, data, config).then(handler).catch(handler);
             } else {
-              $http[method](url).then(handler).catch(handler);
+              // If SSE mode is enabled
+              if (method === "get" && attrs["ngSse"]) {
+                const sseUrl = url;
+                const config = {
+                  withCredentials: attrs["withCredentials"] === "true",
+                  transformMessage: (data) => {
+                    try {
+                      return JSON.parse(data);
+                    } catch {
+                      return data;
+                    }
+                  },
+                  onOpen: () => {
+                    $log.info(`${attrName}: SSE connection opened to ${sseUrl}`);
+                    if (isDefined(attrs["loading"])) attrs.$set("loading", false);
+                    if (isDefined(attrs["loadingClass"]))
+                      attrs.$removeClass(attrs["loadingClass"]);
+                  },
+                  onMessage: (data) => {
+                    const res = { status: 200, data };
+                    handler(res);
+                  },
+                  onError: (err) => {
+                    $log.error(`${attrName}: SSE error`, err);
+                    const res = { status: 500, data: err };
+                    handler(res);
+                  },
+                };
+
+                // Open the SSE connection using the injected service
+                const source = $sse(sseUrl, config);
+
+                // Cleanup on scope destroy
+                scope.$on("$destroy", () => {
+                  $log.info(`${attrName}: closing SSE connection`);
+                  source.close();
+                });
+              } else {
+                $http[method](url).then(handler).catch(handler);
+              }
             }
           });
 
-          scope.$on("$destroy", () => clearInterval(intervalId));
+          if (intervalId) {
+            scope.$on("$destroy", () => clearInterval(intervalId));
+          }
+
+          // Eagerly execute for 'load' event
+          if (eventName == "load") {
+            element.dispatchEvent(new Event("load"));
+          }
         },
       };
     };
@@ -35507,6 +35564,89 @@
   }
 
   /**
+   * SSE Provider
+   *
+   * Usage:
+   *   const source = $sse('/events', {
+   *     onMessage: (data) => console.log(data),
+   *     onError: (err) => console.error(err),
+   *     withCredentials: true
+   *   });
+   *
+   *   // later:
+   *   source.close();
+   */
+
+  class SseProvider {
+    constructor() {
+      /**
+       * Optional provider-level defaults
+       * @type {ng.SseConfig}
+       */
+      this.defaults = {};
+    }
+
+    /**
+     * Returns the $sse service function
+     * @returns {ng.SseService}
+     */
+    $get =
+      () =>
+      (url, config = {}) => {
+        const finalUrl = this.#buildUrl(url, config.params);
+        return this.#createEventSource(finalUrl, config);
+      };
+
+    /**
+     * Build URL with query parameters
+     * @param {string} url - Base URL
+     * @param {Record<string, any>=} params - Query parameters
+     * @returns {string} URL with serialized query string
+     */
+    #buildUrl(url, params) {
+      if (!params) return url;
+      const query = Object.entries(params)
+        .map(([k, v]) => `${encodeURIComponent(k)}=${encodeURIComponent(v)}`)
+        .join("&");
+      return url + (url.includes("?") ? "&" : "?") + query;
+    }
+
+    /**
+     * Create and manage an EventSource
+     * @param {string} url - URL for SSE connection
+     * @param {ng.SseConfig} config - Configuration object
+     * @returns {EventSource} The EventSource instance wrapped as SseService
+     */
+    #createEventSource(url, config) {
+      const es = new EventSource(url, {
+        withCredentials: !!config.withCredentials,
+      });
+
+      if (config.onOpen) {
+        es.addEventListener("open", (e) => config.onOpen(e));
+      }
+
+      es.addEventListener("message", (e) => {
+        let data = e.data;
+        try {
+          data = config.transformMessage
+            ? config.transformMessage(data)
+            : JSON.parse(data);
+        } catch {
+          // leave as raw string if not JSON
+        }
+        config.onMessage?.(data, e);
+      });
+
+      if (config.onError) {
+        es.addEventListener("error", (e) => config.onError(e));
+      }
+
+      return es;
+    }
+  }
+
+  /**
    * Initializes core `ng` module.
    * @param {import('./angular.js').Angular} angular
    * @returns {import('./core/di/ng-module.js').NgModule} `ng` module
@@ -35566,6 +35706,7 @@
                 ngSetter: ngSetterDirective,
                 ngShow: ngShowDirective,
                 ngStyle: ngStyleDirective,
+                ngSse: ngSseDirective,
                 ngSwitch: ngSwitchDirective,
                 ngSwitchWhen: ngSwitchWhenDirective,
                 ngSwitchDefault: ngSwitchDefaultDirective,
@@ -35637,6 +35778,7 @@
               $router: Router,
               $sce: SceProvider,
               $sceDelegate: SceDelegateProvider,
+              $sse: SseProvider,
               $templateCache: TemplateCacheProvider,
               $templateRequest: TemplateRequestProvider,
               $urlConfig: UrlConfigProvider,
@@ -35679,7 +35821,7 @@
       /**
        * @type {string} `version` from `package.json`
        */
-      this.version = "0.9.7"; //inserted via rollup plugin
+      this.version = "0.9.8"; //inserted via rollup plugin
 
       /** @type {!Array<string|any>} */
       this.bootsrappedModules = [];
