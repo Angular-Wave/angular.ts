@@ -51,14 +51,19 @@ export function createEventDirective(
     restrict: "A",
     compile(_element, attr) {
       const fn = $parse(attr[directiveName]);
-      return function ngEventHandler(scope, element) {
-        element.addEventListener(eventName, (event) => {
+      return (scope, element) => {
+        const handler = (event) => {
           try {
             fn(scope, { $event: event });
           } catch (error) {
             $exceptionHandler(error);
           }
-        });
+        };
+        element.addEventListener(eventName, handler);
+
+        scope.$on("$destroy", () =>
+          element.removeEventListener(eventName, handler),
+        );
       };
     },
   };
