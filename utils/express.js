@@ -228,3 +228,26 @@ app.get("/events", (req, res) => {
     res.end();
   });
 });
+
+app.get("/eventsoject", (req, res) => {
+  res.setHeader("Content-Type", "text/event-stream");
+  res.setHeader("Cache-Control", "no-cache");
+  res.setHeader("Connection", "keep-alive");
+
+  // Send messages every 2 seconds
+  const interval = setInterval(() => {
+    const now = new Date();
+
+    // Format hours, minutes, seconds
+    const pad = (num) => String(num).padStart(2, "0");
+    const timeStr = `${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;
+
+    res.write(`data: ${JSON.stringify({ time: timeStr })}\n\n`);
+  }, 1000);
+
+  // Cleanup when the client closes the connection
+  req.on("close", () => {
+    clearInterval(interval);
+    res.end();
+  });
+});
