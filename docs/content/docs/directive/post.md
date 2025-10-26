@@ -1,25 +1,26 @@
 ---
-title: ng-get
+title: ng-post
 description: >
-  Initiates a GET request
+  Initiates a POST request
 ---
 
 ### Description
 
-The `ng-get` directive allows you to fetch content via `$http` service from a
-remote URL and insert, replace, or manipulate it into the DOM. For DOM
-manipulation to work, the response must be HTML or text content. If the server
-endpoint returns a JSON-response, the directive will treat it as an object to be
-merged into the current scope and the swap strategy will be ignored.
+The `ng-post` directive allows you to fetch content via `$http` service from a
+remote URL and insert, replace, or manipulate it into the DOM. The directive
+assumes a response will be HTML content. If the server endpoint returns a
+JSON-response, the directive will treat it as an object to be merged into the
+current scope. In such a case, the swap strategy will be ignored and the content
+will be interpolated into current scope.
 
 #### Example
 
 ```html
 <section>
-  <div ng-get="/json">Get</div>
+  <div ng-post="/json">Get</div>
   <!-- Enpoint returns {name: 'Bob'}-->
   {{ name }}
-  <!-- 'Bob' will be merged into current scope. Nothing to swap -->
+  <!-- 'Bob' will be merged into current scope -->
 </section>
 ```
 
@@ -30,14 +31,14 @@ This behavior can be modified with error parameters below.
 
 ---
 
-#### `ng-get`
+#### `ng-post`
 
 - **Type:** `string`
 - **Description:** A URL to issue a GET request to
 - **Example:**
 
   ```html
-  <div ng-get="/example">get</div>
+  <div ng-post="/example">post</div>
   ```
 
 ---
@@ -58,7 +59,7 @@ This behavior can be modified with error parameters below.
 - **Example:**
 
   ```html
-  <div ng-get="/example" trigger="mouseover">Get</div>
+  <div ng-post="/example" trigger="mouseover">Get</div>
   ```
 
 ---
@@ -72,7 +73,7 @@ This behavior can be modified with error parameters below.
 - **Example:**
 
   ```html
-  <div ng-get="/example" latch="{{ latch }}" ng-mouseover="latch = !latch">
+  <div ng-post="/example" latch="{{ latch }}" ng-mouseover="latch = !latch">
     Get
   </div>
   ```
@@ -86,12 +87,12 @@ This behavior can be modified with error parameters below.
 - **Example:**
 
   ```html
-  <div ng-get="/example" swap="outerHTML">Get</div>
+  <div ng-post="/example" swap="outerHTML">Get</div>
   ```
 
 ---
 
-#### `data-target`
+#### `data-tarpost`
 
 - **Type:**
   [selectors](https://developer.mozilla.org/en-US/docs/Web/API/Document/querySelector#selectors)
@@ -99,7 +100,7 @@ This behavior can be modified with error parameters below.
 - **Example:**
 
   ```html
-  <div ng-get="/example" target=".test">Get</div>
+  <div ng-post="/example" tarpost=".test">Get</div>
   ```
 
 ---
@@ -112,7 +113,7 @@ This behavior can be modified with error parameters below.
 - **Example:**
 
   ```html
-  <div ng-get="/example" delay="1000">Get</div>
+  <div ng-post="/example" delay="1000">Get</div>
   ```
 
 ---
@@ -125,7 +126,7 @@ This behavior can be modified with error parameters below.
 - **Example:**
 
   ```html
-  <div ng-get="/example" interval="1000">Get</div>
+  <div ng-post="/example" interval="1000">Get</div>
   ```
 
 ---
@@ -138,7 +139,7 @@ This behavior can be modified with error parameters below.
 - **Example:**
 
   ```html
-  <div ng-get="/example" throttle="1000">Get</div>
+  <div ng-post="/example" throttle="1000">Get</div>
   ```
 
 ---
@@ -151,7 +152,7 @@ This behavior can be modified with error parameters below.
 - **Example:**
 
   ```html
-  <div ng-get="/example" data-loading>Get</div>
+  <div ng-post="/example" data-loading>Get</div>
   ```
 
 ---
@@ -163,7 +164,7 @@ This behavior can be modified with error parameters below.
 - **Example:**
 
   ```html
-  <div ng-get="/example" data-loading-class="red">Get</div>
+  <div ng-post="/example" data-loading-class="red">Get</div>
   ```
 
 ---
@@ -176,7 +177,7 @@ This behavior can be modified with error parameters below.
 - **Example:**
 
   ```html
-  <div ng-get="/example" success="message = $res">Get {{ message }}</div>
+  <div ng-post="/example" success="message = $res">Get {{ message }}</div>
   ```
 
 ---
@@ -189,7 +190,7 @@ This behavior can be modified with error parameters below.
 - **Example:**
 
   ```html
-  <div ng-get="/example" error="errormessage = $res">
+  <div ng-post="/example" error="errormessage = $res">
     Get {{ errormessage }}
   </div>
   ```
@@ -204,7 +205,7 @@ This behavior can be modified with error parameters below.
 
   ```html
   <ng-view></ng-view>
-  <div ng-get="/example" success-state="account">Get</div>
+  <div ng-post="/example" success-state="account">Get</div>
   ```
 
 ---
@@ -217,7 +218,7 @@ This behavior can be modified with error parameters below.
 
   ```html
   <ng-view></ng-view>
-  <div ng-get="/example" error-state="login">Get</div>
+  <div ng-post="/example" error-state="login">Get</div>
   ```
 
 ---
