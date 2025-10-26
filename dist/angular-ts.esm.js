@@ -1,4 +1,4 @@
-/* Version: 0.9.6 - October 23, 2025 19:46:24 */
+/* Version: 0.9.7 - October 26, 2025 04:17:19 */
 const VALID_CLASS = "ng-valid";
 const INVALID_CLASS = "ng-invalid";
 const PRISTINE_CLASS = "ng-pristine";
@@ -4010,7 +4010,7 @@ function SceProvider() {
  */
 
 /**
- * @type {Record<string, import("../../interface.js").DirectiveFactory>}
+ * @type {Record<string, ng.DirectiveFactory>}
  */
 const ngEventDirectives = {};
 
@@ -4023,7 +4023,7 @@ const ngEventDirectives = {};
       "$exceptionHandler",
       /**
        * @param {import("../../core/parse/interface.ts").ParseService} $parse
-       * @param {import('../../services/exception/exception-handler.js').ErrorHandler} $exceptionHandler
+       * @param {ng.ExceptionHandlerService} $exceptionHandler
        * @returns
        */
       ($parse, $exceptionHandler) => {
@@ -4039,11 +4039,11 @@ const ngEventDirectives = {};
 
 /**
  *
- * @param {import("../../core/parse/interface.ts").ParseService} $parse
- * @param {import('../../services/exception/exception-handler.js').ErrorHandler} $exceptionHandler
+ * @param {ng.ParseService} $parse
+ * @param {ng.ExceptionHandlerService} $exceptionHandler
  * @param {string} directiveName
  * @param {string} eventName
- * @returns {import("../../interface.ts").Directive}
+ * @returns {ng.Directive}
  */
 function createEventDirective(
   $parse,
@@ -13343,17 +13343,17 @@ const patternDirective = [
 const maxlengthDirective = [
   $injectTokens.$parse,
   /**
-   * @param {import("../../core/parse/interface.ts").ParseService} $parse
-   * @returns {import("../../interface.ts").Directive}
+   * @param {ng.ParseService} $parse
+   * @returns {ng.Directive}
    */
   ($parse) => ({
     restrict: "A",
     require: "?ngModel",
     link:
       /**
-       * @param {import("../../core/scope/scope.js").Scope} scope
-       * @param {*} _elm
-       * @param {import("../../core/compile/attributes.js").Attributes} attr
+       * @param {ng.Scope} scope
+       * @param {Element} _elm
+       * @param {ng.Attributes} attr
        * @param {import("../../interface.ts").NgModelController} ctrl
        * @returns
        */
@@ -35470,6 +35470,37 @@ function ngInjectDirective($log, $injector) {
 }
 
 /**
+ * @returns {ng.Directive}
+ */
+function ngElDirective() {
+  return {
+    restrict: "A",
+    link(scope, element, attrs) {
+      const expr = attrs["ngEl"];
+      const key = !expr ? element.id : expr;
+
+      scope.$target[key] = element;
+      const parent = element.parentNode;
+      if (!parent) return;
+
+      const observer = new MutationObserver((mutations) => {
+        for (const mutation of mutations) {
+          Array.from(mutation.removedNodes).forEach((removedNode) => {
+            if (removedNode === element) {
+              //
+              delete scope.$target[key];
+              observer.disconnect();
+            }
+          });
+        }
+      });
+
+      observer.observe(parent, { childList: true });
+    },
+  };
+}
+
+/**
  * Initializes core `ng` module.
  * @param {import('./angular.js').Angular} angular
  * @returns {import('./core/di/ng-module.js').NgModule} `ng` module
@@ -35508,6 +35539,7 @@ function registerNgModule(angular) {
               ngController: ngControllerDirective,
               ngDelete: ngDeleteDirective,
               ngDisabled: ngDisabledAriaDirective,
+              ngEl: ngElDirective,
               ngForm: ngFormDirective,
               ngGet: ngGetDirective,
               ngHide: ngHideDirective,
@@ -35641,7 +35673,7 @@ class Angular {
     /**
      * @type {string} `version` from `package.json`
      */
-    this.version = "0.9.6"; //inserted via rollup plugin
+    this.version = "0.9.7"; //inserted via rollup plugin
 
     /** @type {!Array<string|any>} */
     this.bootsrappedModules = [];
