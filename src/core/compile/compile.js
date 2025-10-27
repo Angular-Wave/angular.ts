@@ -999,7 +999,7 @@ export class CompileProvider {
 
         /**
          * Prebinds the transclusion function to a scope
-         * @param {import("../scope/scope.js").Scope} scope
+         * @param {ng.Scope} scope
          * @param {*} transcludeFn
          * @param {*} previousBoundTranscludeFn
          * @returns {BoundTranscludeFn}
@@ -1060,7 +1060,7 @@ export class CompileProvider {
          */
         function collectDirectives(node, attrs, maxPriority, ignoreDirective) {
           /**
-           * @type {import('../../interface.ts').Directive[]}
+           * @type {ng.Directive[]}
            */
           const directives = [];
           const { nodeType } = node;
@@ -1119,6 +1119,7 @@ export class CompileProvider {
                       createEventDirective(
                         $parse,
                         $exceptionHandler,
+                        window,
                         nName,
                         name,
                       ),

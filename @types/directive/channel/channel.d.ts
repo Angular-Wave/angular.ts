@@ -1,10 +1,8 @@
 /**
- * @param {import("../../services/pubsub/pubsub.js").PubSub} $eventBus
- * @returns {import("../../interface.ts").Directive}
+ * @param {ng.PubSubService} $eventBus
+ * @returns {ng.Directive}
  */
-export function ngChannelDirective(
-  $eventBus: import("../../services/pubsub/pubsub.js").PubSub,
-): import("../../interface.ts").Directive;
+export function ngChannelDirective($eventBus: ng.PubSubService): ng.Directive;
 export namespace ngChannelDirective {
   let $inject: string[];
 }

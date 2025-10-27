@@ -270,6 +270,7 @@ export type DirectiveCompileFn = (
 ) => void | DirectiveLinkFn | DirectivePrePost;
 /**
  * Defines the structure of an AngularTS directive.
+ * @typedef {Object} Directive
  */
 export interface Directive {
   /** Optional name (usually inferred) */

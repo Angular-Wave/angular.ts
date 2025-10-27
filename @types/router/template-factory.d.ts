@@ -20,7 +20,7 @@ export class TemplateFactoryProvider {
   )[];
   $templateRequest: any;
   $http: import("../interface.ts").HttpService;
-  $templateCache: Map<string, string>;
+  $templateCache: ng.TemplateCacheService;
   $injector: import("../core/di/internal-injector.js").InjectorService;
   /**
    * Forces the provider to use $http service directly

@@ -3,8 +3,8 @@ import { $injectTokens } from "../../injection-tokens.js";
 
 ngChannelDirective.$inject = [$injectTokens.$eventBus];
 /**
- * @param {import("../../services/pubsub/pubsub.js").PubSub} $eventBus
- * @returns {import("../../interface.ts").Directive}
+ * @param {ng.PubSubService} $eventBus
+ * @returns {ng.Directive}
  */
 export function ngChannelDirective($eventBus) {
   return {

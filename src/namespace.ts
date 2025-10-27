@@ -1,41 +1,59 @@
 export { angular } from "./index.js";
 
+import { Angular as TAngular } from "./angular.js";
+import { Attributes as TAttributes } from "./core/compile/attributes.js";
+import { Scope as TScope } from "./core/scope/scope.js";
+import { NgModule as TNgModule } from "./core/di/ng-module.js";
+import { InjectorService as TInjectorService } from "./core/di/internal-injector.js";
+
 import {
-  AnchorScrollProvider,
+  AnchorScrollProvider as TAnchorScrollProvider,
   AnchorScrollService as TAnchorScrollService,
 } from "./services/anchor-scroll/anchor-scroll.js";
-import { ControllerService as TControllerService } from "./core/controller/interface.ts";
-import { ErrorHandler } from "./services/exception/interface.ts";
-import { Angular } from "./angular.js";
-import { Attributes } from "./core/compile/attributes.js";
-import { Scope } from "./core/scope/scope.js";
-import { NgModule } from "./core/di/ng-module.js";
-import { PubSubProvider, PubSub } from "./services/pubsub/pubsub.js";
-import type { ErrorHandlingConfig as TErrorHandlingConfig } from "./shared/interface.ts";
-import { InjectorService } from "./core/di/internal-injector.js";
-import { CompileFn } from "./core/compile/compile.js";
 
+import { ControllerService as TControllerService } from "./core/controller/interface.ts";
+import { ErrorHandler as TErrorHandler } from "./services/exception/interface.ts";
 import { ParseService as TParseService } from "./core/parse/interface.ts";
 import { TemplateRequestService as TTemplateRequestService } from "./services/template-request/interface.ts";
-import { HttpParamSerializer } from "./services/http/interface.ts";
-import { HttpParamSerializerProvider } from "./services/http/http.js";
-import { FilterFactory, FilterFn as TFilterFn } from "./filters/interface.ts";
+
+import { HttpParamSerializer as THttpParamSerializer } from "./services/http/interface.ts";
+import { HttpParamSerializerProvider as THttpParamSerializerProvider } from "./services/http/http.js";
+import {
+  FilterFactory as TFilterFactory,
+  FilterFn as TFilterFn,
+} from "./filters/interface.ts";
 import { InterpolateService as TInterpolateService } from "./core/interpolate/interface.ts";
-import { InterpolateProvider } from "./core/interpolate/interpolate.js";
-import { SceDelegateProvider, SceProvider } from "./services/sce/sce.js";
+import { InterpolateProvider as TInterpolateProvider } from "./core/interpolate/interpolate.js";
+import {
+  SceProvider as TSceProvider,
+  SceDelegateProvider as TSceDelegateProvider,
+} from "./services/sce/sce.js";
+import { StateProvider as TStateProvider } from "./router/state/state-service.js";
+import { HttpService as THttpService } from "./services/http/interface.ts";
+import { LogService as TLogService } from "./services/log/interface.ts";
+import {
+  PubSubProvider as TPubSubProvider,
+  PubSub as TPubSub,
+} from "./services/pubsub/pubsub.js";
 import {
   Directive as TDirective,
   DirectiveFactory as TDirectiveFactory,
   Component as TComponent,
   Controller as TController,
 } from "./interface.ts";
-import { StateProvider } from "./router/state/state-service.js";
-import { HttpService as THttpService } from "./services/http/interface.ts";
-import { LogService as TLogService } from "./services/log/interface.ts";
 import {
   SseService as TSseService,
   SseConfig as TSseConfig,
 } from "./services/sse/interface.ts";
+import type { ErrorHandlingConfig as TErrorHandlingConfig } from "./shared/interface.ts";
+import { CompileFn as TCompileFn } from "./core/compile/compile.js";
+
+/* ────────────────────────────────────────────────
+   Runtime global initialization
+──────────────────────────────────────────────── */
+if (typeof globalThis.ng === "undefined") {
+  (globalThis as any).ng = {};
+}
 
 declare global {
   interface Function {
@@ -43,47 +61,44 @@ declare global {
   }
 
   namespace ng {
-    // Core types
-    type Angular = InstanceType<typeof Angular>;
-    type Attributes = InstanceType<typeof Attributes>;
+    // Core types (docs preserved)
+    type Angular = TAngular;
+    type Attributes = TAttributes;
     type Directive = TDirective;
     type DirectiveFactory = TDirectiveFactory;
     type Component = TComponent;
     type Controller = TController;
-    type Scope = InstanceType<typeof Scope>;
-    type NgModule = InstanceType<typeof NgModule>;
-    type PubSubProvider = InstanceType<typeof PubSubProvider>;
+    type Scope = TScope;
+    type NgModule = TNgModule;
+    type PubSubProvider = TPubSubProvider;
     type FilterFn = TFilterFn;
 
     // Providers
-    type AnchorScrollProvider = InstanceType<typeof AnchorScrollProvider>;
-    type InterpolateProvider = InstanceType<typeof InterpolateProvider>;
-    type HttpParamSerializerProvider = InstanceType<
-      typeof HttpParamSerializerProvider
-    >;
-
-    type SceProvider = InstanceType<typeof SceProvider>;
-    type SceDelegateProvider = InstanceType<typeof SceDelegateProvider>;
+    type AnchorScrollProvider = TAnchorScrollProvider;
+    type InterpolateProvider = TInterpolateProvider;
+    type HttpParamSerializerProvider = THttpParamSerializerProvider;
+    type SceProvider = TSceProvider;
+    type SceDelegateProvider = TSceDelegateProvider;
 
     // Services
     type AnchorScrollService = TAnchorScrollService;
-    type CompileService = CompileFn;
+    type CompileService = TCompileFn;
     type ControllerService = TControllerService;
-    type ExceptionHandlerService = ErrorHandler;
-    type FilterService = FilterFactory;
-    type HttpParamSerializerSerService = HttpParamSerializer;
+    type ExceptionHandlerService = TErrorHandler;
+    type FilterService = TFilterFactory;
+    type HttpParamSerializerSerService = THttpParamSerializer;
     type HttpService = THttpService;
     type InterpolateService = TInterpolateService;
-    type InjectorService = InstanceType<typeof InjectorService>;
+    type InjectorService = TInjectorService;
     type LogService = TLogService;
     type ParseService = TParseService;
-    type PubSubService = InstanceType<typeof PubSub>;
+    type PubSubService = TPubSub;
     type RootElementService = Element;
-    type RootScopeService = InstanceType<typeof Scope>;
-    type StateService = InstanceType<typeof StateProvider>;
+    type RootScopeService = TScope;
+    type StateService = TStateProvider;
     type SseService = TSseService;
     type SseConfig = TSseConfig;
-    type TemplateCacheService = InstanceType<typeof Map<string, string>>;
+    type TemplateCacheService = Map<string, string>;
     type TemplateRequestService = TTemplateRequestService;
 
     // Support types

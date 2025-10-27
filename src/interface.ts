@@ -289,6 +289,7 @@ export type DirectiveCompileFn = (
 
 /**
  * Defines the structure of an AngularTS directive.
+ * @typedef {Object} Directive
  */
 export interface Directive {
   /** Optional name (usually inferred) */
