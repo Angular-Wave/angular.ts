@@ -10,26 +10,23 @@ import { $injectTokens as $t } from "../../injection-tokens.js";
  */
 export const ngEventDirectives = {};
 
-"click copy cut dblclick focus blur keydown keyup load mousedown mouseenter mouseleave mousemove mouseout mouseover mouseup paste submit touchstart touchend touchmove offline online"
+"click copy cut dblclick focus blur keydown keyup load mousedown mouseenter mouseleave mousemove mouseout mouseover mouseup paste submit touchstart touchend touchmove"
   .split(" ")
   .forEach((eventName) => {
     const directiveName = directiveNormalize(`ng-${eventName}`);
     ngEventDirectives[directiveName] = [
       $t.$parse,
       $t.$exceptionHandler,
-      $t.$window,
 
       /**
        * @param {import("../../core/parse/interface.ts").ParseService} $parse
        * @param {ng.ExceptionHandlerService} $exceptionHandler
-       * @param {ng.WindowService} $window
        * @returns
        */
-      ($parse, $exceptionHandler, $window) => {
+      ($parse, $exceptionHandler) => {
         return createEventDirective(
           $parse,
           $exceptionHandler,
-          $window,
           directiveName,
           eventName,
         );
@@ -41,7 +38,6 @@ export const ngEventDirectives = {};
  *
  * @param {ng.ParseService} $parse
  * @param {ng.ExceptionHandlerService} $exceptionHandler
- * @param {ng.WindowService} $window
  * @param {string} directiveName
  * @param {string} eventName
  * @returns {ng.Directive}
@@ -49,7 +45,6 @@ export const ngEventDirectives = {};
 export function createEventDirective(
   $parse,
   $exceptionHandler,
-  $window,
   directiveName,
   eventName,
 ) {

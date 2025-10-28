@@ -1037,12 +1037,12 @@ export class CompileProvider {
                       createEventDirective(
                         $parse,
                         $exceptionHandler,
-                        window,
                         nName,
                         name,
                       ),
                     );
                   } else {
+                    // isWindow
                     directives.push(
                       createWindowEventDirective(
                         $parse,
