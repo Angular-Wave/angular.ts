@@ -28,10 +28,8 @@ is destroyed.
 - **Type:** `string`
 - **Description:** The name of the channel to subscribe to using `$eventBus`.
 
-### Demo
+#### Demo
 
-{{< showhtml src="examples/ng-channel/ng-channel.html" >}}
-
-{{< showraw src="examples/ng-channel/ng-channel.html" >}}
+{{< showdemo src="examples/ng-channel/ng-channel.html" >}}
 
 ---

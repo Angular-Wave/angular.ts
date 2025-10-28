@@ -1,0 +1,3 @@
+{{ $code := readFile (printf "static/%s" (.Get "src")) }} {{ highlight $code
+"html" "" }} {{ $code := readFile (printf "static/%s" (.Get "src")) }} {{ $code
+| safeHTML }}
