@@ -42,12 +42,21 @@ import {
   SseConfig as TSseConfig,
 } from "./services/sse/interface.ts";
 import type { ErrorHandlingConfig as TErrorHandlingConfig } from "./shared/interface.ts";
-import { CompileFn as TCompileFn } from "./core/compile/compile.js";
+import {
+  BoundTranscludeFn as TBoundTranscludeFn,
+  CompileFn as TCompileFn,
+  PublicLinkFn as TPublicLinkFn,
+  NodeLinkFnCtx as TNodeLinkFnCtx,
+  NodeLinkFn as TNodeLinkFn,
+  TranscludeFn as TTranscludeFn,
+  LinkFnMapping as TLinkFnMapping,
+  CompositeLinkFn as TCompositeLinkFn,
+} from "./core/compile/inteface.ts";
 declare global {
   interface Function {
     $inject?: readonly string[] | undefined;
   }
-  namespace ng {
+  export namespace ng {
     type Angular = TAngular;
     type Attributes = TAttributes;
     type Directive = TDirective;
@@ -58,6 +67,13 @@ declare global {
     type NgModule = TNgModule;
     type PubSubProvider = TPubSubProvider;
     type FilterFn = TFilterFn;
+    type CompositeLinkFn = TCompositeLinkFn;
+    type PublicLinkFn = TPublicLinkFn;
+    type NodeLinkFn = TNodeLinkFn;
+    type NodeLinkFnCtx = TNodeLinkFnCtx;
+    type TranscludeFn = TTranscludeFn;
+    type BoundTranscludeFn = TBoundTranscludeFn;
+    type LinkFnMapping = TLinkFnMapping;
     type AnchorScrollProvider = TAnchorScrollProvider;
     type InterpolateProvider = TInterpolateProvider;
     type HttpParamSerializerProvider = THttpParamSerializerProvider;

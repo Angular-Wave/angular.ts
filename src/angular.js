@@ -129,10 +129,10 @@ export class Angular {
       $t.$compile,
       $t.$injector,
       /**
-       * @param {import('./core/scope/scope.js').Scope} scope
+       * @param {ng.Scope} scope
        * @param {Element} el
-       * @param {import("./core/compile/compile.js").CompileFn} compile
-       * @param {import("./core/di/internal-injector.js").InjectorService} $injector
+       * @param {ng.CompileService} compile
+       * @param {ng.InjectorService} $injector
        */
       (scope, el, compile, $injector) => {
         // ng-route deps

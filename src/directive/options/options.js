@@ -34,7 +34,7 @@ const NG_OPTIONS_REGEXP =
 ngOptionsDirective.$inject = ["$compile", "$parse"];
 /**
  *
- * @param {import("../../core/compile/compile.js").CompileFn} $compile
+ * @param {ng.CompileService} $compile
  * @param {import("../../core/parse/interface.ts").ParseService} $parse
  * @returns {import("../../interface.ts").Directive}
  */

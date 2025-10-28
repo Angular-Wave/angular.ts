@@ -16,11 +16,11 @@ export namespace ngIncludeDirective {
   let $inject: string[];
 }
 /**
- * @param {import("../../core/compile/compile.js").CompileFn} $compile
+ * @param {ng.CompileService} $compile
  * @returns {import("../../interface.ts").Directive}
  */
 export function ngIncludeFillContentDirective(
-  $compile: import("../../core/compile/compile.js").CompileFn,
+  $compile: ng.CompileService,
 ): import("../../interface.ts").Directive;
 export namespace ngIncludeFillContentDirective {
   let $inject_1: string[];

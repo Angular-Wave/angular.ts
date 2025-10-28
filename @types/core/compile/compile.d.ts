@@ -135,67 +135,10 @@ export class CompileProvider {
         $animate: any,
       ) => (
         compileNode: string | Element | Node | ChildNode | NodeList,
-        transcludeFn?: TranscludeFn,
+        transcludeFn?: import("./inteface.ts").TranscludeFn,
         maxPriority?: number,
         ignoreDirective?: string,
         previousCompileContext?: any,
-      ) => PublicLinkFn)
+      ) => import("./inteface.ts").PublicLinkFn)
   )[];
 }
-/**
- * A function passed as the fifth argument to a {@type PublicLinkFn} link function.
- * It behaves like a linking function, with the `scope` argument automatically created
- * as a new child of the transcluded parent scope.
- *
- * The function returns the DOM content to be injected (transcluded) into the directive.
- */
-export type TranscludeFn = (
-  clone?: Element | Node | ChildNode | NodeList | Node[],
-  scope?: import("../scope/scope.js").Scope,
-) => any;
-/**
- * A function passed as the fifth argument to a {@type PublicLinkFn} link function.
- * It behaves like a linking function, with the `scope` argument automatically created
- * as a new child of the transcluded parent scope.
- *
- * The function returns the DOM content to be injected (transcluded) into the directive.
- */
-export type BoundTranscludeFn = () => Element | Node;
-export type SimpleChange = {
-  currentValue: any;
-  firstChange: boolean;
-};
-export type PublicLinkFn = (
-  scope: import("../scope/scope.js").Scope,
-  cloneConnectFn?: TranscludeFn,
-  options?: any,
-) => Element | Node | ChildNode | Node[];
-export type CompileFn = (
-  compileNode: string | Element | Node | ChildNode | NodeList,
-  transcludeFn?: TranscludeFn,
-  maxPriority?: number,
-  ignoreDirective?: string,
-  previousCompileContext?: any,
-) => PublicLinkFn;
-export type LinkFnMapping = {
-  index: number;
-  nodeLinkFnCtx?: NodeLinkFnCtx;
-  childLinkFn?: CompositeLinkFn;
-};
-export type CompileNodesFn = () => CompositeLinkFn;
-export type NodeLinkFn = () => Node | Element | NodeList;
-export type NodeLinkFnCtx = {
-  nodeLinkFn: NodeLinkFn;
-  terminal: boolean;
-  transclude: TranscludeFn;
-  transcludeOnThisElement: boolean;
-  templateOnThisElement: boolean;
-  newScope: boolean;
-};
-export type ApplyDirectivesToNodeFn = () => NodeLinkFn;
-export type CompositeLinkFn = (
-  scope: import("../scope/scope.js").Scope,
-  $linkNode: NodeRef,
-  parentBoundTranscludeFn?: Function,
-) => any;
-import { NodeRef } from "../../shared/noderef.js";

@@ -21,8 +21,8 @@ const ngTranscludeMinErr = minErr("ngTransclude");
 
 ngTranscludeDirective.$inject = ["$compile"];
 /**
- * @param {import("../../core/compile/compile.js").CompileFn} $compile
- * @returns {import("../../interface.ts").Directive}
+ * @param {ng.CompileService} $compile
+ * @returns {ng.Directive}
  */
 export function ngTranscludeDirective($compile) {
   return {
@@ -33,9 +33,9 @@ export function ngTranscludeDirective($compile) {
 
       /**
        *
-       * @param {import("../../core/scope/scope.js").Scope} $scope
+       * @param {ng.Scope} $scope
        * @param {Element} $element
-       * @param {import("../../core/compile/attributes.js").Attributes} $attrs
+       * @param {ng.Attributes} $attrs
        * @param {*} _controller
        * @param {*} $transclude
        */

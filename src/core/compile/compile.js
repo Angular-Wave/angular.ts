@@ -44,91 +44,6 @@ import { Attributes } from "./attributes.js";
 import { ngObserveDirective } from "../../directive/observe/observe.js";
 import { $injectTokens as $t } from "../../injection-tokens.js";
 
-/**
- * A function passed as the fifth argument to a {@type PublicLinkFn} link function.
- * It behaves like a linking function, with the `scope` argument automatically created
- * as a new child of the transcluded parent scope.
- *
- * The function returns the DOM content to be injected (transcluded) into the directive.
- *
- * @callback TranscludeFn
- * @param {Element | Node | ChildNode | NodeList | Node[]} [clone] - The DOM node to be inserted into the transcluded directive.
- * @param {import("../scope/scope.js").Scope} [scope] - The new child scope created from the transcluded parent.
- * @returns void
-
-/**
- * A specialized version of {@link TranscludeFn} with the scope argument already bound.
- * This function requires no parameters and returns the same result as {@link TranscludeFn}.
- *
- * @typedef {() => Element|Node} BoundTranscludeFn
- */
-
-/**
- * @typedef {Object} SimpleChange
- * @property {any} currentValue
- * @property {boolean} firstChange
- */
-
-/**
- * @description A function returned by the '$compile' service that links a compiled template to a scope.
- *
- * @callback PublicLinkFn
- * @param {import('../scope/scope.js').Scope} scope - Scope to link with element
- * @param {TranscludeFn} [cloneConnectFn]
- * @param {*} [options]
- * @return {Element|Node|ChildNode|Node[]} The nodes to be linked.
- */
-
-/**
- * @description Entry point for the '$compile' service.
- *
- * @callback CompileFn
- * @param {string|Element|Node|ChildNode|NodeList} compileNode - The node to be compiled.
- * @param {TranscludeFn} [transcludeFn] - An optional transclusion function to be used during compilation.
- * @param {number} [maxPriority] - An optional maximum priority for directives.
- * @param {string} [ignoreDirective] - An optional directive to ignore during compilation.
- * @param {*} [previousCompileContext] - An optional context from a previous compilation. TODO
- * @returns {PublicLinkFn} A public link function.
- */
-
-/**
- * @typedef {Object} LinkFnMapping
- * @property {number} index
- * @property {NodeLinkFnCtx} [nodeLinkFnCtx]
- * @property {CompositeLinkFn} [childLinkFn]
- */
-
-/**
- * @typedef {function(): CompositeLinkFn} CompileNodesFn
- */
-
-/**
- * @callback NodeLinkFn
- * @returns {Node|Element|NodeList}
- */
-
-/**
- * @typedef {Object} NodeLinkFnCtx
- * @property {NodeLinkFn} nodeLinkFn
- * @property {boolean} terminal
- * @property {TranscludeFn} transclude
- * @property {boolean} transcludeOnThisElement
- * @property {boolean} templateOnThisElement
- * @property {boolean} newScope
- */
-
-/**
- * @typedef {function(): NodeLinkFn} ApplyDirectivesToNodeFn
- */
-
-/**
- * @description Function that aggregates all linking fns for a compilation root (nodeList)
- * @callback CompositeLinkFn
- * @param {import('../scope/scope.js').Scope} scope - The scope to be linked to the template
- * @param {NodeRef} $linkNode - wrapper around a nodeList
- * @param {Function} [parentBoundTranscludeFn]
- */
-
 const $compileMinErr = minErr("$compile");
 const EXCLUDED_DIRECTIVES = ["ngIf", "ngRepeat"];
 const ALL_OR_NOTHING_ATTRS = ["ngSrc", "ngSrcset", "src", "srcset"];
@@ -152,7 +67,6 @@ export class CompileProvider {
     const bindingCache = Object.create(null);
 
     /**
-     *
      * @param {import("../scope/scope.js").Scope} scope
      * @param {string} directiveName
      * @param {boolean} isController
@@ -668,9 +582,8 @@ export class CompileProvider {
         const NG_PREFIX_BINDING = /^ng(Attr|Prop|On|Observe)([A-Z].*)$/;
         return compile;
 
-        //= ===============================
         /**
-         * @type {CompileFn}
+         * @type {ng.CompileService}
          */
         function compile(
           element,
@@ -684,7 +597,7 @@ export class CompileProvider {
           /**
            * The composite link function is a composite of individual node linking functions.
            * It will be invoke by the public link function below.
-           * @type {CompositeLinkFn}
+           * @type {ng.CompositeLinkFn}
            */
           let compositeLinkFn = compileNodes(
             nodeRef,
@@ -697,7 +610,7 @@ export class CompileProvider {
           let namespace = null;
           return publicLinkFn;
 
-          /** @type {PublicLinkFn} */
+          /** @type {ng.PublicLinkFn} */
           function publicLinkFn(scope, cloneConnectFn, options) {
             if (!nodeRef) {
               throw $compileMinErr(
@@ -819,7 +732,7 @@ export class CompileProvider {
          * @param {number=} [maxPriority] Max directive priority.
          * @param {*} [ignoreDirective]
          * @param {*} [previousCompileContext]
-         * @returns {CompositeLinkFn} A composite linking function of all of the matched directives or null.
+         * @returns {ng.CompositeLinkFn} A composite linking function of all of the matched directives or null.
          */
         function compileNodes(
           nodeRefList,
@@ -832,7 +745,7 @@ export class CompileProvider {
            * Aggregates for the composite linking function, where a node in a node list is mapped
            * to a corresponding link function. For single elements, the node should be mapped to
            * a single node link function.
-           * @type {LinkFnMapping[]}
+           * @type {ng.LinkFnMapping[]}
            */
           const linkFnsList = []; // An array to hold node indices and their linkFns
           let nodeLinkFnFound;
@@ -852,7 +765,7 @@ export class CompileProvider {
               ignoreDirective,
             );
 
-            /** @type {NodeLinkFnCtx} */
+            /** @type {ng.NodeLinkFnCtx} */
             let nodeLinkFnCtx;
 
             if (directives.length) {
@@ -1002,7 +915,7 @@ export class CompileProvider {
          * @param {ng.Scope} scope
          * @param {*} transcludeFn
          * @param {*} previousBoundTranscludeFn
-         * @returns {BoundTranscludeFn}
+         * @returns {ng.BoundTranscludeFn}
          */
         function createBoundTranscludeFn(
           scope,
@@ -1184,7 +1097,7 @@ export class CompileProvider {
          * @param maxPriority
          * @param ignoreDirective
          * @param previousCompileContext
-         * @returns {PublicLinkFn|TranscludeFn}
+         * @returns {ng.PublicLinkFn|ng.TranscludeFn}
          */
         function compilationGenerator(
           eager,
@@ -1231,14 +1144,14 @@ export class CompileProvider {
          *        this needs to be pre-sorted by priority order.
          * @param {Node | Element} compileNode  DOM node to apply the compile functions to
          * @param {Attributes} templateAttrs The shared attribute function
-         * @param {TranscludeFn} transcludeFn
+         * @param {ng.TranscludeFn} transcludeFn
          * @param {Object=} originalReplaceDirective An optional directive that will be ignored when
          *                                           compiling the transclusion.
          * @param {Array.<Function>} [preLinkFns]
          * @param {Array.<Function>} [postLinkFns]
          * @param {Object} [previousCompileContext] Context used for previous compilation of the current
          *                                        node
-         * @returns {NodeLinkFnCtx} node link function
+         * @returns {ng.NodeLinkFnCtx} node link function
          */
         function applyDirectivesToNode(
           directives,
@@ -1273,7 +1186,7 @@ export class CompileProvider {
           let directiveName;
           let $template;
           let replaceDirective = originalReplaceDirective;
-          /** @type {TranscludeFn} */
+          /** @type {ng.TranscludeFn} */
           let childTranscludeFn = transcludeFn;
 
           let didScanForMultipleTransclusion = false;
@@ -1282,7 +1195,7 @@ export class CompileProvider {
 
           /**
            * Links all the directives of a single node.
-           * @type {NodeLinkFn}
+           * @type {ng.NodeLinkFn}
            */
           // @ts-ignore
           let nodeLinkFn = function (
@@ -1964,7 +1877,7 @@ export class CompileProvider {
               ii = directives.length;
             } else if (directive.compile) {
               try {
-                /** @type {PublicLinkFn} */
+                /** @type {ng.PublicLinkFn} */
                 const linkFn = directive.compile(
                   compileNodeRef.getAny(),
                   templateAttrs,
@@ -2980,7 +2893,7 @@ export class CompileProvider {
                   }
 
                   /**
-                   * @type {SimpleChange}
+                   * @type {import("./inteface.ts").SimpleChange}
                    */
                   initialChanges[scopeName] = {
                     currentValue: destination[scopeName],
@@ -3133,7 +3046,7 @@ export class CompileProvider {
                   parentGet = $parse(attrs[attrName]);
 
                   destination.$target[scopeName] = parentGet(scope.$target);
-                  /** @type {SimpleChange} */
+                  /** @type {import("./inteface.ts").SimpleChange} */
                   initialChanges[scopeName] = {
                     currentValue: destination.$target[scopeName],
                     firstChange: firstChange,

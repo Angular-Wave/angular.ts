@@ -46,7 +46,16 @@ import {
   SseConfig as TSseConfig,
 } from "./services/sse/interface.ts";
 import type { ErrorHandlingConfig as TErrorHandlingConfig } from "./shared/interface.ts";
-import { CompileFn as TCompileFn } from "./core/compile/compile.js";
+import {
+  BoundTranscludeFn as TBoundTranscludeFn,
+  CompileFn as TCompileFn,
+  PublicLinkFn as TPublicLinkFn,
+  NodeLinkFnCtx as TNodeLinkFnCtx,
+  NodeLinkFn as TNodeLinkFn,
+  TranscludeFn as TTranscludeFn,
+  LinkFnMapping as TLinkFnMapping,
+  CompositeLinkFn as TCompositeLinkFn,
+} from "./core/compile/inteface.ts";
 
 /* ────────────────────────────────────────────────
    Runtime global initialization
@@ -60,50 +69,58 @@ declare global {
     $inject?: readonly string[] | undefined;
   }
 
-  namespace ng {
+  export namespace ng {
     // Core types (docs preserved)
-    type Angular = TAngular;
-    type Attributes = TAttributes;
-    type Directive = TDirective;
-    type DirectiveFactory = TDirectiveFactory;
-    type Component = TComponent;
-    type Controller = TController;
-    type Scope = TScope;
-    type NgModule = TNgModule;
-    type PubSubProvider = TPubSubProvider;
-    type FilterFn = TFilterFn;
+    export type Angular = TAngular;
+    export type Attributes = TAttributes;
+    export type Directive = TDirective;
+    export type DirectiveFactory = TDirectiveFactory;
+    export type Component = TComponent;
+    export type Controller = TController;
+    export type Scope = TScope;
+    export type NgModule = TNgModule;
+    export type PubSubProvider = TPubSubProvider;
+    export type FilterFn = TFilterFn;
+
+    export type CompositeLinkFn = TCompositeLinkFn;
+    export type PublicLinkFn = TPublicLinkFn;
+    export type NodeLinkFn = TNodeLinkFn;
+    export type NodeLinkFnCtx = TNodeLinkFnCtx;
+    export type TranscludeFn = TTranscludeFn;
+    export type BoundTranscludeFn = TBoundTranscludeFn;
+    export type LinkFnMapping = TLinkFnMapping;
 
     // Providers
-    type AnchorScrollProvider = TAnchorScrollProvider;
-    type InterpolateProvider = TInterpolateProvider;
-    type HttpParamSerializerProvider = THttpParamSerializerProvider;
-    type SceProvider = TSceProvider;
-    type SceDelegateProvider = TSceDelegateProvider;
+    export type AnchorScrollProvider = TAnchorScrollProvider;
+    export type InterpolateProvider = TInterpolateProvider;
+    export type HttpParamSerializerProvider = THttpParamSerializerProvider;
+    export type SceProvider = TSceProvider;
+    export type SceDelegateProvider = TSceDelegateProvider;
 
     // Services
-    type AnchorScrollService = TAnchorScrollService;
-    type CompileService = TCompileFn;
-    type ControllerService = TControllerService;
-    type ExceptionHandlerService = TErrorHandler;
-    type FilterService = TFilterFactory;
-    type HttpParamSerializerSerService = THttpParamSerializer;
-    type HttpService = THttpService;
-    type InterpolateService = TInterpolateService;
-    type InjectorService = TInjectorService;
-    type LogService = TLogService;
-    type ParseService = TParseService;
-    type PubSubService = TPubSub;
-    type RootElementService = Element;
-    type RootScopeService = TScope;
-    type StateService = TStateProvider;
-    type SseService = TSseService;
-    type SseConfig = TSseConfig;
-    type TemplateCacheService = Map<string, string>;
-    type TemplateRequestService = TTemplateRequestService;
+    export type AnchorScrollService = TAnchorScrollService;
+    export type CompileService = TCompileFn;
+    export type ControllerService = TControllerService;
+    export type ExceptionHandlerService = TErrorHandler;
+    export type FilterService = TFilterFactory;
+    export type HttpParamSerializerSerService = THttpParamSerializer;
+    export type HttpService = THttpService;
+    export type InterpolateService = TInterpolateService;
+    export type InjectorService = TInjectorService;
+    export type LogService = TLogService;
+    export type ParseService = TParseService;
+    export type PubSubService = TPubSub;
+    export type RootElementService = Element;
+    export type RootScopeService = TScope;
+    export type StateService = TStateProvider;
+    export type SseService = TSseService;
+    export type SseConfig = TSseConfig;
+    export type TemplateCacheService = Map<string, string>;
+    export type TemplateRequestService = TTemplateRequestService;
 
     // Support types
-    type ErrorHandlingConfig = TErrorHandlingConfig;
-    type WindowService = Window;
-    type DocumentService = Document;
+    export type ErrorHandlingConfig = TErrorHandlingConfig;
+    export type WindowService = Window;
+    export type DocumentService = Document;
   }
 }

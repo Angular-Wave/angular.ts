@@ -1,10 +1,10 @@
 /**
- * @param {import("../../core/compile/compile.js").CompileFn} $compile
- * @returns {import("../../interface.ts").Directive}
+ * @param {ng.CompileService} $compile
+ * @returns {ng.Directive}
  */
 export function ngTranscludeDirective(
-  $compile: import("../../core/compile/compile.js").CompileFn,
-): import("../../interface.ts").Directive;
+  $compile: ng.CompileService,
+): ng.Directive;
 export namespace ngTranscludeDirective {
   let $inject: string[];
 }
