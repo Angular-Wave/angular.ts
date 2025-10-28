@@ -37,8 +37,6 @@ export const ngEventDirectives = {};
     ];
   });
 
-const windowEvents = ["offline", "online"];
-
 /**
  *
  * @param {ng.ParseService} $parse
@@ -67,12 +65,49 @@ export function createEventDirective(
             $exceptionHandler(error);
           }
         };
-
-        const target = windowEvents.includes(eventName) ? $window : element;
-        target.addEventListener(eventName, handler);
+        element.addEventListener(eventName, handler);
 
         scope.$on("$destroy", () =>
-          target.removeEventListener(eventName, handler),
+          element.removeEventListener(eventName, handler),
+        );
+      };
+    },
+  };
+}
+
+/**
+ *
+ * @param {ng.ParseService} $parse
+ * @param {ng.ExceptionHandlerService} $exceptionHandler
+ * @param {ng.WindowService} $window
+ * @param {string} directiveName
+ * @param {string} eventName
+ * @returns {ng.Directive}
+ */
+export function createWindowEventDirective(
+  $parse,
+  $exceptionHandler,
+  $window,
+  directiveName,
+  eventName,
+) {
+  return {
+    restrict: "A",
+    compile(_element, attr) {
+      const fn = $parse(attr[directiveName]);
+      return (scope) => {
+        const handler = (event) => {
+          try {
+            fn(scope, { $event: event });
+          } catch (error) {
+            $exceptionHandler(error);
+          }
+        };
+
+        $window.addEventListener(eventName, handler);
+
+        scope.$on("$destroy", () =>
+          $window.removeEventListener(eventName, handler),
         );
       };
     },

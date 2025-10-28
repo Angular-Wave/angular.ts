@@ -15,6 +15,22 @@ export function createEventDirective(
   eventName: string,
 ): ng.Directive;
 /**
+ *
+ * @param {ng.ParseService} $parse
+ * @param {ng.ExceptionHandlerService} $exceptionHandler
+ * @param {ng.WindowService} $window
+ * @param {string} directiveName
+ * @param {string} eventName
+ * @returns {ng.Directive}
+ */
+export function createWindowEventDirective(
+  $parse: ng.ParseService,
+  $exceptionHandler: ng.ExceptionHandlerService,
+  $window: ng.WindowService,
+  directiveName: string,
+  eventName: string,
+): ng.Directive;
+/**
  * @type {Record<string, ng.DirectiveFactory>}
  */
 export const ngEventDirectives: Record<string, ng.DirectiveFactory>;

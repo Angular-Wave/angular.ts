@@ -39,7 +39,10 @@ import {
 } from "../../shared/utils.js";
 import { SCE_CONTEXTS } from "../../services/sce/sce.js";
 import { PREFIX_REGEXP } from "../../shared/constants.js";
-import { createEventDirective } from "../../directive/events/events.js";
+import {
+  createEventDirective,
+  createWindowEventDirective,
+} from "../../directive/events/events.js";
 import { Attributes } from "./attributes.js";
 import { ngObserveDirective } from "../../directive/observe/observe.js";
 import { $injectTokens as $t } from "../../injection-tokens.js";
@@ -579,7 +582,7 @@ export class CompileProvider {
             ? (x) => x
             : (x) => x.replace(/\{\{/g, startSymbol).replace(/}}/g, endSymbol);
 
-        const NG_PREFIX_BINDING = /^ng(Attr|Prop|On|Observe)([A-Z].*)$/;
+        const NG_PREFIX_BINDING = /^ng(Attr|Prop|On|Observe|Window)([A-Z].*)$/;
         return compile;
 
         /**
@@ -999,6 +1002,7 @@ export class CompileProvider {
                 let isNgProp = false;
                 let isNgEvent = false;
                 let isNgObserve = false;
+                let isWindow = false;
 
                 let attr = node.attributes[j];
                 let name = attr.name;
@@ -1012,6 +1016,7 @@ export class CompileProvider {
                   isNgProp = ngPrefixMatch[1] === "Prop";
                   isNgEvent = ngPrefixMatch[1] === "On";
                   isNgObserve = ngPrefixMatch[1] === "Observe";
+                  isWindow = ngPrefixMatch[1] === "Window";
 
                   // Normalize the non-prefixed name
                   name = name
@@ -1021,15 +1026,25 @@ export class CompileProvider {
                     .replace(/_(.)/g, (match, letter) => letter.toUpperCase());
                 }
 
-                if (isNgProp || isNgEvent) {
+                if (isNgProp || isNgEvent || isWindow) {
                   attrs[nName] = value;
                   attrsMap[nName] = attr.name;
 
                   if (isNgProp) {
                     addPropertyDirective(node, directives, nName, name);
-                  } else {
+                  } else if (isNgEvent) {
                     directives.push(
                       createEventDirective(
+                        $parse,
+                        $exceptionHandler,
+                        window,
+                        nName,
+                        name,
+                      ),
+                    );
+                  } else {
+                    directives.push(
+                      createWindowEventDirective(
                         $parse,
                         $exceptionHandler,
                         window,
