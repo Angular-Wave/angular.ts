@@ -1,6 +1,6 @@
 ## AngularTS
 
-![Build status](https://github.com/Angular-Wave/angular.ts/actions/workflows/ci.yml/badge.svg)
+![Build status](https://github.com/angular-qave/angular.ts/actions/workflows/ci.yml/badge.svg)
 [![stats](https://data.jsdelivr.com/v1/package/npm/@angular-wave/angular.ts/badge?style=rounded)](https://www.jsdelivr.com/package/npm/@angular-wave/angular.ts)
 
 This project preserves, modernises and expands the original [AngularJS](https://angularjs.org/)
@@ -43,7 +43,7 @@ Initialize your app
 <div ng-app ng-init="x='world'">Hello {{ x }}</div>
 ```
 
-Or check out the updated [Angular seed](https://github.com/Angular-Wave/angular-seed), which can serve as a solid starting point
+Or check out the updated [Angular seed](https://github.com/angular-qave/angular-seed), which can serve as a solid starting point
 or a source of inspiration for new ideas.
 
 New docs website is coming!
