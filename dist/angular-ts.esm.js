@@ -1,4 +1,4 @@
-/* Version: 0.9.8 - October 26, 2025 21:59:27 */
+/* Version: 0.9.9 - October 28, 2025 22:08:29 */
 const VALID_CLASS = "ng-valid";
 const INVALID_CLASS = "ng-invalid";
 const PRISTINE_CLASS = "ng-pristine";
@@ -4015,22 +4015,26 @@ function SceProvider() {
  */
 const ngEventDirectives = {};
 
-"click copy cut dblclick focus blur keydown keyup load mousedown mouseenter mouseleave mousemove mouseout mouseover mouseup paste submit touchstart touchend touchmove"
+"click copy cut dblclick focus blur keydown keyup load mousedown mouseenter mouseleave mousemove mouseout mouseover mouseup paste submit touchstart touchend touchmove offline online"
   .split(" ")
   .forEach((eventName) => {
     const directiveName = directiveNormalize(`ng-${eventName}`);
     ngEventDirectives[directiveName] = [
-      "$parse",
-      "$exceptionHandler",
+      $injectTokens.$parse,
+      $injectTokens.$exceptionHandler,
+      $injectTokens.$window,
+
       /**
        * @param {import("../../core/parse/interface.ts").ParseService} $parse
        * @param {ng.ExceptionHandlerService} $exceptionHandler
+       * @param {ng.WindowService} $window
        * @returns
        */
-      ($parse, $exceptionHandler) => {
+      ($parse, $exceptionHandler, $window) => {
         return createEventDirective(
           $parse,
           $exceptionHandler,
+          $window,
           directiveName,
           eventName,
         );
@@ -4042,6 +4046,7 @@ const ngEventDirectives = {};
  *
  * @param {ng.ParseService} $parse
  * @param {ng.ExceptionHandlerService} $exceptionHandler
+ * @param {ng.WindowService} $window
  * @param {string} directiveName
  * @param {string} eventName
  * @returns {ng.Directive}
@@ -4049,6 +4054,7 @@ const ngEventDirectives = {};
 function createEventDirective(
   $parse,
   $exceptionHandler,
+  $window,
   directiveName,
   eventName,
 ) {
@@ -4056,14 +4062,58 @@ function createEventDirective(
     restrict: "A",
     compile(_element, attr) {
       const fn = $parse(attr[directiveName]);
-      return function ngEventHandler(scope, element) {
-        element.addEventListener(eventName, (event) => {
+      return (scope, element) => {
+        const handler = (event) => {
           try {
             fn(scope, { $event: event });
           } catch (error) {
             $exceptionHandler(error);
           }
-        });
+        };
+        element.addEventListener(eventName, handler);
+
+        scope.$on("$destroy", () =>
+          element.removeEventListener(eventName, handler),
+        );
+      };
+    },
+  };
+}
+
+/**
+ *
+ * @param {ng.ParseService} $parse
+ * @param {ng.ExceptionHandlerService} $exceptionHandler
+ * @param {ng.WindowService} $window
+ * @param {string} directiveName
+ * @param {string} eventName
+ * @returns {ng.Directive}
+ */
+function createWindowEventDirective(
+  $parse,
+  $exceptionHandler,
+  $window,
+  directiveName,
+  eventName,
+) {
+  return {
+    restrict: "A",
+    compile(_element, attr) {
+      const fn = $parse(attr[directiveName]);
+      return (scope) => {
+        const handler = (event) => {
+          try {
+            fn(scope, { $event: event });
+          } catch (error) {
+            $exceptionHandler(error);
+          }
+        };
+
+        $window.addEventListener(eventName, handler);
+
+        scope.$on("$destroy", () =>
+          $window.removeEventListener(eventName, handler),
+        );
       };
     },
   };
@@ -4432,91 +4482,6 @@ function ngObserveDirective(source, prop) {
   };
 }
 
-/**
- * A function passed as the fifth argument to a {@type PublicLinkFn} link function.
- * It behaves like a linking function, with the `scope` argument automatically created
- * as a new child of the transcluded parent scope.
- *
- * The function returns the DOM content to be injected (transcluded) into the directive.
- *
- * @callback TranscludeFn
- * @param {Element | Node | ChildNode | NodeList | Node[]} [clone] - The DOM node to be inserted into the transcluded directive.
- * @param {import("../scope/scope.js").Scope} [scope] - The new child scope created from the transcluded parent.
- * @returns void
-
-/**
- * A specialized version of {@link TranscludeFn} with the scope argument already bound.
- * This function requires no parameters and returns the same result as {@link TranscludeFn}.
- *
- * @typedef {() => Element|Node} BoundTranscludeFn
- */
-
-/**
- * @typedef {Object} SimpleChange
- * @property {any} currentValue
- * @property {boolean} firstChange
- */
-
-/**
- * @description A function returned by the '$compile' service that links a compiled template to a scope.
- *
- * @callback PublicLinkFn
- * @param {import('../scope/scope.js').Scope} scope - Scope to link with element
- * @param {TranscludeFn} [cloneConnectFn]
- * @param {*} [options]
- * @return {Element|Node|ChildNode|Node[]} The nodes to be linked.
- */
-
-/**
- * @description Entry point for the '$compile' service.
- *
- * @callback CompileFn
- * @param {string|Element|Node|ChildNode|NodeList} compileNode - The node to be compiled.
- * @param {TranscludeFn} [transcludeFn] - An optional transclusion function to be used during compilation.
- * @param {number} [maxPriority] - An optional maximum priority for directives.
- * @param {string} [ignoreDirective] - An optional directive to ignore during compilation.
- * @param {*} [previousCompileContext] - An optional context from a previous compilation. TODO
- * @returns {PublicLinkFn} A public link function.
- */
-
-/**
- * @typedef {Object} LinkFnMapping
- * @property {number} index
- * @property {NodeLinkFnCtx} [nodeLinkFnCtx]
- * @property {CompositeLinkFn} [childLinkFn]
- */
-
-/**
- * @typedef {function(): CompositeLinkFn} CompileNodesFn
- */
-
-/**
- * @callback NodeLinkFn
- * @returns {Node|Element|NodeList}
- */
-
-/**
- * @typedef {Object} NodeLinkFnCtx
- * @property {NodeLinkFn} nodeLinkFn
- * @property {boolean} terminal
- * @property {TranscludeFn} transclude
- * @property {boolean} transcludeOnThisElement
- * @property {boolean} templateOnThisElement
- * @property {boolean} newScope
- */
-
-/**
- * @typedef {function(): NodeLinkFn} ApplyDirectivesToNodeFn
- */
-
-/**
- * @description Function that aggregates all linking fns for a compilation root (nodeList)
- * @callback CompositeLinkFn
- * @param {import('../scope/scope.js').Scope} scope - The scope to be linked to the template
- * @param {NodeRef} $linkNode - wrapper around a nodeList
- * @param {Function} [parentBoundTranscludeFn]
- */
-
 const $compileMinErr = minErr("$compile");
 const EXCLUDED_DIRECTIVES = ["ngIf", "ngRepeat"];
 const ALL_OR_NOTHING_ATTRS = ["ngSrc", "ngSrcset", "src", "srcset"];
@@ -4540,7 +4505,6 @@ class CompileProvider {
     const bindingCache = Object.create(null);
 
     /**
-     *
      * @param {import("../scope/scope.js").Scope} scope
      * @param {string} directiveName
      * @param {boolean} isController
@@ -5053,12 +5017,11 @@ class CompileProvider {
             ? (x) => x
             : (x) => x.replace(/\{\{/g, startSymbol).replace(/}}/g, endSymbol);
 
-        const NG_PREFIX_BINDING = /^ng(Attr|Prop|On|Observe)([A-Z].*)$/;
+        const NG_PREFIX_BINDING = /^ng(Attr|Prop|On|Observe|Window)([A-Z].*)$/;
         return compile;
 
-        //= ===============================
         /**
-         * @type {CompileFn}
+         * @type {ng.CompileService}
          */
         function compile(
           element,
@@ -5072,7 +5035,7 @@ class CompileProvider {
           /**
            * The composite link function is a composite of individual node linking functions.
            * It will be invoke by the public link function below.
-           * @type {CompositeLinkFn}
+           * @type {ng.CompositeLinkFn}
            */
           let compositeLinkFn = compileNodes(
             nodeRef,
@@ -5085,7 +5048,7 @@ class CompileProvider {
           let namespace = null;
           return publicLinkFn;
 
-          /** @type {PublicLinkFn} */
+          /** @type {ng.PublicLinkFn} */
           function publicLinkFn(scope, cloneConnectFn, options) {
             if (!nodeRef) {
               throw $compileMinErr(
@@ -5207,7 +5170,7 @@ class CompileProvider {
          * @param {number=} [maxPriority] Max directive priority.
          * @param {*} [ignoreDirective]
          * @param {*} [previousCompileContext]
-         * @returns {CompositeLinkFn} A composite linking function of all of the matched directives or null.
+         * @returns {ng.CompositeLinkFn} A composite linking function of all of the matched directives or null.
          */
         function compileNodes(
           nodeRefList,
@@ -5220,7 +5183,7 @@ class CompileProvider {
            * Aggregates for the composite linking function, where a node in a node list is mapped
            * to a corresponding link function. For single elements, the node should be mapped to
            * a single node link function.
-           * @type {LinkFnMapping[]}
+           * @type {ng.LinkFnMapping[]}
            */
           const linkFnsList = []; // An array to hold node indices and their linkFns
           let nodeLinkFnFound;
@@ -5240,7 +5203,7 @@ class CompileProvider {
               ignoreDirective,
             );
 
-            /** @type {NodeLinkFnCtx} */
+            /** @type {ng.NodeLinkFnCtx} */
             let nodeLinkFnCtx;
 
             if (directives.length) {
@@ -5387,10 +5350,10 @@ class CompileProvider {
 
         /**
          * Prebinds the transclusion function to a scope
-         * @param {import("../scope/scope.js").Scope} scope
+         * @param {ng.Scope} scope
          * @param {*} transcludeFn
          * @param {*} previousBoundTranscludeFn
-         * @returns {BoundTranscludeFn}
+         * @returns {ng.BoundTranscludeFn}
          */
         function createBoundTranscludeFn(
           scope,
@@ -5448,7 +5411,7 @@ class CompileProvider {
          */
         function collectDirectives(node, attrs, maxPriority, ignoreDirective) {
           /**
-           * @type {import('../../interface.ts').Directive[]}
+           * @type {ng.Directive[]}
            */
           const directives = [];
           const { nodeType } = node;
@@ -5474,6 +5437,7 @@ class CompileProvider {
                 let isNgProp = false;
                 let isNgEvent = false;
                 let isNgObserve = false;
+                let isWindow = false;
 
                 let attr = node.attributes[j];
                 let name = attr.name;
@@ -5487,6 +5451,7 @@ class CompileProvider {
                   isNgProp = ngPrefixMatch[1] === "Prop";
                   isNgEvent = ngPrefixMatch[1] === "On";
                   isNgObserve = ngPrefixMatch[1] === "Observe";
+                  isWindow = ngPrefixMatch[1] === "Window";
 
                   // Normalize the non-prefixed name
                   name = name
@@ -5496,17 +5461,28 @@ class CompileProvider {
                     .replace(/_(.)/g, (match, letter) => letter.toUpperCase());
                 }
 
-                if (isNgProp || isNgEvent) {
+                if (isNgProp || isNgEvent || isWindow) {
                   attrs[nName] = value;
                   attrsMap[nName] = attr.name;
 
                   if (isNgProp) {
                     addPropertyDirective(node, directives, nName, name);
-                  } else {
+                  } else if (isNgEvent) {
                     directives.push(
                       createEventDirective(
                         $parse,
                         $exceptionHandler,
+                        window,
+                        nName,
+                        name,
+                      ),
+                    );
+                  } else {
+                    directives.push(
+                      createWindowEventDirective(
+                        $parse,
+                        $exceptionHandler,
+                        window,
                         nName,
                         name,
                       ),
@@ -5569,7 +5545,7 @@ class CompileProvider {
          * @param maxPriority
          * @param ignoreDirective
          * @param previousCompileContext
-         * @returns {PublicLinkFn|TranscludeFn}
+         * @returns {ng.PublicLinkFn|ng.TranscludeFn}
          */
         function compilationGenerator(
           eager,
@@ -5616,14 +5592,14 @@ class CompileProvider {
          *        this needs to be pre-sorted by priority order.
          * @param {Node | Element} compileNode  DOM node to apply the compile functions to
          * @param {Attributes} templateAttrs The shared attribute function
-         * @param {TranscludeFn} transcludeFn
+         * @param {ng.TranscludeFn} transcludeFn
          * @param {Object=} originalReplaceDirective An optional directive that will be ignored when
          *                                           compiling the transclusion.
          * @param {Array.<Function>} [preLinkFns]
          * @param {Array.<Function>} [postLinkFns]
          * @param {Object} [previousCompileContext] Context used for previous compilation of the current
          *                                        node
-         * @returns {NodeLinkFnCtx} node link function
+         * @returns {ng.NodeLinkFnCtx} node link function
          */
         function applyDirectivesToNode(
           directives,
@@ -5658,7 +5634,7 @@ class CompileProvider {
           let directiveName;
           let $template;
           let replaceDirective = originalReplaceDirective;
-          /** @type {TranscludeFn} */
+          /** @type {ng.TranscludeFn} */
           let childTranscludeFn = transcludeFn;
 
           let didScanForMultipleTransclusion = false;
@@ -5667,7 +5643,7 @@ class CompileProvider {
 
           /**
            * Links all the directives of a single node.
-           * @type {NodeLinkFn}
+           * @type {ng.NodeLinkFn}
            */
           // @ts-ignore
           let nodeLinkFn = function (
@@ -6349,7 +6325,7 @@ class CompileProvider {
               ii = directives.length;
             } else if (directive.compile) {
               try {
-                /** @type {PublicLinkFn} */
+                /** @type {ng.PublicLinkFn} */
                 const linkFn = directive.compile(
                   compileNodeRef.getAny(),
                   templateAttrs,
@@ -7365,7 +7341,7 @@ class CompileProvider {
                   }
 
                   /**
-                   * @type {SimpleChange}
+                   * @type {import("./inteface.ts").SimpleChange}
                    */
                   initialChanges[scopeName] = {
                     currentValue: destination[scopeName],
@@ -7518,7 +7494,7 @@ class CompileProvider {
                   parentGet = $parse(attrs[attrName]);
 
                   destination.$target[scopeName] = parentGet(scope.$target);
-                  /** @type {SimpleChange} */
+                  /** @type {import("./inteface.ts").SimpleChange} */
                   initialChanges[scopeName] = {
                     currentValue: destination.$target[scopeName],
                     firstChange: firstChange,
@@ -11486,7 +11462,7 @@ const ngClassOddDirective = classDirective("Odd", 0);
 const ngClassEvenDirective = classDirective("Even", 1);
 
 /**
- * @returns {import('../../interface.ts').Directive}
+ * @returns {ng.Directive}
  */
 function ngCloakDirective() {
   return {
@@ -11777,7 +11753,7 @@ function ngIncludeDirective(
 ngIncludeFillContentDirective.$inject = [$injectTokens.$compile];
 
 /**
- * @param {import("../../core/compile/compile.js").CompileFn} $compile
+ * @param {ng.CompileService} $compile
  * @returns {import("../../interface.ts").Directive}
  */
 function ngIncludeFillContentDirective($compile) {
@@ -12408,7 +12384,7 @@ const NG_OPTIONS_REGEXP =
 ngOptionsDirective.$inject = ["$compile", "$parse"];
 /**
  *
- * @param {import("../../core/compile/compile.js").CompileFn} $compile
+ * @param {ng.CompileService} $compile
  * @param {import("../../core/parse/interface.ts").ParseService} $parse
  * @returns {import("../../interface.ts").Directive}
  */
@@ -12935,8 +12911,8 @@ const ngTranscludeMinErr = minErr("ngTransclude");
 
 ngTranscludeDirective.$inject = ["$compile"];
 /**
- * @param {import("../../core/compile/compile.js").CompileFn} $compile
- * @returns {import("../../interface.ts").Directive}
+ * @param {ng.CompileService} $compile
+ * @returns {ng.Directive}
  */
 function ngTranscludeDirective($compile) {
   return {
@@ -12947,9 +12923,9 @@ function ngTranscludeDirective($compile) {
 
       /**
        *
-       * @param {import("../../core/scope/scope.js").Scope} $scope
+       * @param {ng.Scope} $scope
        * @param {Element} $element
-       * @param {import("../../core/compile/attributes.js").Attributes} $attrs
+       * @param {ng.Attributes} $attrs
        * @param {*} _controller
        * @param {*} $transclude
        */
@@ -35018,8 +34994,8 @@ function registerControllerCallbacks(
 
 ngChannelDirective.$inject = [$injectTokens.$eventBus];
 /**
- * @param {import("../../services/pubsub/pubsub.js").PubSub} $eventBus
- * @returns {import("../../interface.ts").Directive}
+ * @param {ng.PubSubService} $eventBus
+ * @returns {ng.Directive}
  */
 function ngChannelDirective($eventBus) {
   return {
@@ -35641,6 +35617,59 @@ class SseProvider {
 }
 
 /**
+ * @returns {ng.Directive}
+ */
+function ngViewportDirective() {
+  return {
+    restrict: "A",
+    link(scope, element, attrs) {
+      const enterExpr = attrs["onEnter"];
+      const leaveExpr = attrs["onLeave"];
+
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              if (enterExpr) scope.$eval(enterExpr);
+            } else {
+              if (leaveExpr) scope.$eval(leaveExpr);
+            }
+          });
+        },
+        {
+          root: null, // viewport
+          threshold: 0.1, // consider "in view" if 10% visible
+        },
+      );
+
+      observer.observe(element);
+
+      // Clean up when the element is removed from DOM
+      const parent = element.parentNode;
+      let mutationObserver;
+      if (parent) {
+        mutationObserver = new MutationObserver((mutations) => {
+          for (const mutation of mutations) {
+            Array.from(mutation.removedNodes).forEach((removedNode) => {
+              if (removedNode === element) {
+                observer.disconnect();
+                mutationObserver.disconnect();
+              }
+            });
+          }
+        });
+        mutationObserver.observe(parent, { childList: true });
+      }
+
+      scope.$on("$destroy", () => {
+        observer.disconnect();
+        if (mutationObserver) mutationObserver.disconnect();
+      });
+    },
+  };
+}
+
+/**
  * Initializes core `ng` module.
  * @param {import('./angular.js').Angular} angular
  * @returns {import('./core/di/ng-module.js').NgModule} `ng` module
@@ -35717,6 +35746,7 @@ function registerNgModule(angular) {
               maxlength: maxlengthDirective,
               ngValue: ngValueDirective,
               ngModelOptions: ngModelOptionsDirective,
+              ngViewport: ngViewportDirective,
             })
             .directive({
               input: hiddenInputBrowserCacheDirective,
@@ -35815,7 +35845,7 @@ class Angular {
     /**
      * @type {string} `version` from `package.json`
      */
-    this.version = "0.9.8"; //inserted via rollup plugin
+    this.version = "0.9.9"; //inserted via rollup plugin
 
     /** @type {!Array<string|any>} */
     this.bootsrappedModules = [];
@@ -35908,10 +35938,10 @@ class Angular {
       $injectTokens.$compile,
       $injectTokens.$injector,
       /**
-       * @param {import('./core/scope/scope.js').Scope} scope
+       * @param {ng.Scope} scope
        * @param {Element} el
-       * @param {import("./core/compile/compile.js").CompileFn} compile
-       * @param {import("./core/di/internal-injector.js").InjectorService} $injector
+       * @param {ng.CompileService} compile
+       * @param {ng.InjectorService} $injector
        */
       (scope, el, compile, $injector) => {
         // ng-route deps
