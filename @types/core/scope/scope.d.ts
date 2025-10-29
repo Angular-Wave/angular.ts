@@ -109,6 +109,8 @@ export class Scope {
   /** @type {boolean} */
   $$destroyed: boolean;
   scheduled: any[];
+  /** @private */
+  private propertyMap;
   /**
    * Intercepts and handles property assignments on the target object. If a new value is
    * an object, it will be recursively proxied.
@@ -140,29 +142,6 @@ export class Scope {
     property: string | number | symbol,
     proxy: ProxyConstructor,
   ): any;
-  propertyMap: {
-    $watch: any;
-    $new: any;
-    $newIsolate: any;
-    $destroy: any;
-    $eval: any;
-    $apply: any;
-    $postUpdate: any;
-    $isRoot: any;
-    $target: any;
-    $proxy: any;
-    $on: any;
-    $emit: any;
-    $broadcast: any;
-    $transcluded: any;
-    $handler: Scope;
-    $parent: Scope;
-    $root: Scope;
-    $children: Scope[];
-    $id: number;
-    $merge: any;
-    $getById: any;
-  };
   deleteProperty(target: any, property: any): boolean;
   /**
    * Registers a watcher for a property along with a listener function. The listener
@@ -180,6 +159,7 @@ export class Scope {
   $new(childInstance: any): any;
   $newIsolate(instance: any): any;
   $transcluded(parentInstance: any): any;
+  deregisterForeignKey(key: any, id: any): boolean;
   $eval(expr: any, locals: any): any;
   /**
    * @param {Object} newTarget

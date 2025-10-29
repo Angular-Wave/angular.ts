@@ -214,6 +214,30 @@ export class Scope {
     this.$$destroyed = false;
 
     this.scheduled = [];
+
+    /** @private */
+    this.propertyMap = {
+      $watch: this.$watch.bind(this),
+      $new: this.$new.bind(this),
+      $newIsolate: this.$newIsolate.bind(this),
+      $destroy: this.$destroy.bind(this),
+      $eval: this.$eval.bind(this),
+      $apply: this.$apply.bind(this),
+      $postUpdate: this.$postUpdate.bind(this),
+      $isRoot: this.#isRoot.bind(this),
+      $proxy: this.$proxy,
+      $on: this.$on.bind(this),
+      $emit: this.$emit.bind(this),
+      $broadcast: this.$broadcast.bind(this),
+      $transcluded: this.$transcluded.bind(this),
+      $handler: /** @type {Scope} */ (this),
+      $parent: this.$parent,
+      $root: this.$root,
+      $children: this.$children,
+      $id: this.$id,
+      $merge: this.$merge.bind(this),
+      $getById: this.$getById.bind(this),
+    };
   }
 
   /**
@@ -456,29 +480,8 @@ export class Scope {
       this.$proxy = proxy;
     }
 
-    this.propertyMap = {
-      $watch: this.$watch.bind(this),
-      $new: this.$new.bind(this),
-      $newIsolate: this.$newIsolate.bind(this),
-      $destroy: this.$destroy.bind(this),
-      $eval: this.$eval.bind(this),
-      $apply: this.$apply.bind(this),
-      $postUpdate: this.$postUpdate.bind(this),
-      $isRoot: this.#isRoot.bind(this),
-      $target: target,
-      $proxy: this.$proxy,
-      $on: this.$on.bind(this),
-      $emit: this.$emit.bind(this),
-      $broadcast: this.$broadcast.bind(this),
-      $transcluded: this.$transcluded.bind(this),
-      $handler: /** @type {Scope} */ (this),
-      $parent: this.$parent,
-      $root: this.$root,
-      $children: this.$children,
-      $id: this.$id,
-      $merge: this.$merge.bind(this),
-      $getById: this.$getById.bind(this),
-    };
+    this.propertyMap.$target = target;
+    this.propertyMap.$proxy = proxy;
 
     if (
       Array.isArray(target) &&
@@ -929,21 +932,21 @@ export class Scope {
     return true;
   }
 
-  // deregisterForeignKey(key, id) {
-  //   const listenerList = this.foreignListeners.get(key);
-  //   if (!listenerList) return false;
+  deregisterForeignKey(key, id) {
+    const listenerList = this.foreignListeners.get(key);
+    if (!listenerList) return false;
 
-  //   const index = listenerList.findIndex((x) => x.id === id);
-  //   if (index === -1) return false;
+    const index = listenerList.findIndex((x) => x.id === id);
+    if (index === -1) return false;
 
-  //   listenerList.splice(index, 1);
-  //   if (listenerList.length) {
-  //     this.foreignListeners.set(key, listenerList);
-  //   } else {
-  //     this.foreignListeners.delete(key);
-  //   }
-  //   return true;
-  // }
+    listenerList.splice(index, 1);
+    if (listenerList.length) {
+      this.foreignListeners.set(key, listenerList);
+    } else {
+      this.foreignListeners.delete(key);
+    }
+    return true;
+  }
 
   $eval(expr, locals) {
     const fn = $parse(expr);
