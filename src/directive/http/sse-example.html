@@ -7,10 +7,22 @@
     <script type="module" src="/src/index.js"></script>
   </head>
   <body ng-app>
-    <button ng-sse="/mock/events" target="#log" trigger="load">Start</button>
+    <button ng-sse="/mock/events" target="#log" trigger="click">Start</button>
     <div id="log"></div>
 
-    <button ng-sse="/mock/eventsoject" trigger="load">Start</button>
+    <div ng-sse="/mock/eventsoject" trigger="load">Start on load</div>
     {{ time }}
+
+    <br />
+
+    <input
+      name="text"
+      ng-post="/mock/publish"
+      trigger="keyup"
+      placeholder="Search..."
+    />
+    {{ text }}
+
+    <div ng-sse="/mock/subscribe" trigger="load"></div>
   </body>
 </html>

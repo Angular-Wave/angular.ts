@@ -255,3 +255,44 @@ app.get("/eventsoject", (req, res) => {
     res.end();
   });
 });
+
+let sseRes = undefined;
+app.get("/subscribe", (req, res) => {
+  res.setHeader("Content-Type", "text/event-stream");
+  res.setHeader("Cache-Control", "no-cache");
+  res.setHeader("Connection", "keep-alive");
+  sseRes = res;
+
+  const heartbeat = setInterval(() => {
+    res.write(`: heartbeat\n\n`);
+  }, 2000);
+
+  // Cleanup when the client closes the connection
+  req.on("close", () => {
+    clearInterval(heartbeat);
+    res.end();
+  });
+});
+
+app.use("/publish", express.json());
+app.post("/publish", (req, res) => {
+  const message = req.body;
+
+  if (!message || !message.text) {
+    return res.status(400).json({ error: "Missing 'text' field" });
+  }
+
+  console.log("📨 Received message:", message);
+
+  // Push to all connected SSE clients
+  const data = JSON.stringify({
+    text: message.text,
+    time: new Date().toISOString(),
+  });
+
+  if (sseRes) {
+    sseRes.write(`data: ${data}\n\n`);
+  }
+
+  res.json({ status: "Message sent to SSE client" });
+});

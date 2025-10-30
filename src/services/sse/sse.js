@@ -5,20 +5,30 @@
  *   const source = $sse('/events', {
  *     onMessage: (data) => console.log(data),
  *     onError: (err) => console.error(err),
- *     withCredentials: true
+ *     retryDelay: 2000,
+ *     heartbeatTimeout: 10000,
  *   });
  *
- *   // later:
  *   source.close();
  */
-
 export class SseProvider {
   constructor() {
     /**
      * Optional provider-level defaults
      * @type {ng.SseConfig}
      */
-    this.defaults = {};
+    this.defaults = {
+      retryDelay: 1000,
+      maxRetries: Infinity,
+      heartbeatTimeout: 0,
+      transformMessage: (data) => {
+        try {
+          return JSON.parse(data);
+        } catch {
+          return data;
+        }
+      },
+    };
   }
 
   /**
@@ -28,15 +38,16 @@ export class SseProvider {
   $get =
     () =>
     (url, config = {}) => {
-      const finalUrl = this.#buildUrl(url, config.params);
-      return this.#createEventSource(finalUrl, config);
+      const mergedConfig = { ...this.defaults, ...config };
+      const finalUrl = this.#buildUrl(url, mergedConfig.params);
+      return this.#createConnection(finalUrl, mergedConfig);
     };
 
   /**
    * Build URL with query parameters
-   * @param {string} url - Base URL
-   * @param {Record<string, any>=} params - Query parameters
-   * @returns {string} URL with serialized query string
+   * @param {string} url
+   * @param {Record<string, any>=} params
+   * @returns {string}
    */
   #buildUrl(url, params) {
     if (!params) return url;
@@ -47,36 +58,73 @@ export class SseProvider {
   }
 
   /**
-   * Create and manage an EventSource
-   * @param {string} url - URL for SSE connection
-   * @param {ng.SseConfig} config - Configuration object
-   * @returns {EventSource} The EventSource instance wrapped as SseService
+   * Creates a managed SSE connection with reconnect and heartbeat
+   * @param {string} url
+   * @param {ng.SseConfig} config
+   * @returns {import("./interface").SseConnection}
    */
-  #createEventSource(url, config) {
-    const es = new EventSource(url, {
-      withCredentials: !!config.withCredentials,
-    });
+  #createConnection(url, config) {
+    let es;
+    let retryCount = 0;
+    let closed = false;
+    let heartbeatTimer;
 
-    if (config.onOpen) {
-      es.addEventListener("open", (e) => config.onOpen(e));
-    }
+    const connect = () => {
+      if (closed) return;
 
-    es.addEventListener("message", (e) => {
-      let data = e.data;
-      try {
-        data = config.transformMessage
-          ? config.transformMessage(data)
-          : JSON.parse(data);
-      } catch {
-        // leave as raw string if not JSON
-      }
-      config.onMessage?.(data, e);
-    });
+      es = new EventSource(url, {
+        withCredentials: !!config.withCredentials,
+      });
 
-    if (config.onError) {
-      es.addEventListener("error", (e) => config.onError(e));
-    }
+      es.addEventListener("open", (e) => {
+        retryCount = 0;
+        config.onOpen?.(e);
+        if (config.heartbeatTimeout) resetHeartbeat();
+      });
 
-    return es;
+      es.addEventListener("message", (e) => {
+        let data = e.data;
+        try {
+          data = config.transformMessage ? config.transformMessage(data) : data;
+        } catch {
+          /* empty */
+        }
+        config.onMessage?.(data, e);
+        if (config.heartbeatTimeout) resetHeartbeat();
+      });
+
+      es.addEventListener("error", (err) => {
+        config.onError?.(err);
+        if (closed) return;
+        es.close();
+
+        if (retryCount < config.maxRetries) {
+          retryCount++;
+          config.onReconnect?.(retryCount);
+          setTimeout(connect, config.retryDelay);
+        } else {
+          console.warn("SSE: Max retries reached");
+        }
+      });
+    };
+
+    const resetHeartbeat = () => {
+      clearTimeout(heartbeatTimer);
+      heartbeatTimer = setTimeout(() => {
+        console.warn("SSE: heartbeat timeout, reconnecting...");
+        es.close();
+        connect();
+      }, config.heartbeatTimeout);
+    };
+
+    connect();
+
+    return {
+      close() {
+        closed = true;
+        clearTimeout(heartbeatTimer);
+        es.close();
+      },
+    };
   }
 }

@@ -5,10 +5,10 @@
  *   const source = $sse('/events', {
  *     onMessage: (data) => console.log(data),
  *     onError: (err) => console.error(err),
- *     withCredentials: true
+ *     retryDelay: 2000,
+ *     heartbeatTimeout: 10000,
  *   });
  *
- *   // later:
  *   source.close();
  */
 export class SseProvider {
