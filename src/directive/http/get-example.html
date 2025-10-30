@@ -9,5 +9,10 @@
   <body ng-app>
     <button ng-get="/mock" data-target="#output" trigger="load">Get</button>
     <div id="output"></div>
+
+    <button ng-get="/mock/jsonobject" target="person" trigger="load">
+      Get
+    </button>
+    {{ person.name }} {{ person.age }}
   </body>
 </html>

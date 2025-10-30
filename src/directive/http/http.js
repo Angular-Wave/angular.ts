@@ -8,7 +8,8 @@ import {
 } from "../../shared/utils.js";
 
 /**
- * @param {"get" | "delete" | "post" | "put"} method
+ * @param {"get" | "delete" | "post" | "put"} method - HTTP method applied to request
+ * @param {string} [attrOverride] - Custom name to use for the attribute
  * @returns {ng.DirectiveFactory}
  */
 function defineDirective(method, attrOverride) {
@@ -42,14 +43,10 @@ export const ngPutDirective = defineDirective("put");
 export const ngSseDirective = defineDirective("get", "ngSse");
 
 /**
- * @typedef {"click" | "change" | "submit"} EventType
- */
-
-/**
  * Selects DOM event to listen for based on the element type.
  *
  * @param {Element} element - The DOM element to inspect.
- * @returns {EventType} The name of the event to listen for.
+ * @returns {"click" | "change" | "submit"} The name of the event to listen for.
  */
 export function getEventNameForElement(element) {
   const tag = element.tagName.toLowerCase();
@@ -59,89 +56,6 @@ export function getEventNameForElement(element) {
     return "submit";
   }
   return "click";
-}
-
-/**
- * Handles DOM manipulation based on a swap strategy and server-rendered HTML.
- *
- * @param {string} html - The HTML string returned from the server.
- * @param {import("./interface.ts").SwapModeType} swap
- * @param {Element} target - The target DOM element to apply the swap to.
- * @param {ng.Scope} scope
- * @param {ng.CompileService} $compile
- */
-export function handleSwapResponse(html, swap, target, scope, $compile) {
-  let nodes = [];
-  if (!["textcontent", "delete", "none"].includes(swap)) {
-    if (!html) {
-      return;
-    }
-
-    if (isObject(html)) {
-      scope.$merge(html);
-      return;
-    }
-
-    const compiled = $compile(html)(scope);
-    nodes =
-      compiled instanceof DocumentFragment
-        ? Array.from(compiled.childNodes)
-        : [compiled];
-  }
-
-  switch (swap) {
-    case "innerHTML":
-      target.replaceChildren(...nodes);
-      break;
-
-    case "outerHTML": {
-      const parent = target.parentNode;
-      if (!parent) return;
-      const frag = document.createDocumentFragment();
-      nodes.forEach((n) => frag.appendChild(n));
-      parent.replaceChild(frag, target);
-      break;
-    }
-
-    case "textContent":
-      target.textContent = html;
-      break;
-
-    case "beforebegin":
-      nodes.forEach((node) => target.parentNode.insertBefore(node, target));
-      break;
-
-    case "afterbegin":
-      nodes
-        .slice()
-        .reverse()
-        .forEach((node) => target.insertBefore(node, target.firstChild));
-      break;
-
-    case "beforeend":
-      nodes.forEach((node) => target.appendChild(node));
-      break;
-
-    case "afterend":
-      nodes
-        .slice()
-        .reverse()
-        .forEach((node) =>
-          target.parentNode.insertBefore(node, target.nextSibling),
-        );
-      break;
-
-    case "delete":
-      target.remove();
-      break;
-
-    case "none":
-      break;
-
-    default:
-      target.replaceChildren(...nodes);
-      break;
-  }
 }
 
 /**
@@ -163,6 +77,101 @@ export function createHttpDirective(method, attrName) {
    */
   return function ($http, $compile, $log, $parse, $state, $sse) {
     /**
+     * Handles DOM manipulation based on a swap strategy and server-rendered HTML.
+     *
+     * @param {string | Object} html - The HTML string or object returned from the server.
+     * @param {import("./interface.ts").SwapModeType} swap
+     * @param {ng.Scope} scope
+     * @param {ng.Attributes} attrs
+     * @param {Element} element
+     */
+    function handleSwapResponse(html, swap, scope, attrs, element) {
+      let nodes = [];
+      if (!["textcontent", "delete", "none"].includes(swap)) {
+        if (!html) return;
+
+        if (isObject(html)) {
+          if (attrs.target) {
+            scope.$eval(`${attrs.target} = ${JSON.stringify(html)}`);
+          } else {
+            scope.$merge(html);
+          }
+          return;
+        }
+
+        const compiled = $compile(html)(scope);
+        nodes =
+          compiled instanceof DocumentFragment
+            ? Array.from(compiled.childNodes)
+            : [compiled];
+      }
+
+      const targetSelector = attrs["target"];
+      const target = targetSelector
+        ? document.querySelector(targetSelector)
+        : element;
+
+      if (!target) {
+        $log.warn(`${attrName}: target "${targetSelector}" not found`);
+        return;
+      }
+
+      switch (swap) {
+        case "innerHTML":
+          target.replaceChildren(...nodes);
+          break;
+
+        case "outerHTML": {
+          const parent = target.parentNode;
+          if (!parent) return;
+          const frag = document.createDocumentFragment();
+          nodes.forEach((n) => frag.appendChild(n));
+          parent.replaceChild(frag, target);
+          break;
+        }
+
+        case "textContent":
+          target.textContent = html;
+          break;
+
+        case "beforebegin":
+          nodes.forEach((node) => target.parentNode.insertBefore(node, target));
+          break;
+
+        case "afterbegin":
+          nodes
+            .slice()
+            .reverse()
+            .forEach((node) => target.insertBefore(node, target.firstChild));
+          break;
+
+        case "beforeend":
+          nodes.forEach((node) => target.appendChild(node));
+          break;
+
+        case "afterend":
+          nodes
+            .slice()
+            .reverse()
+            .forEach((node) =>
+              target.parentNode.insertBefore(node, target.nextSibling),
+            );
+          break;
+
+        case "delete":
+          target.remove();
+          break;
+
+        case "none":
+          break;
+
+        default:
+          target.replaceChildren(...nodes);
+          break;
+      }
+    }
+
+    /**
      * Collects form data from the element or its associated form.
      *
      * @param {HTMLElement} element
@@ -175,15 +184,12 @@ export function createHttpDirective(method, attrName) {
       const tag = element.tagName.toLowerCase();
 
       if (tag === "form") {
-        /** @type {HTMLFormElement} */
         form = /** @type {HTMLFormElement} */ (element);
       } else if ("form" in element && element.form) {
-        /** @type {HTMLFormElement} */
         form = /** @type {HTMLFormElement} */ (element.form);
       } else if (element.hasAttribute("form")) {
         const formId = element.getAttribute("form");
         if (formId) {
-          /** @type {HTMLElement | null} */
           const maybeForm = document.getElementById(formId);
           if (maybeForm && maybeForm.tagName.toLowerCase() === "form") {
             form = /** @type {HTMLFormElement} */ (maybeForm);
@@ -221,10 +227,7 @@ export function createHttpDirective(method, attrName) {
     return {
       restrict: "A",
       link(scope, element, attrs) {
-        const eventName =
-          attrs["trigger"] ||
-          /** @type {EventType} */ getEventNameForElement(element);
-
+        const eventName = attrs["trigger"] || getEventNameForElement(element);
         const tag = element.tagName.toLowerCase();
 
         if (isDefined(attrs["latch"])) {
@@ -251,16 +254,6 @@ export function createHttpDirective(method, attrName) {
           if (/** @type {HTMLButtonElement} */ (element).disabled) return;
           if (tag === "form") event.preventDefault();
           const swap = attrs["swap"] || "innerHTML";
-          const targetSelector = attrs["target"];
-          const target = targetSelector
-            ? document.querySelector(targetSelector)
-            : element;
-
-          if (!target) {
-            $log.warn(`${attrName}: target "${targetSelector}" not found`);
-            return;
-          }
-
           const url = attrs[attrName];
           if (!url) {
             $log.warn(`${attrName}: no URL specified`);
@@ -295,21 +288,15 @@ export function createHttpDirective(method, attrName) {
               }
             }
 
-            handleSwapResponse(
-              html,
-              /** @type {import("./interface.ts").SwapModeType} */ (swap),
-              target,
-              scope,
-              $compile,
-            );
+            // simplified call (no long parameter list)
+            handleSwapResponse(html, swap, scope, attrs, element);
           };
+
           if (isDefined(attrs["delay"])) {
             await wait(parseInt(attrs["delay"]) | 0);
           }
 
-          if (throttled) {
-            return;
-          }
+          if (throttled) return;
 
           if (isDefined(attrs["throttle"])) {
             throttled = true;
@@ -341,7 +328,6 @@ export function createHttpDirective(method, attrName) {
             }
             $http[method](url, data, config).then(handler).catch(handler);
           } else {
-            // If SSE mode is enabled
             if (method === "get" && attrs["ngSse"]) {
               const sseUrl = url;
               const config = {
@@ -370,10 +356,8 @@ export function createHttpDirective(method, attrName) {
                 },
               };
 
-              // Open the SSE connection using the injected service
               const source = $sse(sseUrl, config);
 
-              // Cleanup on scope destroy
               scope.$on("$destroy", () => {
                 $log.info(`${attrName}: closing SSE connection`);
                 source.close();
@@ -388,7 +372,6 @@ export function createHttpDirective(method, attrName) {
           scope.$on("$destroy", () => clearInterval(intervalId));
         }
 
-        // Eagerly execute for 'load' event
         if (eventName == "load") {
           element.dispatchEvent(new Event("load"));
         }

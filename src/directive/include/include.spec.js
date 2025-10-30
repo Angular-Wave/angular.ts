@@ -418,10 +418,8 @@ describe("ngInclude", () => {
         const injector = angular.bootstrap(element, ["myModule"]);
         $rootScope = injector.get("$rootScope");
 
-        $rootScope.$apply(() => {
-          $rootScope.tpl = "/mock/hello";
-          $rootScope.value = true;
-        });
+        $rootScope.tpl = "/mock/hello";
+        $rootScope.value = true;
 
         setTimeout(() => {
           expect(autoScrollSpy).toHaveBeenCalled();
@@ -443,9 +441,7 @@ describe("ngInclude", () => {
         const injector = angular.bootstrap(element, ["myModule"]);
         $rootScope = injector.get("$rootScope");
 
-        $rootScope.$apply(() => {
-          $rootScope.tpl = "/mock/hello";
-        });
+        $rootScope.tpl = "/mock/hello";
         setTimeout(() => {
           expect(autoScrollSpy).not.toHaveBeenCalled();
           done();

@@ -13,6 +13,7 @@ import {
   nextUid,
 } from "../../shared/utils.js";
 import { ASTType } from "../parse/ast-type.js";
+import { $injectTokens as $t } from "../../injection-tokens.js";
 
 /**
  * @type {number}
@@ -29,15 +30,8 @@ export function nextId() {
  */
 let $parse;
 
-/**@type {import('../../services/exception/exception-handler.js').ErrorHandler} */
+/**@type {ng.ExceptionHandlerService} */
 let $exceptionHandler;
-
-/**
- * @typedef {Object} AsyncQueueTask
- * @property {Scope} handler
- * @property {Function} fn
- * @property {Object} locals
- */
 
 export const $postUpdateQueue = [];
 
@@ -47,11 +41,11 @@ export class RootScopeProvider {
   }
 
   $get = [
-    "$exceptionHandler",
-    "$parse",
+    $t.$exceptionHandler,
+    $t.$parse,
     /**
-     * @param {import('../../services/exception/exception-handler.js').ErrorHandler} exceptionHandler
-     * @param {import('../parse/interface.ts').ParseService} parse
+     * @param {ng.ExceptionHandlerService} exceptionHandler
+     * @param {ng.ParseService} parse
      */
     (exceptionHandler, parse) => {
       $exceptionHandler = exceptionHandler;
@@ -109,27 +103,6 @@ export function createScope(target = {}, context) {
 }
 
 /**
- * Listener function definition.
- * @typedef {Object} Listener
- * @property {Object} originalTarget - The original target object.
- * @property {ListenerFunction} listenerFn - The function invoked when changes are detected.
- * @property {import("../parse/interface.ts").CompiledExpression} watchFn
- * @property {number} id - Deregistration id
- * @property {number} scopeId - The scope that created the Listener
- * @property {string[]} property
- * @property {string} [watchProp] - The original property to watch if different from observed key
- * @property {Proxy} [foreignListener]
- *
- */
-
-/**
- * Listener function type.
- * @callback ListenerFunction
- * @param {*} newValue - The new value of the changed property.
- * @param {Object} originalTarget - The original target object.
- */
-
-/**
  * Decorator for excluding objects from scope observability
  */
 export const NONSCOPE = "$nonscope";
@@ -154,13 +127,13 @@ export class Scope {
         : context
       : undefined;
 
-    /** @type {Map<string, Array<Listener>>} Watch listeners */
+    /** @type {Map<string, Array<import('./interface.ts').Listener>>} Watch listeners */
     this.watchers = context ? context.watchers : new Map();
 
     /** @type {Map<String, Function[]>} Event listeners */
     this.$$listeners = new Map();
 
-    /** @type {Map<string, Array<Listener>>} Watch listeners from other proxies */
+    /** @type {Map<string, Array<import('./interface.ts').Listener>>} Watch listeners from other proxies */
     this.foreignListeners = context ? context.foreignListeners : new Map();
 
     /** @type {Set<ProxyConstructor>} */
@@ -205,7 +178,7 @@ export class Scope {
         ? null
         : context;
 
-    /** @type {AsyncQueueTask[]} */
+    /** @type {import('./interface.ts').AsyncQueueTask[]} */
     this.$$asyncQueue = [];
 
     this.filters = [];
@@ -434,8 +407,8 @@ export class Scope {
           // filter for repeaters
           if (this.$target.$$hashKey) {
             foreignListeners = foreignListeners.filter((x) =>
-              x.originalTarget.$$hashKey
-                ? x.originalTarget.$$hashKey == this.$target.$$hashKey
+              x.originalTarget["$$hashKey"]
+                ? x.originalTarget["$$hashKey"] === this.$target.$$hashKey
                 : false,
             );
           }
@@ -576,7 +549,7 @@ export class Scope {
   }
 
   /**
-   * @param {Listener[]} listeners
+   * @param {import('./interface.ts').Listener[]} listeners
    * @param {Function} filter
    */
   #scheduleListener(listeners, filter = (val) => val) {
@@ -600,7 +573,7 @@ export class Scope {
    * function is invoked when changes to that property are detected.
    *
    * @param {string} watchProp - An expression to be watched in the context of this model.
-   * @param {ListenerFunction} [listenerFn] - A function to execute when changes are detected on watched context.
+   * @param {import('./interface.ts').ListenerFunction} [listenerFn] - A function to execute when changes are detected on watched context.
    * @param {boolean} [lazy] - A flag to indicate if the listener should be invoked immediately. Defaults to false.
    */
   $watch(watchProp, listenerFn, lazy = false) {
@@ -622,7 +595,7 @@ export class Scope {
       return () => {};
     }
 
-    /** @type {Listener} */
+    /** @type {import('./interface.ts').Listener} */
     const listener = {
       originalTarget: this.$target,
       listenerFn: listenerFn,
@@ -734,7 +707,7 @@ export class Scope {
 
           let potentialProxy = $parse(
             watchProp.split(".").slice(0, -1).join("."),
-          )(listener.originalTarget);
+          )(/** @type {Scope} */ (listener.originalTarget));
           if (potentialProxy && this.foreignProxies.has(potentialProxy)) {
             potentialProxy.$handler.#registerForeignKey(key, listener);
             potentialProxy.$handler.#scheduleListener([listener]);
@@ -1160,12 +1133,12 @@ export class Scope {
 
   /**
    * @internal
-   * @param {Listener} listener - The property path that was changed.
+   * @param {import('./interface.ts').Listener} listener - The property path that was changed.
    */
   #notifyListener(listener, target) {
     const { originalTarget, listenerFn, watchFn } = listener;
     try {
-      let newVal = watchFn(originalTarget);
+      let newVal = watchFn(/** @type {Scope} */ (originalTarget));
       if (isUndefined(newVal)) {
         newVal = watchFn(target);
       }

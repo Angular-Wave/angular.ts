@@ -296,9 +296,7 @@ describe("ngView", () => {
       expect(elem.querySelectorAll("li").length).toBe(scope.items.length);
 
       // change scope properties
-      scope.$apply(() => {
-        scope.items.push(".", "Working?");
-      });
+      scope.items.push(".", "Working?");
       await wait();
       // verify if the initial view has been updated
       expect(elem.querySelectorAll("li").length).toBe(scope.items.length);

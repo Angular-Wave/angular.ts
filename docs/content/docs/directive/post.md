@@ -183,10 +183,12 @@ attributes provided below.
 - **Type:**
   [selectors](https://developer.mozilla.org/en-US/docs/Web/API/Document/querySelector#selectors)
 - **Description:** Specifies a DOM element where the response should be rendered
+  or name of scope property for response binding
 - **Example:**
 
   ```html
-  <div ng-post="/example" target=".test">Get</div>
+  <div ng-post="/example" target=".test">Post</div>
+  <div ng-post="/json" target="person">{{ person.name }}</div>
   ```
 
 ---

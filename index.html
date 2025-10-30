@@ -81,6 +81,11 @@
         <input type="text" ng-model="newTodo" ng-required="true" />
         <button type="submit">Add</button>
       </form>
+
+      <button ng-get="/mock/jsonobject" target="$ctrl.person" trigger="load">
+        Get
+      </button>
+      {{ $ctrl.person.name }} {{ $ctrl.person.age }}
     </div>
   </body>
 </html>

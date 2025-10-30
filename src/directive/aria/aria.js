@@ -100,6 +100,9 @@ export function ngShowAriaDirective($aria) {
   return $aria.$$watchExpr("ngShow", "aria-hidden", [], true);
 }
 
+/**
+ * @return {ng.Directive}
+ */
 export function ngMessagesAriaDirective() {
   return {
     restrict: "A",
@@ -115,18 +118,21 @@ export function ngMessagesAriaDirective() {
 }
 
 ngClickAriaDirective.$inject = [$injectTokens.$aria, $injectTokens.$parse];
+
+/**
+ * @param $aria
+ * @param {ng.ParseService} $parse
+ * @return {ng.Directive}
+ */
 export function ngClickAriaDirective($aria, $parse) {
   return {
     restrict: "A",
     compile(_elem, attr) {
       if (hasOwn(attr, ARIA_DISABLE_ATTR)) return;
 
-      const fn = $parse(attr.ngClick);
+      const fn = $parse(attr["ngClick"]);
 
-      /**
-       * @param {Element} elem
-       */
-      return function (scope, elem, attr) {
+      return (scope, elem, attr) => {
         if (!isNodeOneOf(elem, nativeAriaNodeNames)) {
           if ($aria.config("bindRoleForClick") && !elem.hasAttribute("role")) {
             elem.setAttribute("role", "button");
@@ -163,10 +169,6 @@ export function ngClickAriaDirective($aria, $parse) {
                     // See https://github.com/angular/angular.js/issues/16664
                     event.preventDefault();
                   }
-                  scope.$apply(callback);
-                }
-
-                function callback() {
                   fn(scope, { $event: event });
                 }
               },

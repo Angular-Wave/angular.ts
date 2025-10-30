@@ -9,42 +9,17 @@ export function nextId(): number;
  *                                     or the original value if the target is not an object.
  */
 export function createScope(target?: any, context?: Scope): Scope;
-/**
- * @typedef {Object} AsyncQueueTask
- * @property {Scope} handler
- * @property {Function} fn
- * @property {Object} locals
- */
 export const $postUpdateQueue: any[];
 export class RootScopeProvider {
   rootScope: Scope;
   $get: (
     | string
     | ((
-        exceptionHandler: import("../../services/exception/exception-handler.js").ErrorHandler,
-        parse: import("../parse/interface.ts").ParseService,
+        exceptionHandler: ng.ExceptionHandlerService,
+        parse: ng.ParseService,
       ) => Scope)
   )[];
 }
-/**
- * Listener function definition.
- * @typedef {Object} Listener
- * @property {Object} originalTarget - The original target object.
- * @property {ListenerFunction} listenerFn - The function invoked when changes are detected.
- * @property {import("../parse/interface.ts").CompiledExpression} watchFn
- * @property {number} id - Deregistration id
- * @property {number} scopeId - The scope that created the Listener
- * @property {string[]} property
- * @property {string} [watchProp] - The original property to watch if different from observed key
- * @property {Proxy} [foreignListener]
- *
- */
-/**
- * Listener function type.
- * @callback ListenerFunction
- * @param {*} newValue - The new value of the changed property.
- * @param {Object} originalTarget - The original target object.
- */
 /**
  * Decorator for excluding objects from scope observability
  */
@@ -64,12 +39,12 @@ export class Scope {
    */
   constructor(context?: Scope, parent?: Scope);
   context: Scope;
-  /** @type {Map<string, Array<Listener>>} Watch listeners */
-  watchers: Map<string, Array<Listener>>;
+  /** @type {Map<string, Array<import('./interface.ts').Listener>>} Watch listeners */
+  watchers: Map<string, Array<import("./interface.ts").Listener>>;
   /** @type {Map<String, Function[]>} Event listeners */
   $$listeners: Map<string, Function[]>;
-  /** @type {Map<string, Array<Listener>>} Watch listeners from other proxies */
-  foreignListeners: Map<string, Array<Listener>>;
+  /** @type {Map<string, Array<import('./interface.ts').Listener>>} Watch listeners from other proxies */
+  foreignListeners: Map<string, Array<import("./interface.ts").Listener>>;
   /** @type {Set<ProxyConstructor>} */
   foreignProxies: Set<ProxyConstructor>;
   /** @type {WeakMap<Object, Array<string>>} */
@@ -103,8 +78,8 @@ export class Scope {
    */
   $root: Scope;
   $parent: Scope;
-  /** @type {AsyncQueueTask[]} */
-  $$asyncQueue: AsyncQueueTask[];
+  /** @type {import('./interface.ts').AsyncQueueTask[]} */
+  $$asyncQueue: import("./interface.ts").AsyncQueueTask[];
   filters: any[];
   /** @type {boolean} */
   $$destroyed: boolean;
@@ -148,12 +123,12 @@ export class Scope {
    * function is invoked when changes to that property are detected.
    *
    * @param {string} watchProp - An expression to be watched in the context of this model.
-   * @param {ListenerFunction} [listenerFn] - A function to execute when changes are detected on watched context.
+   * @param {import('./interface.ts').ListenerFunction} [listenerFn] - A function to execute when changes are detected on watched context.
    * @param {boolean} [lazy] - A flag to indicate if the listener should be invoked immediately. Defaults to false.
    */
   $watch(
     watchProp: string,
-    listenerFn?: ListenerFunction,
+    listenerFn?: import("./interface.ts").ListenerFunction,
     lazy?: boolean,
   ): () => void;
   $new(childInstance: any): any;
@@ -202,40 +177,3 @@ export class Scope {
   $getById(id: string | number): Scope | undefined;
   #private;
 }
-export type AsyncQueueTask = {
-  handler: Scope;
-  fn: Function;
-  locals: any;
-};
-/**
- * Listener function definition.
- */
-export type Listener = {
-  /**
-   * - The original target object.
-   */
-  originalTarget: any;
-  /**
-   * - The function invoked when changes are detected.
-   */
-  listenerFn: ListenerFunction;
-  watchFn: import("../parse/interface.ts").CompiledExpression;
-  /**
-   * - Deregistration id
-   */
-  id: number;
-  /**
-   * - The scope that created the Listener
-   */
-  scopeId: number;
-  property: string[];
-  /**
-   * - The original property to watch if different from observed key
-   */
-  watchProp?: string;
-  foreignListener?: ProxyConstructor;
-};
-/**
- * Listener function type.
- */
-export type ListenerFunction = (newValue: any, originalTarget: any) => any;

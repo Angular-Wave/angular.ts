@@ -36,21 +36,19 @@ export namespace ngShowAriaDirective {
   let $inject_1: string[];
   export { $inject_1 as $inject };
 }
-export function ngMessagesAriaDirective(): {
-  restrict: string;
-  require: string;
-  link(_scope: any, elem: any, attr: any): void;
-};
+/**
+ * @return {ng.Directive}
+ */
+export function ngMessagesAriaDirective(): ng.Directive;
+/**
+ * @param $aria
+ * @param {ng.ParseService} $parse
+ * @return {ng.Directive}
+ */
 export function ngClickAriaDirective(
   $aria: any,
-  $parse: any,
-): {
-  restrict: string;
-  compile(
-    _elem: any,
-    attr: any,
-  ): (scope: any, elem: Element, attr: any) => void;
-};
+  $parse: ng.ParseService,
+): ng.Directive;
 export namespace ngClickAriaDirective {
   let $inject_2: string[];
   export { $inject_2 as $inject };

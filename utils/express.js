@@ -48,6 +48,10 @@ app.post("/json", (req, res) => {
   res.json(req.body);
 });
 
+app.get("/jsonobject", (req, res) => {
+  res.json({ name: "Bob", age: 20 });
+});
+
 app.post("/hello", (req, res) => {
   console.log(req.body);
   res.send("<div>Hello</div>");

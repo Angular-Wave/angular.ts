@@ -273,7 +273,7 @@ export interface DirectivePrePost {
 export type DirectiveLinkFn = (
   scope: Scope,
   element: HTMLElement,
-  attrs: Attributes,
+  attrs: Attributes & Record<string, any>,
   controller?: TController,
   transclude?: (...args: any[]) => any,
 ) => void;
@@ -282,9 +282,9 @@ export type DirectiveLinkFn = (
  * A compile function used to prepare directives before linking.
  */
 export type DirectiveCompileFn = (
-  templateElement: HTMLElement,
-  templateAttributes: Attributes,
-  transclude: (...args: any[]) => any,
+  templateElement?: HTMLElement,
+  templateAttributes?: Attributes & Record<string, any>,
+  transclude?: (...args: any[]) => any,
 ) => void | DirectiveLinkFn | DirectivePrePost;
 
 /**
@@ -294,7 +294,7 @@ export type DirectiveCompileFn = (
 export interface Directive {
   /** Optional name (usually inferred) */
   name?: string;
-  /** Restrict option: 'A' and/or 'E'. Defaults to 'EA' */
+  /** Restrict option: 'A' and/or 'E'. Defaults to 'EA' if not defined */
   restrict?: string;
   /** Compile function for the directive */
   compile?: DirectiveCompileFn;

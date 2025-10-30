@@ -1,37 +1,37 @@
 ---
-title: ng-offline
+title: ng-channel
 description: >
-  Handler for offline event
+  Subscribe a template to a messaging service topic
 ---
 
 ### Description
 
-The `ng-offline` directive allows you to specify custom behavior when pressing
-keys, regardless of whether they produce a character value.
+Updates element’s content by subscribing to events published on a named channel
+using `$eventBus`.
+
+- If the element **does not** contain any child elements or templates, the
+  directive will **replace the element's inner HTML** with the published value.
+- If the element **does** contain a template and the published value is an
+  **object**, the directive will **merge the object’s key-value pairs into the
+  current scope**, allowing Angular expressions like to be evaluated and
+  rendered.
+
+The directive automatically unsubscribes from the event channel when the scope
+is destroyed.
 
 ### Parameters
 
 ---
 
-#### `ng-offline`
+#### `ng-channel`
 
-- **Type:** [Expression](../../../typedoc/types/Expression.html)
-- **Description:** Expression to evaluate upon `Window`
-  [offline](https://https://developer.mozilla.org/en-US/docs/Web/API/Window/offline_event)
-  event. [Event](https://developer.mozilla.org/en-US/docs/Web/API/Event) object
-  is available as `$event`.
-- **Example:**
+- **Type:** `string`
+- **Description:** The name of the channel to subscribe to using `$eventBus`.
 
-  ```html
-  <div ng-offline="offline = true">{{ offline }}</div>
-  ```
+### Demo
 
----
+{{< showhtml src="examples/ng-channel/ng-channel.html" >}}
 
-#### Demo
-
-{{< showhtml src="examples/ng-offline/ng-offline.html" >}}
-
-{{< showraw src="examples/ng-offline/ng-offline.html" >}}
+{{< showraw src="examples/ng-channel/ng-channel.html" >}}
 
 ---

@@ -240,9 +240,7 @@ describe("event directives", () => {
         logs.push("done");
       };
 
-      $rootScope.$apply(() => {
-        $rootScope.do();
-      });
+      $rootScope.do();
 
       expect(logs[0]).toEqual("listener error");
       expect(logs[1]).toEqual("done");

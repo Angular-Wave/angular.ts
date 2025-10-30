@@ -1,29 +1,12 @@
 /**
- * @typedef {"click" | "change" | "submit"} EventType
- */
-/**
  * Selects DOM event to listen for based on the element type.
  *
  * @param {Element} element - The DOM element to inspect.
- * @returns {EventType} The name of the event to listen for.
+ * @returns {"click" | "change" | "submit"} The name of the event to listen for.
  */
-export function getEventNameForElement(element: Element): EventType;
-/**
- * Handles DOM manipulation based on a swap strategy and server-rendered HTML.
- *
- * @param {string} html - The HTML string returned from the server.
- * @param {import("./interface.ts").SwapModeType} swap
- * @param {Element} target - The target DOM element to apply the swap to.
- * @param {ng.Scope} scope
- * @param {ng.CompileService} $compile
- */
-export function handleSwapResponse(
-  html: string,
-  swap: import("./interface.ts").SwapModeType,
-  target: Element,
-  scope: ng.Scope,
-  $compile: ng.CompileService,
-): void;
+export function getEventNameForElement(
+  element: Element,
+): "click" | "change" | "submit";
 /**
  * Creates an HTTP directive factory that supports GET, DELETE, POST, PUT.
  *
@@ -45,4 +28,3 @@ export const ngPostDirective: ng.DirectiveFactory;
 export const ngPutDirective: ng.DirectiveFactory;
 /** @type {ng.DirectiveFactory} */
 export const ngSseDirective: ng.DirectiveFactory;
-export type EventType = "click" | "change" | "submit";

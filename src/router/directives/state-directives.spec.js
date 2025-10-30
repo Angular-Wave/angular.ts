@@ -269,7 +269,6 @@ describe("ngStateRef", () => {
   //   it('should update the href when parameters change', () => {
   //     expect(el.getAttribute('href')).toBe('/contacts/5');
   //     scope.contact.id = 6;
-  //     scope.$apply();
   //     expect(el.getAttribute('href')).toBe('/contacts/6');
   //   });
 

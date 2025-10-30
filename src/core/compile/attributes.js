@@ -17,16 +17,13 @@ const $compileMinErr = minErr("$compile");
 const SIMPLE_ATTR_NAME = /^\w/;
 const specialAttrHolder = document.createElement("div");
 
-/**
- * @implements {Record<string, any>}
- */
 export class Attributes {
   static $nonscope = true;
 
   /**
-   * @param {import('../scope/scope.js').Scope} $rootScope
+   * @param {ng.Scope} $rootScope
    * @param {*} $animate
-   * @param {import("../../services/exception/exception-handler.js").ErrorHandler} $exceptionHandler
+   * @param {ng.ExceptionHandlerService} $exceptionHandler
    * @param {*} $sce
    * @param {import("../../shared/noderef.js").NodeRef} [nodeRef]
    * @param {Object} [attributesToCopy]

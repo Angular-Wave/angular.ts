@@ -58,7 +58,7 @@ declare global {
   }
   export namespace ng {
     type Angular = TAngular;
-    type Attributes = TAttributes;
+    type Attributes = TAttributes & Record<string, any>;
     type Directive = TDirective;
     type DirectiveFactory = TDirectiveFactory;
     type Component = TComponent;

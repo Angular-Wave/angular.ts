@@ -1,20 +1,17 @@
-/**
- * @implements {Record<string, any>}
- */
-export class Attributes implements Record<string, any> {
+export class Attributes {
   static $nonscope: boolean;
   /**
-   * @param {import('../scope/scope.js').Scope} $rootScope
+   * @param {ng.Scope} $rootScope
    * @param {*} $animate
-   * @param {import("../../services/exception/exception-handler.js").ErrorHandler} $exceptionHandler
+   * @param {ng.ExceptionHandlerService} $exceptionHandler
    * @param {*} $sce
    * @param {import("../../shared/noderef.js").NodeRef} [nodeRef]
    * @param {Object} [attributesToCopy]
    */
   constructor(
-    $rootScope: import("../scope/scope.js").Scope,
+    $rootScope: ng.Scope,
     $animate: any,
-    $exceptionHandler: import("../../services/exception/exception-handler.js").ErrorHandler,
+    $exceptionHandler: ng.ExceptionHandlerService,
     $sce: any,
     nodeRef?: import("../../shared/noderef.js").NodeRef,
     attributesToCopy?: any,

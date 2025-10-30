@@ -189,5 +189,6 @@ export class ControllerProvider {
       );
     }
     locals.$scope[identifier] = instance;
+    locals.$scope["$controllerIdentifier"] = identifier;
   }
 }
