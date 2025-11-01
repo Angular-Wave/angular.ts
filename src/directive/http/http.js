@@ -227,10 +227,10 @@ export function createHttpDirective(method, attrName) {
     return {
       restrict: "A",
       link(scope, element, attrs) {
-        const eventName = attrs["trigger"] || getEventNameForElement(element);
+        const eventName = attrs.trigger || getEventNameForElement(element);
         const tag = element.tagName.toLowerCase();
 
-        if (isDefined(attrs["latch"])) {
+        if (isDefined(attrs.latch)) {
           attrs.$observe(
             "latch",
             callBackAfterFirst(() =>
@@ -246,14 +246,14 @@ export function createHttpDirective(method, attrName) {
           element.dispatchEvent(new Event(eventName));
           intervalId = setInterval(
             () => element.dispatchEvent(new Event(eventName)),
-            parseInt(attrs["interval"]) || 1000,
+            parseInt(attrs.interval) || 1000,
           );
         }
 
         element.addEventListener(eventName, async (event) => {
           if (/** @type {HTMLButtonElement} */ (element).disabled) return;
           if (tag === "form") event.preventDefault();
-          const swap = attrs["swap"] || "innerHTML";
+          const swap = attrs.swap || "innerHTML";
           const url = attrs[attrName];
           if (!url) {
             $log.warn(`${attrName}: no URL specified`);
@@ -261,30 +261,30 @@ export function createHttpDirective(method, attrName) {
           }
 
           const handler = (res) => {
-            if (isDefined(attrs["loading"])) {
+            if (isDefined(attrs.loading)) {
               attrs.$set("loading", false);
             }
 
-            if (isDefined(attrs["loadingClass"])) {
-              attrs.$removeClass(attrs["loadingClass"]);
+            if (isDefined(attrs.loadingClass)) {
+              attrs.$removeClass(attrs.loadingClass);
             }
 
             const html = res.data;
             if (200 <= res.status && res.status <= 299) {
-              if (isDefined(attrs["success"])) {
-                $parse(attrs["success"])(scope, { $res: html });
+              if (isDefined(attrs.success)) {
+                $parse(attrs.success)(scope, { $res: html });
               }
 
-              if (isDefined(attrs["stateSuccess"])) {
-                $state.go(attrs["stateSuccess"]);
+              if (isDefined(attrs.stateSuccess)) {
+                $state.go(attrs.stateSuccess);
               }
             } else if (400 <= res.status && res.status <= 599) {
-              if (isDefined(attrs["error"])) {
-                $parse(attrs["error"])(scope, { $res: html });
+              if (isDefined(attrs.error)) {
+                $parse(attrs.error)(scope, { $res: html });
               }
 
-              if (isDefined(attrs["stateError"])) {
-                $state.go(attrs["stateError"]);
+              if (isDefined(attrs.stateError)) {
+                $state.go(attrs.stateError);
               }
             }
 
@@ -292,19 +292,19 @@ export function createHttpDirective(method, attrName) {
             handleSwapResponse(html, swap, scope, attrs, element);
           };
 
-          if (isDefined(attrs["delay"])) {
-            await wait(parseInt(attrs["delay"]) | 0);
+          if (isDefined(attrs.delay)) {
+            await wait(parseInt(attrs.delay) | 0);
           }
 
           if (throttled) return;
 
-          if (isDefined(attrs["throttle"])) {
+          if (isDefined(attrs.throttle)) {
             throttled = true;
             attrs.$set("throttled", true);
             setTimeout(() => {
               attrs.$set("throttled", false);
               throttled = false;
-            }, parseInt(attrs["throttle"]));
+            }, parseInt(attrs.throttle));
           }
 
           if (isDefined(attrs["loading"])) {
@@ -312,13 +312,13 @@ export function createHttpDirective(method, attrName) {
           }
 
           if (isDefined(attrs["loadingClass"])) {
-            attrs.$addClass(attrs["loadingClass"]);
+            attrs.$addClass(attrs.loadingClass);
           }
 
           if (method === "post" || method === "put") {
             let data;
             const config = {};
-            if (attrs["enctype"]) {
+            if (attrs.enctype) {
               config.headers = {
                 "Content-Type": attrs["enctype"],
               };
@@ -331,7 +331,7 @@ export function createHttpDirective(method, attrName) {
             if (method === "get" && attrs.ngSse) {
               const sseUrl = url;
               const config = {
-                withCredentials: attrs["withCredentials"] === "true",
+                withCredentials: attrs.withCredentials === "true",
                 transformMessage: (data) => {
                   try {
                     return JSON.parse(data);
@@ -341,9 +341,9 @@ export function createHttpDirective(method, attrName) {
                 },
                 onOpen: () => {
                   $log.info(`${attrName}: SSE connection opened to ${sseUrl}`);
-                  if (isDefined(attrs["loading"])) attrs.$set("loading", false);
-                  if (isDefined(attrs["loadingClass"]))
-                    attrs.$removeClass(attrs["loadingClass"]);
+                  if (isDefined(attrs.loading)) attrs.$set("loading", false);
+                  if (isDefined(attrs.loadingClass))
+                    attrs.$removeClass(attrs.loadingClass);
                 },
                 onMessage: (data) => {
                   const res = { status: 200, data };

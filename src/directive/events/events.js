@@ -19,7 +19,7 @@ export const ngEventDirectives = {};
       $t.$exceptionHandler,
 
       /**
-       * @param {import("../../core/parse/interface.ts").ParseService} $parse
+       * @param {ng.ParseService} $parse
        * @param {ng.ExceptionHandlerService} $exceptionHandler
        * @returns
        */
