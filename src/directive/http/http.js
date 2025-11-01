@@ -328,7 +328,7 @@ export function createHttpDirective(method, attrName) {
             }
             $http[method](url, data, config).then(handler).catch(handler);
           } else {
-            if (method === "get" && attrs["ngSse"]) {
+            if (method === "get" && attrs.ngSse) {
               const sseUrl = url;
               const config = {
                 withCredentials: attrs["withCredentials"] === "true",
@@ -353,6 +353,11 @@ export function createHttpDirective(method, attrName) {
                   $log.error(`${attrName}: SSE error`, err);
                   const res = { status: 500, data: err };
                   handler(res);
+                },
+                onReconnect: (count) => {
+                  $log.info(`ngSse: reconnected ${count} time(s)`);
+                  if (attrs.onReconnect)
+                    $parse(attrs.onReconnect)(scope, { $count: count });
                 },
               };
 

@@ -1,3 +1,5 @@
+import { $injectTokens } from "../../injection-tokens";
+
 /**
  * SSE Provider
  *
@@ -20,8 +22,8 @@ export class SseProvider {
     this.defaults = {
       retryDelay: 1000,
       maxRetries: Infinity,
-      heartbeatTimeout: 0,
-      transformMessage: (data) => {
+      heartbeatTimeout: 15000, // 15 seconds
+      transformMessage(data) {
         try {
           return JSON.parse(data);
         } catch {
@@ -35,13 +37,18 @@ export class SseProvider {
    * Returns the $sse service function
    * @returns {ng.SseService}
    */
-  $get =
-    () =>
-    (url, config = {}) => {
-      const mergedConfig = { ...this.defaults, ...config };
-      const finalUrl = this.#buildUrl(url, mergedConfig.params);
-      return this.#createConnection(finalUrl, mergedConfig);
-    };
+  $get = [
+    $injectTokens.$log,
+    /** @param {ng.LogService} log */
+    (log) => {
+      this.$log = log;
+      return (url, config = {}) => {
+        const mergedConfig = { ...this.defaults, ...config };
+        const finalUrl = this.#buildUrl(url, mergedConfig.params);
+        return this.#createConnection(finalUrl, mergedConfig);
+      };
+    },
+  ];
 
   /**
    * Build URL with query parameters
@@ -61,7 +68,7 @@ export class SseProvider {
    * Creates a managed SSE connection with reconnect and heartbeat
    * @param {string} url
    * @param {ng.SseConfig} config
-   * @returns {import("./interface").SseConnection}
+   * @returns {import("./interface.ts").SseConnection}
    */
   #createConnection(url, config) {
     let es;
@@ -103,7 +110,7 @@ export class SseProvider {
           config.onReconnect?.(retryCount);
           setTimeout(connect, config.retryDelay);
         } else {
-          console.warn("SSE: Max retries reached");
+          this.$log.warn("SSE: Max retries reached");
         }
       });
     };
@@ -111,8 +118,9 @@ export class SseProvider {
     const resetHeartbeat = () => {
       clearTimeout(heartbeatTimer);
       heartbeatTimer = setTimeout(() => {
-        console.warn("SSE: heartbeat timeout, reconnecting...");
+        this.$log.warn("SSE: heartbeat timeout, reconnecting...");
         es.close();
+        config.onReconnect?.(++retryCount);
         connect();
       }, config.heartbeatTimeout);
     };
@@ -124,6 +132,12 @@ export class SseProvider {
         closed = true;
         clearTimeout(heartbeatTimer);
         es.close();
+      },
+      connect() {
+        if (closed == false) {
+          close();
+        }
+        connect();
       },
     };
   }

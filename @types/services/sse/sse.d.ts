@@ -21,6 +21,7 @@ export class SseProvider {
    * Returns the $sse service function
    * @returns {ng.SseService}
    */
-  $get: () => ng.SseService;
+  $get: any[];
+  $log: import("../log/interface.ts").LogService;
   #private;
 }

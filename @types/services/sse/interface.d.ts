@@ -32,6 +32,8 @@ export interface SseConfig {
 export interface SseConnection {
   /** Manually close the SSE connection and stop all reconnect attempts */
   close(): void;
+  /** Manually restart the SSE connection */
+  connect(): void;
 }
 /**
  * $sse service type
